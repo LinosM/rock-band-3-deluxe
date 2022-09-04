@@ -1,6 +1,6 @@
 {set $nolanes FALSE}
 {set $enablebre TRUE}
-{set $practiceoverdrive FALSE}
+{set $practiceoverdrive TRUE}
 {set $animatedtextures FALSE}
 {set $animatedhighway FALSE}
 {set $shinysmashers FALSE}
@@ -12,14 +12,14 @@
 {set $defaultspotlight TRUE}
 {set $emissive _guitar_track_emmissive}
 {set $defaultemissive TRUE}
-{set $rb4ui FALSE}
+{set $rb4ui TRUE}
 {set $speedmod 1.0}
 {set $leaderspeed 1.0}
 {set $force FALSE}
 {set $forcedvenue VENUES}
 {set $screensaver TRUE}
 {set $gotcha TRUE}
-{set $trackspeed 1.0}
+{set $trackspeed 1.15}
 {set $emulatefps 30}
 {set $slot1_color 0}
 {set $slot2_color 1}
