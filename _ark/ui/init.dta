@@ -1,17 +1,26 @@
 ;sets default highway. must set variable to TRUE, name your selected texture
 ;list can be found in _ark\ui\track\highways\highways.dta
-{set $highway _rb3_guitar}
+{set $highway none}
 
 ;sets default spotlight (any instrument max multiplier).
 ;list can be found in _ark\ui\track\spotlights\spotlights.dta
-{set $spotlight spotlight_guitar_track}
+{set $spotlight none}
 
 ;sets default emissive (in overdrive texture).
 ;list can be found in _ark\ui\track\emissives\emissives.dta
-{set $emissive _guitar_track_emmissive}
+{set $emissive none}
 
 ;sets default keyboard track colors.
-{set $keyboard track_lanes_keyboard__original}
+;list can be found in _ark\ui\track\keyboards\keyboards.dta
+{set $keyboard none}
+
+;sets default smasher track textures.
+;list can be found in _ark\ui\track\smashers\smashers.dta
+{set $smasher none}
+
+;sets default gem track textures.
+;list can be found in _ark\ui\track\gems\gems.dta
+{set $gem none}
 
 ;sets default track speed. 1.15 is 115%, 1.30 is 130% and so on.
 {set $trackspeed 1.0}
@@ -34,6 +43,10 @@
 ;shiny starlight
 {set $animatedsmashername none}
 
+;chooses which main menu to load, if you dont like the new one, vanilla is "3"
+;valid sv values are 2, 3, 4, 5, 7, 8
+{set $svnumber 8}
+
 ;force a venue name. found in macros.dta.
 ;the following is all possible venue names internally
 ;none video_01 video_02 video_03 video_04 video_05 video_06 video_07
@@ -50,8 +63,8 @@
 {set $venue VENUES}
 
 ;controls game themed ui/track panel textures. just remove the semicolon for the mod you want
-;{modifier_mgr toggle_modifier_enabled mod_rb4ui} ;rb2 in game ui theme
-;{modifier_mgr toggle_modifier_enabled mod_rb2ui} ;rb4 in game ui theme
+;{modifier_mgr toggle_modifier_enabled mod_rb4ui} ;rb4 in game ui theme
+;{modifier_mgr toggle_modifier_enabled mod_rb2ui} ;rb2 in game ui theme
 ;{modifier_mgr toggle_modifier_enabled mod_rb4trk} ;rb4 gems and frets theme
 ;{modifier_mgr toggle_modifier_enabled mod_rb2trk} ;rb2 gems and frets theme
 ;{modifier_mgr toggle_modifier_enabled mod_ps3os} ;changes the overshell theme coloring to match ps3
@@ -77,6 +90,7 @@
 ;{modifier_mgr toggle_modifier_enabled mod_nobre} ;disables big rock endings. Drums and lower difficulies have no notes under big rock endings
 ;{modifier_mgr toggle_modifier_enabled mod_nomv} ;disables music video venues in random rotation
 ;{modifier_mgr toggle_modifier_enabled mod_blackmenu} ;disables the band vignettes in menus, speedup.
+;{modifier_mgr toggle_modifier_enabled mod_auto_kick} ;enables auto kick for the drummer. Online is disabled
 ;{modifier_mgr toggle_modifier_enabled mod_auto_play} ;enables autoplay for all player. saving is disabled.
 
 ;set default colors for notes
@@ -185,13 +199,17 @@
 
 {unless {== $venue VENUES} {set $force TRUE}}
 
-{unless {== $highway _rb3_guitar} {set $highwaycustomtexture TRUE}}
+{unless {== $spotlight none} {set $spotlightcustomtexture TRUE}}
 
-{unless {== $spotlight spotlight_guitar_track} {set $spotlightcustomtexture TRUE}}
+{unless {== $emissive none} {set $emissivecustomtexture TRUE}}
 
-{unless {== $emissive _guitar_track_emmissive} {set $emissivecustomtexture TRUE}}
+{unless {== $keyboard none} {set $keyboardcustomtexture TRUE}}
 
-{unless {== $keyboard track_lanes_keyboard__original} {set $keyboardcustomtexture TRUE}}
+{unless {== $highway none} {set $highwaycustomtexture TRUE}}
+
+{unless {== $smasher none} {set $smashercustomtexture TRUE}}
+
+{unless {== $gem none} {set $gemcustomtexture TRUE}}
 
 {unless {== $animatedhighwayname none} {do {set $animatedhighway TRUE} {set $animatedhighwaycustomtexture TRUE}}}
 

@@ -386,6 +386,8 @@
 (dlc_store "Set Speeds")
 (redeem_code "Set Venue FPS")
 (message_motd "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
+(message_motd_signin "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
+(message_motd_noconnection "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
 (video_01
    "Music Video 1")
 (random
@@ -805,11 +807,14 @@
 (mod_nobre "Disable BRE's")
 (mod_practiceoverdrive "OD in Practice")
 (mod_nolanes "No Lanes")
+(mod_rb4lanes "RB4 Lanes")
 (mod_nomv "No Music Videos")
 (mod_blackmenu "No Menu Backgrounds")
 (mod_starlightsmashers "Galaxy Frets")
 (mod_shinysmashers "Shiny Frets")
 (mod_animatedgems "Animated Gems")
+(os_gems "Gem Selector")
+(os_smashers "Smasher Selector")
 (os_animatedsmasher "Animated Frets")
 (os_animatedhighway "Animated Highway")
 (os_animatedgem "Animated Gems")
@@ -835,6 +840,9 @@
    "Pad is Guitar")
 (mod_auto_play
    "Autoplay")
+(mod_chmode_short "CH Mode")
+(mod_auto_kick
+   "Auto Kick")
 (mod_black_bg
    "Black Background")
 (mod_noflames
@@ -844,11 +852,18 @@
 (mod_doublespeed_1.25x
    "breakneck speed 1.25x")
 (mod_doublespeed "breakneck speed")
+(mod_stopcrashing "Disable Custom Textures")
 (mod_rb4os "Rock Band 4 Overshell")
 (mod_chmode "Clone Hero Mode")
 (mod_nopart "No Particle Effects")
 (mod_noflares "No Flares")
+(mod_flames "Smoke is Flames")
+(mod_black_background "Black Background")
+(mod_force_hopos "Force HOPOs")
+(mod_mirror_mode "Mirror Mode (Guitar Only)")
+(mod_color_shuffle "Gem Color Shuffle")
 (chmode_warning "Clone Hero Mode changes the hit window to be more lenient. Saving will be disabled and a message will be added to the end screen if you enable this.")
+(rb3e_mod_string "RB3DX devbuild")
 (breakneck_warning
   "Please disable other breakneck speed modifiers before enabling this one.")
 (autoplay_warning

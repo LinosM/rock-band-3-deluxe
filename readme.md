@@ -25,7 +25,7 @@ This Repo contains everything you need to build an ark for Rock Band 3 Deluxe fo
 ## Features
 
 ### Quality of Life
-* Max song limit increased to 32767. Tested up to 11.2k in RPCS3
+* Max song limit increased to 8000. Above 5000 ccan lead to instability issues, use with caution.
 * Song select ambient noise modifier, default disabled
 * New menu, "RB3DX Menu", in game for additional modifications
 * Selectable song speed and track speed by 5% increments
@@ -76,7 +76,7 @@ There are now pre compiled ARK files available in many flavors in the [Actions](
 
 * RB3DX-Base-*platform* - The default build of Rock Band 3 Deluxe
 * RB3DX-*platform*-additional-keys - A build of Rock Band 3 Deluxe with included additional keys upgrades from [rb3_plus](https://github.com/rjkiv/rb3_plus)
-* RB3DX-*platform*-pad-is-guitar - A build of Rock Band 3 Deluxe where joypad controllers are forced to act as guitars for traditional pad play
+* RB3DX-*platform*-pad-is-guitar - A build of Rock Band 3 Deluxe where joypad controllers are forced to act as guitars for traditional pad play (This is no longer necessary, controllers can now play any non-pro instrument with base dx. This is left in as an option as the pause menu does not work when playing a non-vocals instrument as a controller)
 * RB3DX-PS3-stock-instrument-mapping - A build of Rock Band 3 Deluxe where GHWT and Rock Revolution kits on PS3 are restored to their correct controller mapping. Only useful if you have either of these two instruments and are playing on PS3 real hardware.
 
 If using pre built actions, skip down to the `Install` section and assume any mention of `_build` is the contents of your zip file you downloaded from the Actions tab.
@@ -165,25 +165,15 @@ Rebuild your ark and reinstall Rock Band 3 Deluxe to see your new keys upgrades!
 
 ## Optional-Install-Custom-Highways
 
-This repo also supports the import of custom highways and groove/spotlights via the use of a bat script, python script, manual dta editing and a couple external dependencies included, but it's way easier than it sounds to create your own.
+This repo also supports the import of custom highways and groove/spotlights via the use of a bat script.
 
 RB3DX includes a variety of custom highways by default, available via the "RB3DX Menu", but you can add your own with the following steps.
 
-Simply drag in a .jpg/.png/.bmp into the `highways` folder at the root of the repo, then run `highways.bat`.
-Or, drag in a .jpg/.png/.bmp into the `spotlights` folder at the root of the repo, then run `spotlights.bat`.
+Simply drag in a .jpg/.png/.bmp into the `highways` folder in the "custom_textures" folder, then run `_texture-process_highways.bat`.
+
+Or, drag in a .jpg/.png/.bmp into the `spotlights` folder in the "custom_textures" folder, then run `_texture-process_spotlights.bat`.
 
 This will size your images accordingly (supports arbitrary resolutions), and convert them to the proper format for rb3 to read. Spotlights will be set to 50% opacity.
-
-A .dta file will be generated for a list of your custom highways/spotlights.
-You must copy and paste the contents of the generated dta, and overwrite the similar data in another dta.
-
-For highways, copy all contents from `_ark/ui/track/surfaces/highways.dta`.
-For spotlights, copy all contents from `_ark/ui/track/surfaces/spotlights.dta`.
-
-Next go to `_ark/ui/overshell/slot_states.dta` and search for `highways.dta` or `spotlights.dta`.
-Being careful to stay within the parenthesis, highlight and delete existing custom highways. All existing custom highways are within quotation marks.
-
-Paste your desired block of highways over the existing block.
 
 You will need to run the build script to again to create your new ARK and reinstall RB3DX to your desired platform.
 
@@ -207,3 +197,5 @@ You can also use [Onyx Music Game Toolkit](https://github.com/mtolly/onyxite-cus
 [dtab](https://github.com/mtolly/dtab) - For serializing Rock Band dtb files
 
 [python](https://www.python.org/downloads/) - for more detailed script functions such as enabling/disabling extra keys support
+
+[sed for Windows](http://gnuwin32.sourceforge.net/packages/sed.htm) - for regex on windows for custom textures listing in game

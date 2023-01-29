@@ -21,3 +21,32 @@ _xenia/content/45410914/00000001/songcache/songcache
 _xenia/content/45410914/Headers/*
 _xenia/xenia.log
 _build_xbox - Copy.bat
+_xenia/RB3ELoader.xex
+_xenia/content/45410914/00000001/RB1DISCCUSTOMPACKWITHUNEXPORTABLES
+_xenia/content/45410914/00000002/*
+_xenia/content/45410914/00000001/*
+_xenia/content/45410829/00000002/*
+_xenia/content/45410829/00000001/*
+*.pyc
+_redownload_rb3_plus_pro_strings.bat
+rb3_plus_pro_strings.py
+_xenia/content/45410914
+_xenia/content/45410869
+_xenia/content/45410829
+_xenia/recent.toml
+_xenia/RB3EHelper/*
+_xenia/patches/45410914 - Rock Band 3.patch.toml
+_run_rb3e_xenia.bat
+_build/xbox/gen/main_xbox_9.ark
+_build/xbox/gen/main_xbox_8.ark
+_build/xbox/gen/main_xbox_7.ark
+_build/xbox/gen/main_xbox_6.ark
+_build/xbox/gen/main_xbox_5.ark
+_build/xbox/gen/main_xbox_4.ark
+_build/xbox/gen/main_xbox_3.ark
+_build/xbox/gen/main_xbox_2.ark
+_build/xbox/gen/main_xbox_1.ark
+_build/xbox/gen/main_xbox_0.ark
+_build/xbox/gen/main_xbox.hdr
+_build/xbox/rb3.ini
+_build/xbox/RB3Enhanced.dll
