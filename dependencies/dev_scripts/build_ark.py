@@ -15,15 +15,18 @@ def rm_tree(pth):
     pth.rmdir()
 
 def make_executable_binaries():
-    cmd_chmod_arkhelper = "chmod +x dependencies/arkhelper".split()
+    cmd_chmod_arkhelper = "chmod +x dependencies/linux/arkhelper".split()
     subprocess.check_output(cmd_chmod_arkhelper, shell=(platform == "win32"), cwd="..")
-    cmd_chmod_dtab = "chmod +x dependencies/dtab".split()
+    cmd_chmod_dtab = "chmod +x dependencies/linux/dtab".split()
     subprocess.check_output(cmd_chmod_dtab, shell=(platform == "win32"), cwd="..")
+
+# darwin: mac
 
 # if xbox is true, build the Xbox ARK
 # else, build the PS3 ARK
 def build_patch_ark(xbox: bool):
     # directories used in this script
+    print("Building Rock Band 3 Deluxe patch arks...")
     cwd = Path().absolute() # current working directory (dev_scripts)
     root_dir = cwd.parents[0] # root directory of the repo
     ark_dir = root_dir.joinpath("_ark")
@@ -33,11 +36,13 @@ def build_patch_ark(xbox: bool):
         build_location = "_build\\xbox\gen" if xbox else "_build\ps3\\USRDIR\gen"
     else:
         build_location = "_build/xbox/gen" if xbox else "_build/ps3/USRDIR/gen"
-        make_executable_binaries()
+        # build the binaries if on linux/other OS
+        if platform != "darwin":
+            make_executable_binaries()
     patch_hdr_version = "patch_xbox" if xbox else "patch_ps3"
 
-    # pull the latest changes from the RB3DX repo if necessary
-    if not check_git_updated():
+    # pull the latest changes from the Rock Band 3 Deluxe repo if necessary
+    if not check_git_updated(repo_url="https://github.com/hmxmilohax/rock-band-3-deluxe", repo_root_path=root_dir):
         cmd_pull = "git pull https://github.com/hmxmilohax/rock-band-3-deluxe main".split()
         subprocess.run(cmd_pull, shell=(platform == "win32"), cwd="..")
 
@@ -54,9 +59,11 @@ def build_patch_ark(xbox: bool):
     failed = False
     try:
         if platform == "win32":
-            cmd_build = f"dependencies\\arkhelper.exe dir2ark _ark {build_location} -n {patch_hdr_version} -e -v 6".split()
+            cmd_build = f"dependencies\windows\\arkhelper.exe dir2ark _ark {build_location} -n {patch_hdr_version} -e -v 6".split()
+        elif platform == "darwin":
+            cmd_build = f"dependencies/macos/arkhelper dir2ark _ark {build_location} -n {patch_hdr_version} -e -v 6".split()
         else:
-            cmd_build = f"dependencies/arkhelper dir2ark _ark {build_location} -n {patch_hdr_version} -e -v 6".split()
+            cmd_build = f"dependencies/linux/arkhelper dir2ark _ark {build_location} -n {patch_hdr_version} -e -v 6".split()
         subprocess.check_output(cmd_build, shell=(platform == "win32"), cwd="..")
     except CalledProcessError as e:
         print(e.output)
