@@ -33,7 +33,7 @@ def build_patch_ark(xbox: bool):
 
     files_to_remove = "*_ps3" if xbox else "*_xbox"
     if platform == "win32":
-        build_location = "_build\\xbox\gen" if xbox else "_build\ps3\\USRDIR\gen"
+        build_location = "_build\\xbox\gen" if xbox else "D:\\Emulators\\RPCS3\\dev_hdd0\\game\\BLUS30463\\USRDIR\\gen" #"_build\ps3\\USRDIR\gen"
     else:
         build_location = "_build/xbox/gen" if xbox else "_build/ps3/USRDIR/gen"
         # build the binaries if on linux/other OS
