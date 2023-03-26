@@ -45,9 +45,9 @@
    (hx_midi_guitar_ps3 kControllerRealGuitar)
    ;(hx_midi_guitar_ps3 kControllerVocals)
    ;-----------Keys
-   (hx_midi_keys_ps3 kControllerDrum)
+   ;(hx_midi_keys_ps3 kControllerDrum)
    ;(hx_midi_keys_ps3 kControllerVocals)
-   ;(hx_midi_keys_ps3 kControllerKeys)
+   (hx_midi_keys_ps3 kControllerKeys)
    
    ;(hx_midi_keys_xbox kControllerDrum)
    ;(hx_midi_keys_xbox kControllerVocals)
