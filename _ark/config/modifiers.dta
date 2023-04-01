@@ -17,6 +17,7 @@
 ;   (mod_nomuting)
    (mod_nosustain)
    (mod_rb2sustain)
+   (mod_rb4sustain)
    (mod_songselectnoise)
    (mod_fcclip)
    (mod_nobre)
@@ -27,6 +28,13 @@
    (mod_precision)
    (mod_chmode)
    (mod_fastermode)
+#ifndef RB3E
+   ; we should prefer rb3e's version of this modifier if it is present.
+   ; we also need to use a different name so we don't conflict with rb3e
+   (mod_mhx_color_shuffle)
+#else
+   (mod_mhx_color_shuffle custom_location)
+#endif
    (mod_nomv)
    (mod_blackmenu)
    (mod_noflames custom_location)

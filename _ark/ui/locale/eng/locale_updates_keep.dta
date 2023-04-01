@@ -959,6 +959,7 @@
 (mod_whammyfx "No Whammy FX")
 (mod_nosustain "No Sustain Tails")
 (mod_rb2sustain "RB2 Sustain Tails")
+(mod_rb4sustain "RB4 Sustain Tails")
 (mod_ghdrums
    "GH Drums are Protar")
 (mod_video
@@ -992,6 +993,7 @@
 (mod_force_hopos "Force HOPOs")
 (mod_mirror_mode "Mirror Mode (Guitar Only)")
 (mod_color_shuffle "Gem Color Shuffle")
+(mod_mhx_color_shuffle "Gem Color Shuffle")
 (chmode_warning "Clone Hero Mode changes the hit window to be more lenient. Saving will be disabled and a message will be added to the end screen if you enable this.")
 (rb3e_mod_string "RB3DX devbuild")
 (breakneck_warning
