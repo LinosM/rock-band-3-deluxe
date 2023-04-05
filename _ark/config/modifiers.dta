@@ -49,6 +49,7 @@
    (mod_ps3os custom_location)
    (mod_wiios custom_location)
    (mod_rb4ui custom_location)
-   (mod_force22)
+   (mod_force22gtr)
+   (mod_force22bass)
    (mod_auto_kick)
    (mod_auto_play))
