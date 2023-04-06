@@ -306,7 +306,8 @@
          {meta_performer upload_debug_stats}
          {set
             [chosen_vignette]
-            {interstitial_mgr pick_interstitial_between_screens meta_loading_outro song_select_screen}}
+            ;{interstitial_mgr pick_interstitial_between_screens meta_loading_outro song_select_screen}}
+			{meta_loading_outro song_select_screen}}
          #ifndef _SHIP
          {if
             {ui get_vignettes_showing}
