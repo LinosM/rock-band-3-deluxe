@@ -38,7 +38,7 @@
          BandScreen
          $screen_name
          (dest_screen '')
-         (panels meta $panel_name transition_fallback_panel)
+         (panels meta transition_fallback_panel)
          (focus $panel_name)
          (enter
             {{$this focus_panel}
