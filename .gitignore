@@ -63,4 +63,4 @@ dependencies/macOS/superfreq
 dependencies/windows/arkhelper.exe
 dependencies/windows/dtab.exe
 dependencies/windows/superfreq.exe
-.bak*
+*.bak*
