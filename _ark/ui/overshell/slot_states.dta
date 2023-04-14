@@ -1117,7 +1117,9 @@
          (overshell_drums
             {$this select_part kTrackDrum})
 			(overshell_vocal_solo
-            {$this select_part kTrackVocals})
+			{do
+               {$this select_part kTrackVocals}
+			   {$this select_vocal_part TRUE}})
 	  })
    (on_cancel
       {$this show_game_options}))
