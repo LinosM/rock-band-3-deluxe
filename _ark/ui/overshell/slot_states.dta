@@ -1055,6 +1055,12 @@
             set_data
                (overshell_credits
                 overshell_linking_code
+				overshell_keys
+				overshell_real_keys
+				overshell_guitar
+				overshell_bass
+				overshell_drums
+				overshell_vocal_solo
                 #ifdef HX_XBOX
                 overshell_audition
                 #endif)})
@@ -1099,7 +1105,20 @@
                {$this leave_options}}
             #else
             {$this leave_options}
-            #endif)})
+            #endif)
+			(overshell_keys
+            {$this select_part kTrackKeys})
+			(overshell_real_keys
+            {$this select_part kTrackRealKeys})
+         (overshell_guitar
+            {$this select_part kTrackGuitar})
+         (overshell_bass
+            {$this select_part kTrackBass})
+         (overshell_drums
+            {$this select_part kTrackDrum})
+			(overshell_vocal_solo
+            {$this select_part kTrackVocals})
+	  })
    (on_cancel
       {$this show_game_options}))
 (kState_AuditionNoHardDriveConfirm
@@ -3325,7 +3344,8 @@
    (os_cam
     {$this show_state kState_RB3ECameraMenu})
    (os_fx
-    {$this show_state kState_RB3EFXMenu})})
+    {$this show_state kState_RB3EFXMenu})
+	})
 	(on_cancel
        ;restore original online_options upon exit
 	   {do
