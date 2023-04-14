@@ -791,12 +791,32 @@
                      {overshell update_all}}
                   {$this show_saveloadmgr_not_idle}}
                {$this show_saveloadmgr_not_meta}})}))
+#define AUDIO_DATA
+(
+   overshell_audio_instruments
+   overshell_audio_bg_music
+   overshell_audio_crowd
+   overshell_audio_sfx
+   #ifdef HX_PS3
+   overshell_audio_voice_chat
+   #endif
+   {if_else {modifier_mgr is_modifier_active mod_nosfx}
+   os_audio_instsfx_on
+   os_audio_instsfx_off}
+)
 (kState_OptionsAudio
    (view options_audio)
    (on_cancel
       {$this show_options_av_settings})
+   (lst_reset
+      {options_audio.lst set_data (AUDIO_DATA)}
+      {if $audiomenuval
+         {options_audio.lst set_selected $audiomenuval}
+      }
+   )
    (enter
-      {options_audio.lst set_selected 0}
+      {$this lst_reset}
+      {options_audio.lst set_selected $audiomenuval}
       {instruments.sld set_num_steps 12}
       {bg_music.sld set_num_steps 12}
       {crowd.sld set_num_steps 12}
@@ -807,15 +827,7 @@
       {crowd.sld set_current {profile_mgr get_crowd_volume}}
       {sfx.sld set_current {profile_mgr get_fx_volume}}
       {voice_chat.sld set_current {profile_mgr get_voice_chat_volume}}
-         {options_audio.lst
-            set_data
-              (overshell_audio_instruments
-               overshell_audio_bg_music
-               overshell_audio_crowd
-               overshell_audio_sfx
-               #ifdef HX_PS3
-                overshell_audio_voice_chat
-               #endif)}
+      {options_audio.lst set_data (AUDIO_DATA)}
    )
    (update_view
       {handle
@@ -844,6 +856,7 @@
             voice_chat.sld
             "")})
    (SELECT_MSG
+      {set $audiomenuval {$component selected_sym}}
       {if
          {== $component options_audio.lst}
          {switch
@@ -867,7 +880,20 @@
             (overshell_audio_voice_chat
                {voice_chat.sld store}
                {voice_chat.sld set_showing TRUE}
-               {$this set_focus voice_chat.sld})}})
+               {$this set_focus voice_chat.sld})
+            (os_audio_instsfx_off
+               {unless {modifier_mgr is_modifier_active mod_nosfx}
+                  {modifier_mgr toggle_modifier_enabled mod_nosfx}
+                  {options_audio.lst set_data (AUDIO_DATA)}
+               {if $audiomenuval
+                  {options_audio.lst set_selected $audiomenuval}}})
+            (os_audio_instsfx_on
+               {if {modifier_mgr is_modifier_active mod_nosfx}
+                  {modifier_mgr toggle_modifier_enabled mod_nosfx}}
+               {options_audio.lst set_data (AUDIO_DATA)}
+               {if $audiomenuval
+                  {options_audio.lst set_selected $audiomenuval}})}
+      {$this lst_reset}})
    (BUTTON_DOWN_MSG
       {if_else
          {find_elem
@@ -1183,7 +1209,38 @@
             ($this set_confirm_message linking_code_signin_error)}})
    (SELECT_MSG
       {$this show_options_extras}))
-(kState_RB3EFretboardSelector
+      
+(kState_RB3EInstHW
+   (view options)
+   (enter
+   {options.lst set_selected $rb3einsthwval}
+   {options.lst set_data 
+   (
+      os_allhw
+      os_guitarhw
+      os_basshw
+      os_drumshw
+      os_keyshw
+   )})
+   (SELECT_MSG
+   {set $rb3einsthwval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_allhw
+      {$this show_state kState_RB3EFretboardSelectorAll})
+   (os_guitarhw
+      {$this show_state kState_RB3EFretboardSelectorGtr})
+   (os_basshw
+      {$this show_state kState_RB3EFretboardSelectorBass})
+   (os_drumshw
+     {$this show_state kState_RB3EFretboardSelectorDrum})
+   (os_keyshw
+     {$this show_state kState_RB3EFretboardSelectorKeys})
+   })
+   (on_cancel
+      {$this show_state kState_RB3TextureMenu}))
+
+(kState_RB3EFretboardSelectorAll
  (view online_options)
  (enter
     {online_options.lst set circular 1}
@@ -1202,10 +1259,130 @@
       {$this update})
    (SELECT_MSG
         {set $highwaycustomtexture TRUE}
+        {set $highwaygtrcustomtexture FALSE}
+        {set $highwaybasscustomtexture FALSE}
+        {set $highwaydrumcustomtexture FALSE}
+        {set $highwaykeyscustomtexture FALSE}
         {set $highway {$component selected_sym}}
+        {set $highwaygtr none}
+        {set $highwaybass none}
+        {set $highwaydrum none}
+        {set $highwaykeys none}
         {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highway ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3EInstHW}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+  
+(kState_RB3EFretboardSelectorGtr
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $highwaygtr}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaygtr ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/highways/highways.dta)}
+ )
+   (SCROLL_MSG
+      {set $highwaygtrmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaygtrmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $highwaygtrcustomtexture TRUE}
+        {set $highwaygtr {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaygtr ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstHW}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+  
+(kState_RB3EFretboardSelectorBass
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $highwaybass}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaybass ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/highways/highways.dta)}
+ )
+   (SCROLL_MSG
+      {set $highwaybassmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaybassmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $highwaybasscustomtexture TRUE}
+        {set $highwaybass {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaybass ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstHW}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EFretboardSelectorDrum
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $highwaydrum}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaydrum ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/highways/highways.dta)}
+ )
+   (SCROLL_MSG
+      {set $highwaydrummenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaydrummenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $highwaydrumcustomtexture TRUE}
+        {set $highwaydrum {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaydrum ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstHW}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EFretboardSelectorKeys
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $highwaykeys}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaykeys ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/highways/highways.dta)}
+ )
+   (SCROLL_MSG
+      {set $highwaykeysmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaykeysmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $highwaykeyscustomtexture TRUE}
+        {set $highwaykeys {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/highways/" $highwaykeys ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstHW}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
@@ -1233,9 +1410,172 @@
        {fc_preview_clip play}
     )
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}))
+  {$this show_state kState_RB3EAudioMenu}))
 
-(kState_RB3ESpotlightSelector
+(kState_RB3EInstStrk
+   (view options)
+   (enter
+   {options.lst set_selected $rb3einststrkval}
+   {options.lst set_data 
+   (
+      os_allstrk
+      os_guitarstrk
+      os_bassstrk
+      os_drumsstrk
+      os_keysstrk
+   )})
+   (SELECT_MSG
+   {set $rb3einststrkval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_allstrk
+      {$this show_state kState_RB3ESpotlightSelectorAll})
+   (os_guitarstrk
+      {$this show_state kState_RB3ESpotlightSelectorGtr})
+   (os_bassstrk
+      {$this show_state kState_RB3ESpotlightSelectorBass})
+   (os_drumsstrk
+     {$this show_state kState_RB3ESpotlightSelectorDrum})
+   (os_keysstrk
+     {$this show_state kState_RB3ESpotlightSelectorKeys})
+   })
+   (on_cancel
+      {$this show_state kState_RB3TextureMenu}))
+
+(kState_RB3EMTVSetup
+   (view options_extras)
+   (enter
+   {set $mtvtracked 0}
+   {options_extras.lst set_selected $rb3emtvval}
+   {options_extras.lst set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $rb3emtvval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EAppearanceMenu}))
+
+(kState_RB3EMTVXYZ
+   (view options)
+   (enter
+   {options.lst set_selected $rb3emtvval}
+   {options.lst set_data 
+   (
+      os_100
+      os_50
+      os_25
+      os_10
+      os_1
+      os_reset
+      os_minus1
+      os_minus10
+      os_minus25
+      os_minus50
+      os_minus100
+   )})
+   (SELECT_MSG
+   {set $rb3emtvval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_100
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {+ $mtvpos_0 100}})
+         (1 {set $mtvpos_1 {- $mtvpos_1 100}})
+         (2 {set $mtvpos_2 {+ $mtvpos_2 100}})
+      }
+   )
+   (os_50
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {+ $mtvpos_0 50}})
+         (1 {set $mtvpos_1 {- $mtvpos_1 50}})
+         (2 {set $mtvpos_2 {+ $mtvpos_2 50}})
+      }
+   )
+   (os_25
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {+ $mtvpos_0 25}})
+         (1 {set $mtvpos_1 {- $mtvpos_1 25}})
+         (2 {set $mtvpos_2 {+ $mtvpos_2 25}})
+      }
+   )
+   (os_10
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {+ $mtvpos_0 10}})
+         (1 {set $mtvpos_1 {- $mtvpos_1 10}})
+         (2 {set $mtvpos_2 {+ $mtvpos_2 10}})
+      }
+   )
+   (os_1
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {+ $mtvpos_0 1}})
+         (1 {set $mtvpos_1 {- $mtvpos_1 1}})
+         (2 {set $mtvpos_2 {+ $mtvpos_2 1}})
+      }
+   )
+   (os_reset
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 0})
+         (1 {set $mtvpos_1 0})
+         (2 {set $mtvpos_2 0})
+      }
+   )
+   (os_minus100
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {- $mtvpos_0 100}})
+         (1 {set $mtvpos_1 {+ $mtvpos_1 100}})
+         (2 {set $mtvpos_2 {- $mtvpos_2 100}})
+      }
+   )
+   (os_minus50
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {- $mtvpos_0 50}})
+         (1 {set $mtvpos_1 {+ $mtvpos_1 50}})
+         (2 {set $mtvpos_2 {- $mtvpos_2 50}})
+      }
+   )
+   (os_minus25
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {- $mtvpos_0 25}})
+         (1 {set $mtvpos_1 {+ $mtvpos_1 25}})
+         (2 {set $mtvpos_2 {- $mtvpos_2 25}})
+      }
+   )
+   (os_minus10
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {- $mtvpos_0 10}})
+         (1 {set $mtvpos_1 {+ $mtvpos_1 10}})
+         (2 {set $mtvpos_2 {- $mtvpos_2 10}})
+      }
+   )
+   (os_minus1
+      {switch $mtvtracked
+         (0 {set $mtvpos_0 {- $mtvpos_0 1}})
+         (1 {set $mtvpos_1 {+ $mtvpos_1 1}})
+         (2 {set $mtvpos_2 {- $mtvpos_2 1}})
+      }
+   )
+   }
+   {{{gamemode get track_panel} find mtv_overlay} set_pos}
+   )
+   (on_cancel
+      {$this show_state kState_RB3EMTVSetup}))
+
+(kState_RB3ESpotlightSelectorAll
  (view online_options)
  (enter
     {online_options.lst set circular 1}
@@ -1254,15 +1594,166 @@
       {$this update})
    (SELECT_MSG
         {set $spotlightcustomtexture TRUE}
+        {set $spotlightgtrcustomtexture FALSE}
+        {set $spotlightbasscustomtexture FALSE}
+        {set $spotlightdrumcustomtexture FALSE}
+        {set $spotlightkeyscustomtexture FALSE}
         {set $spotlight {$component selected_sym}}
+        {set $spotlightgtr none}
+        {set $spotlightbass none}
+        {set $spotlightdrum none}
+        {set $spotlightkeys none}
         {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlight ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3EInstStrk}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
   {online_options.grp remove_object choose_character.mesh}))
-(kState_RB3EEmissiveSelector
+
+(kState_RB3ESpotlightSelectorGtr
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $spotlightgtr}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightgtr ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
+ )
+   (SCROLL_MSG
+      {set $spotlightgtrmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightgtrmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $spotlightgtrcustomtexture TRUE}
+        {set $spotlightgtr {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightgtr ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstStrk}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ESpotlightSelectorBass
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $spotlightbass}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightbass ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
+ )
+   (SCROLL_MSG
+      {set $spotlightbassmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightbassmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $spotlightbasscustomtexture TRUE}
+        {set $spotlightbass {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightbass ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstStrk}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ESpotlightSelectorDrum
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $spotlightdrum}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightdrum ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
+ )
+   (SCROLL_MSG
+      {set $spotlightdrummenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightdrummenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $spotlightdrumcustomtexture TRUE}
+        {set $spotlightdrum {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightdrum ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstStrk}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ESpotlightSelectorKeys
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $spotlightkeys}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightkeys ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
+ )
+   (SCROLL_MSG
+      {set $spotlightkeysmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightkeysmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $spotlightkeyscustomtexture TRUE}
+        {set $spotlightkeys {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightkeys ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstStrk}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EInstOD
+   (view options)
+   (enter
+   {options.lst set_selected $rb3einstodval}
+   {options.lst set_data 
+   (
+      os_allod
+      os_guitarod
+      os_bassod
+      os_drumsod
+      os_keysod
+   )})
+   (SELECT_MSG
+   {set $rb3einstodval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_allod
+      {$this show_state kState_RB3EEmissiveSelectorAll})
+   (os_guitarod
+      {$this show_state kState_RB3EEmissiveSelectorGtr})
+   (os_bassod
+      {$this show_state kState_RB3EEmissiveSelectorBass})
+   (os_drumsod
+     {$this show_state kState_RB3EEmissiveSelectorDrum})
+   (os_keysod
+     {$this show_state kState_RB3EEmissiveSelectorKeys})
+   })
+   (on_cancel
+      {$this show_state kState_RB3TextureMenu}))
+
+(kState_RB3EEmissiveSelectorAll
  (view online_options)
  (enter
     {online_options.lst set circular 1}
@@ -1281,15 +1772,135 @@
       {$this update})
    (SELECT_MSG
         {set $emissivecustomtexture TRUE}
+        {set $emissivegtrcustomtexture FALSE}
+        {set $emissivebasscustomtexture FALSE}
+        {set $emissivedrumcustomtexture FALSE}
+        {set $emissivekeyscustomtexture FALSE}
         {set $emissive {$component selected_sym}}
+        {set $emissivegtr none}
+        {set $emissivebass none}
+        {set $emissivedrum none}
+        {set $emissivekeys none}
         {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissive ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3EInstOD}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
   {online_options.grp remove_object choose_character.mesh}))
   
+(kState_RB3EEmissiveSelectorGtr
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $emissivegtr}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivegtr ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
+ )
+   (SCROLL_MSG
+      {set $emissivegtrmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivegtrmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $emissivegtrcustomtexture TRUE}
+        {set $emissivegtr {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivegtr ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstOD}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EEmissiveSelectorBass
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $emissivebass}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivebass ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
+ )
+   (SCROLL_MSG
+      {set $emissivebassmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivebassmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $emissivebasscustomtexture TRUE}
+        {set $emissivebass {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivebass ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstOD}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EEmissiveSelectorDrum
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $emissivedrum}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivedrum ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
+ )
+   (SCROLL_MSG
+      {set $emissivedrummenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivedrummenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $emissivedrumcustomtexture TRUE}
+        {set $emissivedrum {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivedrum ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstOD}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EEmissiveSelectorKeys
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $emissivekeys}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivekeys ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
+ )
+   (SCROLL_MSG
+      {set $emissivekeysmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivekeysmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $emissivekeyscustomtexture TRUE}
+        {set $emissivekeys {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivekeys ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3EInstOD}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
 (kState_RB3EAnimatedGemSelector
  (view online_options)
  (enter
@@ -1313,69 +1924,69 @@
         {set $animatedgemname {$component selected_sym}}
         {choose_character.tex set_bitmap {sprint "ui/track/animated_gems/prism_gems_" $animatedgemname "/prism_gems_" $animatedgemname "_0.png"}})
  (on_cancel
-  {$this show_state kState_RB3AnimationMenu}
+  {$this show_state kState_RB3TextureMenu}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
   {online_options.grp remove_object choose_character.mesh}))
   
-(kState_RB3EAnimatedSmasherSelector
- (view online_options)
- (enter
-    {online_options.lst set circular 1}
-    {online_options.lst set_selected $animatedsmashermenu}
-    {online_options.grp add_object choose_character.mesh}
-    {choose_character.mesh set_local_pos_index 2 175}
-    {choose_character.mesh set_local_scale_index 0 0.2}
-    {choose_character.mesh set_local_scale_index 2 0.4}
-    {choose_character.mat set diffuse_tex choose_character.tex}
-    {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_shiny/gem_smasher_guitar_shiny_0.png"}}
-    {online_options.lst set_data ("shiny" "starlight")}
- )
-   (SCROLL_MSG
-      {set $animatedsmashermenu {$component selected_sym}}
-      {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashermenu "/gem_smasher_guitar_" $animatedsmashermenu "_0.png"}}
-      {$this update})
-   (SELECT_MSG
-        {set $animatedsmashers TRUE}
-        {set $animatedsmasherscustomtexture TRUE}
-        {set $animatedsmashername {$component selected_sym}}
-        {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashername "/gem_smasher_guitar_" $animatedsmashername "_0.png"}})
- (on_cancel
-  {$this show_state kState_RB3AnimationMenu}
-  {choose_character.mesh set_local_scale_index 0 0.5}
-  {choose_character.mesh set_local_scale_index 2 1}
-  {choose_character.mesh set_local_pos_index 2 300}
-  {online_options.grp remove_object choose_character.mesh}))
+;(kState_RB3EAnimatedSmasherSelector
+; (view online_options)
+; (enter
+;    {online_options.lst set circular 1}
+;    {online_options.lst set_selected $animatedsmashermenu}
+;    {online_options.grp add_object choose_character.mesh}
+;    {choose_character.mesh set_local_pos_index 2 175}
+;    {choose_character.mesh set_local_scale_index 0 0.2}
+;    {choose_character.mesh set_local_scale_index 2 0.4}
+;    {choose_character.mat set diffuse_tex choose_character.tex}
+;    {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_shiny/gem_smasher_guitar_shiny_0.png"}}
+;    {online_options.lst set_data ("shiny" "starlight")}
+; )
+;   (SCROLL_MSG
+;      {set $animatedsmashermenu {$component selected_sym}}
+;      {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashermenu "/gem_smasher_guitar_" $animatedsmashermenu "_0.png"}}
+;      {$this update})
+;   (SELECT_MSG
+;        {set $animatedsmashers TRUE}
+;        {set $animatedsmasherscustomtexture TRUE}
+;        {set $animatedsmashername {$component selected_sym}}
+;        {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashername "/gem_smasher_guitar_" $animatedsmashername "_0.png"}})
+; (on_cancel
+;  {$this show_state kState_RB3AnimationMenu}
+;  {choose_character.mesh set_local_scale_index 0 0.5}
+;  {choose_character.mesh set_local_scale_index 2 1}
+;  {choose_character.mesh set_local_pos_index 2 300}
+;  {online_options.grp remove_object choose_character.mesh}))
 
-(kState_RB3EAnimatedHighwaySelector
- (view online_options)
- (enter
-    {online_options.lst set circular 1}
-    {online_options.lst set_selected $animatedhighwaymenu}
-    {online_options.grp add_object choose_character.mesh}
-    {choose_character.mesh set_local_pos_index 2 175}
-    {choose_character.mesh set_local_scale_index 0 0.2}
-    {choose_character.mesh set_local_scale_index 2 0.4}
-    {choose_character.mat set diffuse_tex choose_character.tex}
-    {online_options.lst set_data ("rb4_new" "rb4effect5_color4" "rb4effect6_color7" "rb4effect4_color1" "rb4effect9_color1")}
-    {choose_character.tex set_bitmap {sprint "ui/track/animated_surfaces/rb4_new/rb4_new_0.png"}}
- )
-   (SCROLL_MSG
-      {set $animatedhighwaymenu {$component selected_sym}}
-      {choose_character.tex set_bitmap {sprint "ui/track/animated_surfaces/" $animatedhighwaymenu "/" $animatedhighwaymenu "_0.png"}}
-      {$this update})
-   (SELECT_MSG
-        {set $animatedhighway TRUE}
-        {set $animatedhighwaycustomtexture TRUE}
-        {set $highway _rb3_guitar}
-        {set $animatedhighwayname {$component selected_sym}})
- (on_cancel
-  {$this show_state kState_RB3AnimationMenu}
-  {choose_character.mesh set_local_scale_index 0 0.5}
-  {choose_character.mesh set_local_scale_index 2 1}
-  {choose_character.mesh set_local_pos_index 2 300}
-  {online_options.grp remove_object choose_character.mesh}))
+;(kState_RB3EAnimatedHighwaySelector
+; (view online_options)
+; (enter
+;    {online_options.lst set circular 1}
+;    {online_options.lst set_selected $animatedhighwaymenu}
+;    {online_options.grp add_object choose_character.mesh}
+;    {choose_character.mesh set_local_pos_index 2 175}
+;    {choose_character.mesh set_local_scale_index 0 0.2}
+;    {choose_character.mesh set_local_scale_index 2 0.4}
+;    {choose_character.mat set diffuse_tex choose_character.tex}
+;    {online_options.lst set_data ("rb4_new" "rb4effect5_color4" "rb4effect6_color7" "rb4effect4_color1" "rb4effect9_color1")}
+;    {choose_character.tex set_bitmap {sprint "ui/track/animated_surfaces/rb4_new/rb4_new_0.png"}}
+; )
+;   (SCROLL_MSG
+;      {set $animatedhighwaymenu {$component selected_sym}}
+;      {choose_character.tex set_bitmap {sprint "ui/track/animated_surfaces/" $animatedhighwaymenu "/" $animatedhighwaymenu "_0.png"}}
+;      {$this update})
+;   (SELECT_MSG
+;        {set $animatedhighway TRUE}
+;        {set $animatedhighwaycustomtexture TRUE}
+;        {set $highway _rb3_guitar}
+;        {set $animatedhighwayname {$component selected_sym}})
+; (on_cancel
+;  {$this show_state kState_RB3AnimationMenu}
+;  {choose_character.mesh set_local_scale_index 0 0.5}
+;  {choose_character.mesh set_local_scale_index 2 1}
+;  {choose_character.mesh set_local_pos_index 2 300}
+;  {online_options.grp remove_object choose_character.mesh}))
 
 (kState_RB3ESmasherSelector
  (view online_options)
@@ -1399,7 +2010,175 @@
         {set $smasher {$component selected_sym}}
         {choose_character.tex set_bitmap {sprint "ui/track/smashers/gem_smashers_guitar_" $smasher ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EFlamesSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $flames}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/flames/flare_style_" $flames ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/flames/flames.dta)}
+ )
+   (SCROLL_MSG
+      {set $flamesmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/flames/flare_style_" $flamesmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $flamescustomtexture TRUE}
+        {set $flames {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/flames/flare_style_" $flames ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EScoreSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $scoretex}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/score/scoreboard_frame_" $scoretex ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/score/score.dta)}
+ )
+   (SCROLL_MSG
+      {set $scoremenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/score/scoreboard_frame_" $scoremenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $scorecustomtexture TRUE}
+        {set $scoretex {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/score/scoreboard_frame_" $scoretex ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ERailsSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $rails}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/rails/rails_" $rails ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/rails/rails.dta)}
+ )
+   (SCROLL_MSG
+      {set $railsmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/rails/rails_" $railsmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $railscustomtexture TRUE}
+        {set $rails {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/rails/rails_" $rails ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EODbarSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $odbar}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/overdrive_bar/overdrive_meter_background_fill_" $odbar ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/overdrive_bar/overdrive_bar.dta)}
+ )
+   (SCROLL_MSG
+      {set $odbarmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/overdrive_bar/overdrive_meter_background_fill_" $odbarmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $odbarcustomtexture TRUE}
+        {set $odbar {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/overdrive_bar/overdrive_meter_background_fill_" $odbar ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3EMultiRingSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $multiring}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/multiplier_ring/streak_meter_bg_" $multiring ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/multiplier_ring/multiplier_ring.dta)}
+ )
+   (SCROLL_MSG
+      {set $multiringmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/multiplier_ring/streak_meter_bg_" $multiringmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $multiringcustomtexture TRUE}
+        {set $multiring {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/multiplier_ring/streak_meter_bg_" $multiring ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ECrowdMeterSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $crowdmeter}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/crowd_meter/crowd_meter_frame_" $crowdmeter ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/crowd_meter/crowd_meter.dta)}
+ )
+   (SCROLL_MSG
+      {set $crowdmetermenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/crowd_meter/crowd_meter_frame_" $crowdmetermenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $crowdmetercustomtexture TRUE}
+        {set $crowdmeter {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/crowd_meter/crowd_meter_frame_" $crowdmeter ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
@@ -1427,7 +2206,7 @@
         {set $gem {$component selected_sym}}
         {choose_character.tex set_bitmap {sprint "ui/track/gems/prism_gems_" $gem ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3TextureMenu}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
@@ -1455,35 +2234,126 @@
         {set $keyboard {$component selected_sym}}
         {choose_character.tex set_bitmap {sprint "ui/track/keyboards/track_lanes_keyboard_" $keyboard ".png"}})
  (on_cancel
-  {$this show_state kState_RB3EAppearanceMenu}
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+  
+(kState_RB3EVoxHWSelector
+ (view online_options)
+ (enter
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $voxhw}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/voxhw/vocal_bg_combined_" $voxhw ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/voxhw/voxhw.dta)}
+ )
+   (SCROLL_MSG
+      {set $voxhwmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/voxhw/vocal_bg_combined_" $voxhwmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $voxhwcustomtexture TRUE}
+        {set $voxhw {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/voxhw/vocal_bg_combined_" $voxhw ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
   {online_options.grp remove_object choose_character.mesh}))
 
-(kState_RB3EScreensaver
- (view options_end_game)
+(kState_RB3EVoxArrowSelector
+ (view online_options)
  (enter
- {options_end_game.lst set_selected 1}
-  {options_end_game.lst
-   set_data
-   (os_on
-    os_off)})
+    {online_options.lst set circular 1}
+    {online_options.lst set_selected $voxarrow}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/voxarrow/arrow_lead_c_" $voxarrow ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {online_options.lst set_data (#include ../track/voxarrow/voxarrow.dta)}
+ )
+   (SCROLL_MSG
+      {set $voxarrowmenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/voxarrow/arrow_lead_c_" $voxarrowmenu ".png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $voxarrowcustomtexture TRUE}
+        {set $voxarrow {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/voxarrow/arrow_lead_c_" $voxarrow ".png"}})
+ (on_cancel
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
+
+(kState_RB3ESustainSel
+   (view options)
+   (enter
+   {options.lst set_selected 0}
+   {options.lst set_data (os_rb3sus os_rb4sus os_rb2sus os_nosus)})
+   (SELECT_MSG
+  {switch
+   {$component selected_sym}
+               (os_rb3sus
+                  {if {modifier_mgr is_modifier_active mod_rb2sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+                  {if {modifier_mgr is_modifier_active mod_rb4sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+                  {if {modifier_mgr is_modifier_active mod_nosustain}
+                     {modifier_mgr toggle_modifier_enabled mod_nosustain}})
+               (os_rb2sus
+                  {if {modifier_mgr is_modifier_active mod_rb4sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+                  {if {modifier_mgr is_modifier_active mod_nosustain}
+                     {modifier_mgr toggle_modifier_enabled mod_nosustain}}
+                  {unless {modifier_mgr is_modifier_active mod_rb2sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb2sustain}})
+               (os_rb4sus
+                  {if {modifier_mgr is_modifier_active mod_rb2sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+                  {if {modifier_mgr is_modifier_active mod_nosustain}
+                     {modifier_mgr toggle_modifier_enabled mod_nosustain}}
+                  {unless {modifier_mgr is_modifier_active mod_rb4sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4sustain}})
+               (os_nosus
+                  {if {modifier_mgr is_modifier_active mod_rb2sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+                  {if {modifier_mgr is_modifier_active mod_rb4sustain}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+                  {unless {modifier_mgr is_modifier_active mod_nosustain}
+                     {modifier_mgr toggle_modifier_enabled mod_nosustain}})}
+               {options.lst set_data (os_rb3sus os_rb4sus os_rb2sus os_nosus)})
+   (on_cancel
+      {$this show_state kState_RB3TextureMenu}))
+
+(kState_RB3EScreensaver
+ (view confirm_action)
+ (enter
+   {confirm_action.lst set_selected 1}
+      {handle
+         ($this set_confirm_actions screensaver_warning (overshell_continue overshell_cancel))})
  (SELECT_MSG
   {switch
    {$component selected_sym}
-   (os_on
+   (overshell_continue
    {set $screensaver FALSE}
    {unless
    {$this in_song}
    {do
     {ui goto_screen meta_loading_main_screen}
     {overshell exit}}})
-   (os_off
-   {set $screensaver TRUE}
-   {unless
-   {$this in_song}
-    {ui goto_screen meta_loading_main_screen}})
+   (overshell_cancel
+   {$this show_state kState_RB3ECameraMenu})
    })
  (on_cancel
   {$this show_state kState_RB3ECameraMenu})
@@ -2347,6 +3217,7 @@
 ;    os_setcol
 ;    os_scrsvr
     os_cam
+;    os_fx
       )}
   {if_else {== {{$this get_user} get_controller_type} kControllerRealGuitar}
   {options.lst
@@ -2371,6 +3242,7 @@
 ;    #endif
 ;    os_scrsvr
     os_cam
+;    os_fx
       )}
   {options.lst
    set_data
@@ -2395,6 +3267,7 @@
 ;    os_setcol
 ;    os_scrsvr
     os_cam
+;    os_fx
 	)}}})
  (SELECT_MSG
  {set $rb3esettingsval {$component selected_sym}}
@@ -2450,12 +3323,29 @@
 ;   (os_scrsvr
 ;    {$this show_state kState_RB3EScreensaver})
    (os_cam
-    {$this show_state kState_RB3ECameraMenu})})
+    {$this show_state kState_RB3ECameraMenu})
+   (os_fx
+    {$this show_state kState_RB3EFXMenu})})
 	(on_cancel
-      {$this show_game_options}))
+       ;restore original online_options upon exit
+	   {do
+         ($options
+            {array 0})
+            {push_back $options overshell_invite}
+            #ifdef HX_XBOX {push_back $options overshell_invite_xbox_party} #endif
+            #ifdef HX_PS3 {push_back $options overshell_check_invites} #endif
+            {push_back $options overshell_kick}
+            {push_back
+               $options
+               #ifdef HX_XBOX overshell_gamercard #else
+               overshell_mute #endif}
+            {push_back $options overshell_disconnect}
+            {online_options.lst set_data $options}}
+            {$this show_game_options}))
 (kState_RB3ESpeedMenu
    (view online_options)
    (on_cancel
+      {options.lst set_selected 1}
       {$this show_state kState_RB3ESettings})
    (enter
    {set $rb3eslider TRUE}
@@ -2474,6 +3364,7 @@
       os_venuefps
       os_trkspd
       os_sngspd
+      os_faster
    )})
   (update_view
       {handle
@@ -2516,10 +3407,17 @@
     {bg_music.sld set_showing TRUE}
     {$this set_focus bg_music.sld})
    (os_sngspd
+      {if_else {$this in_game}
+      {$this show_state kState_RB3ESpeedDenyMsg}
+      {do
       {set $songspeedslider TRUE}
       {crowd.sld store}
       {crowd.sld set_showing TRUE}
-      {$this set_focus crowd.sld})
+      {$this set_focus crowd.sld}
+      }
+      })
+   (os_faster
+      {$this show_state kState_RB3EFasterMode})
    })
 (BUTTON_DOWN_MSG
       {if_else
@@ -2557,6 +3455,124 @@
   {set $rb3eslider FALSE})
  (on_cancel
   {$this show_game_options}))
+#define FASTER_DATA
+(
+   {if_else {modifier_mgr is_modifier_active mod_fastermode} os_disable os_enable}
+   os_sngspdcap
+)
+(kState_RB3EFasterMode
+   (view options_extras)
+   (on_cancel
+      {$this show_state kState_RB3ESpeedMenu})
+   (lst_reset
+      {options_extras.lst set_data (FASTER_DATA)}
+      {if $fastermenuval
+         {options_extras.lst set_selected $fastermenuval}
+      }
+   )
+   (enter
+   {$this lst_reset}
+   {set $rb3eslider_cap TRUE}
+   {options_extras.lst set_selected $fastermenuval}
+   {bg_music.sld set_num_steps 31} ;number of steps for song speed slider
+   {bg_music.sld set_current {int {+ 0.5 {/ {- $speedmod_cap 1} 0.05}}}} ;set song speed slider based on current value
+   {speed_msg.lbl set_token_fmt {sprintf {localize speedcap_msg} {int {+ 0.5 {* $speedmod_cap 100}}}}} ;set song speed msg (or not, thanks rb3)
+   {options_extras.lst set_data 
+   (
+      FASTER_DATA
+   )})
+  (update_view
+      {handle
+         ($this
+            update_slider
+            instruments.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            bg_music.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            crowd.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            sfx.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            voice_chat.sld
+            "")})
+   (SELECT_MSG
+   {set $fastermenuval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_sngspdcap
+      {set $songspeedcapslider TRUE}
+      {bg_music.sld store}
+      {bg_music.sld set_showing TRUE}
+      {$this set_focus bg_music.sld})
+   (os_enable
+      {unless {modifier_mgr is_modifier_active mod_fastermode}
+         {modifier_mgr toggle_modifier_enabled mod_fastermode}
+         {options_extras.lst set_data (FASTER_DATA)}
+      {if $fastermenuval
+         {options_extras.lst set_selected $fastermenuval}
+      }
+      }
+   )
+   (os_disable
+      {if {modifier_mgr is_modifier_active mod_fastermode}
+         {modifier_mgr toggle_modifier_enabled mod_fastermode}
+      }
+      {options_extras.lst set_data (FASTER_DATA)}
+      {if $fastermenuval
+         {options_extras.lst set_selected $fastermenuval}
+      }
+      )
+   }
+   {$this lst_reset}
+   )
+   (BUTTON_DOWN_MSG
+      {if_else
+         {find_elem
+            ("instruments.sld"
+               "bg_music.sld"
+               "crowd.sld")
+            {$this focus_name}}
+         {switch
+            $action
+            ((kAction_Confirm kAction_Cancel)
+               {{$this
+                     find
+                     {$this focus_name}}
+                  confirm}
+               {{$this
+                     find
+                     {$this focus_name}}
+                  set_showing
+                  FALSE}
+               {if_else $fpsslider
+                  {do {$this show_state kState_VenueFPSSliderMsg} {$this set_focus confirm_action.lst}}
+               {if_else $songspeedcapslider
+                  {do {$this show_state kState_SongSpeedCapSliderMsg} {$this set_focus confirm_action.lst}}
+               {if_else $trackspeedslider
+                  {do {$this show_state kState_TrackSpeedSliderMsg} {$this set_focus confirm_action.lst}}
+                  {$this set_focus options_audio.lst}}}})
+            kDataUnhandled}
+         kDataUnhandled})
+   (SCROLL_SELECT_MSG
+      {$this on_slider_change $component $user})
+   (SCROLL_MSG
+      {$this on_slider_change $component $user})
+ (exit
+  {set $rb3eslider_cap FALSE})
+ (on_cancel
+  {$this show_game_options}))
 (kState_VenueFPSSliderMsg
    (view confirm_action)
    (enter
@@ -2565,6 +3581,91 @@
    (SELECT_MSG
       {set $fpsslider FALSE}
       {$this show_state kState_RB3ESpeedMenu}))
+(kState_RB3ESpeedDenyMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message os_speed_deny)})
+   (SELECT_MSG
+      {$this show_state kState_RB3ESpeedMenu}))
+(kState_RB3EReloadDenyMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message os_reload_deny)})
+   (SELECT_MSG
+      {$this show_state kState_RB3ECameraMenu}))
+(kState_RB3EThmResetMsg
+   (view confirm_action)
+   (enter
+      {confirm_action.lst set_selected 1}
+      {handle
+         ($this set_confirm_actions os_resetmsg (overshell_continue overshell_cancel))})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+      (overshell_continue
+         {set $animatedgems FALSE}
+         {set $emissivecustomtexture FALSE}
+         {set $emissive none}
+         {set $emissivegtrcustomtexture FALSE}
+         {set $emissivegtr none}
+         {set $emissivebasscustomtexture FALSE}
+         {set $emissivebass none}
+         {set $emissivedrumcustomtexture FALSE}
+         {set $emissivedrum none}
+         {set $emissivekeyscustomtexture FALSE}
+         {set $emissivekeys none}
+         {set $spotlightcustomtexture FALSE}
+         {set $spotlight none}
+         {set $spotlightgtrcustomtexture FALSE}
+         {set $spotlightgtr none}
+         {set $spotlightbasscustomtexture FALSE}
+         {set $spotlightbass none}
+         {set $spotlightdrumcustomtexture FALSE}
+         {set $spotlightdrum none}
+         {set $spotlightkeyscustomtexture FALSE}
+         {set $spotlightkeys none}
+         {set $highwaycustomtexture FALSE}
+         {set $highway none}
+         {set $highwaygtrcustomtexture FALSE}
+         {set $highwaygtr none}
+         {set $highwaybasscustomtexture FALSE}
+         {set $highwaybass none}
+         {set $highwaydrumcustomtexture FALSE}
+         {set $highwaydrum none}
+         {set $highwaykeyscustomtexture FALSE}
+         {set $highwaykeys none}
+         {set $crowdmetercustomtexture FALSE}
+         {set $crowdmeter none}
+         {set $multiringcustomtexture TRUE}
+         {set $multiring rb3}
+         {set $odbarcustomtexture FALSE}
+         {set $odbar none}
+         {set $railscustomtexture FALSE}
+         {set $rails none}
+         {set $scorecustomtexture FALSE}
+         {set $scoretex none}
+         {set $flamescustomtexture FALSE}
+         {set $flames none}
+         {set $smashercustomtexture FALSE}
+         {set $smasher none}
+         {set $gemcustomtexture FALSE}
+         {set $gem none}
+         {set $voxarrowcustomtexture FALSE}
+         {set $voxarrow none}
+         {set $voxhwcustomtexture FALSE}
+         {set $voxhw none}
+         {set $keyboardcustomtexture FALSE}
+         {set $keyboard none}
+         {if {modifier_mgr is_modifier_active mod_rb2sustain}
+            {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+         {if {modifier_mgr is_modifier_active mod_rb4sustain}
+            {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+         {$this show_state kState_RB3EThemeMenu})
+      (overshell_cancel
+         {$this show_state kState_RB3EThemeMenu})})
+      (on_cancel
+      {$this show_state kState_RB3EThemeMenu}))
 (kState_SongSpeedSliderMsg
    (view confirm_action)
    (enter
@@ -2573,6 +3674,14 @@
    (SELECT_MSG
       {set $songspeedslider FALSE}
       {$this show_state kState_RB3ESpeedMenu}))
+(kState_SongSpeedCapSliderMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprintf {localize os_speedcap} {int {+ 0.5 {* $speedmod_cap 100}}}})})
+   (SELECT_MSG
+      {set $songspeedcapslider FALSE}
+      {$this show_state kState_RB3EFasterMode}))
 (kState_TrackSpeedSliderMsg
    (view confirm_action)
    (enter
@@ -2591,99 +3700,523 @@
 (kState_RB3EAppearanceMenu
    (view options_audio)
    (enter
-   {options_extras.lst set_selected $rb3eappearanceval}
+   {online_options.lst set circular 0}
+   {options_audio.lst set_selected $rb3eappearanceval}
    {options_audio.lst set_data 
    (
-      os_uithm
-      os_trkthm
-      os_fcaudio
+      os_theme
       os_osthm
-	  os_fretboard
-      os_spotlight
-      os_emissive
-	  os_keyboard
-      os_gems
-      os_smashers
-	  #ifdef ANIMATION_ENABLED
-      os_animation
-      #endif
+      os_mtvpos
+      os_angle
       os_setcol
+      os_audiomenu
    )})
    (SELECT_MSG
    {set $rb3eappearanceval {$component selected_sym}}
   {switch
    {$component selected_sym}
-   (os_uithm
-      {$this show_state kState_RB3EUIThemes})
-   (os_trkthm
-      {$this show_state kState_RB3ETrackThemes})
+   (os_audiomenu
+      {$this show_state kState_RB3EAudioMenu})
+   (os_theme
+      {$this show_state kState_RB3EThemeMenu})
    (os_osthm
       {$this show_state kState_RB3EOvershellThemes})
-   (os_fretboard
-     {$this show_state kState_RB3EFretboardSelector})
-   (os_spotlight
-     {$this show_state kState_RB3ESpotlightSelector})
-   (os_emissive
-     {$this show_state kState_RB3EEmissiveSelector})
-   (os_keyboard
-     {$this show_state kState_RB3EKeyboardSelector})
-   (os_gems
-     {$this show_state kState_RB3EGemSelector})
-   (os_smashers
-     {$this show_state kState_RB3ESmasherSelector})
-   (os_animation
-     {$this show_state kState_RB3AnimationMenu})
-   (os_fcaudio
-     {$this show_state kState_RB3EFullComboSFXSelector})
+   (os_mtvpos
+      {$this show_state kState_RB3EMTVSetup})
+   (os_flames
+      {$this show_state kState_RB3ETrackThemes})
    (os_setcol
      {do {set $rb3eslider FALSE} {if_else {== {{$this get_user} get_controller_type} kControllerDrum}
      {$this show_state kState_RB3EDrumColorSelector} {if_else {== {{$this get_user} get_controller_type} kControllerKeys}
      {$this show_state kState_RB3EKeysColorWarning}
      {$this show_state kState_RB3EColorSelector}}}})
+   (os_angle
+     {$this show_state kState_RB3EAngleMenu}
+   )
    })
    (on_cancel
+      {options.lst set_selected 3}
       {$this show_state kState_RB3ESettings}))
-(kState_RB3AnimationMenu
-   (view options_extras)
+(kState_RB3EThemeMenu
+   (view options)
    (enter
-   {options_extras.lst set_data 
+   {options.lst set_selected $rb3ethemeval}
+   {options.lst set_data 
    (
-      os_animatedgem
-      os_animatedsmasher
-      os_animatedhighway
+      os_thmreset
+      os_rb3thm
+      os_rb4thm
+      os_rb2thm
+      os_settex
    )})
    (SELECT_MSG
+   {set $rb3ethemeval {$component selected_sym}}
   {switch
    {$component selected_sym}
-   (os_animatedgem
+   (os_thmreset
+      {$this show_state kState_RB3EThmResetMsg}
+   )
+   (os_rb3thm
+      {set $animatedgems FALSE}
+      {set $emissivecustomtexture FALSE}
+      {set $emissive none}
+      {set $emissivegtrcustomtexture TRUE}
+      {set $emissivegtr _guitar_track_emmissive}
+      {set $emissivebasscustomtexture TRUE}
+      {set $emissivebass _bass_track_emissive}
+      {set $emissivedrumcustomtexture TRUE}
+      {set $emissivedrum _drums_track_emissive}
+      {set $emissivekeyscustomtexture TRUE}
+      {set $emissivekeys _keys_track_emissive}
+      {set $spotlightcustomtexture FALSE}
+      {set $spotlight none}
+      {set $spotlightgtrcustomtexture TRUE}
+      {set $spotlightgtr _spotlight_guitar_track}
+      {set $spotlightbasscustomtexture TRUE}
+      {set $spotlightbass _spotlight_bass_track}
+      {set $spotlightdrumcustomtexture TRUE}
+      {set $spotlightdrum _spotlight_drums_track}
+      {set $spotlightkeyscustomtexture TRUE}
+      {set $spotlightkeys _spotlight_prokeys_track}
+      {set $highwaycustomtexture FALSE}
+      {set $highway none}
+      {set $highwaygtrcustomtexture TRUE}
+      {set $highwaygtr _rb3_guitar}
+      {set $highwaybasscustomtexture TRUE}
+      {set $highwaybass _rb3_bass}
+      {set $highwaydrumcustomtexture TRUE}
+      {set $highwaydrum _rb3_drum}
+      {set $highwaykeyscustomtexture TRUE}
+      {set $highwaykeys _rb3_keys}
+      {set $crowdmetercustomtexture TRUE}
+      {set $crowdmeter rb3}
+      {set $multiringcustomtexture TRUE}
+      {set $multiring rb3}
+      {set $odbarcustomtexture TRUE}
+      {set $odbar rb3}
+      {set $railscustomtexture TRUE}
+      {set $rails rb3}
+      {set $scorecustomtexture TRUE}
+      {set $scoretex rb3}
+      {set $flamescustomtexture TRUE}
+      {set $flames rb3}
+      {set $smashercustomtexture TRUE}
+      {set $smasher rb3}
+      {set $gemcustomtexture TRUE}
+      {set $gem rb3}
+      {set $voxarrowcustomtexture TRUE}
+      {set $voxarrow rb3}
+      {set $voxhwcustomtexture TRUE}
+      {set $voxhw rb3}
+   ;   {set $keyboardcustomtexture TRUE}
+   ;   {set $keyboard none}
+      {if {modifier_mgr is_modifier_active mod_rb2sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+      {if {modifier_mgr is_modifier_active mod_rb4sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+   )
+   (os_rb4thm
+      {set $emissivecustomtexture TRUE}
+      {set $emissive rb4_guitar}
+      {set $emissivegtrcustomtexture FALSE}
+      {set $emissivegtr none}
+      {set $emissivebasscustomtexture FALSE}
+      {set $emissivebass none}
+      {set $emissivedrumcustomtexture FALSE}
+      {set $emissivedrum none}
+      {set $emissivekeyscustomtexture FALSE}
+      {set $emissivekeys none}
+      {set $spotlightcustomtexture TRUE}
+      {set $spotlight spotlight_rb4_rivals}
+      {set $spotlightgtrcustomtexture FALSE}
+      {set $spotlightgtr none}
+      {set $spotlightbasscustomtexture FALSE}
+      {set $spotlightbass none}
+      {set $spotlightdrumcustomtexture FALSE}
+      {set $spotlightdrum none}
+      {set $spotlightkeyscustomtexture FALSE}
+      {set $spotlightkeys none}
+      {set $highwaycustomtexture TRUE}
+      {set $highway rb4_black_rivals}
+      {set $highwaygtrcustomtexture FALSE}
+      {set $highwaygtr none}
+      {set $highwaybasscustomtexture FALSE}
+      {set $highwaybass none}
+      {set $highwaydrumcustomtexture FALSE}
+      {set $highwaydrum none}
+      {set $highwaykeyscustomtexture FALSE}
+      {set $highwaykeys none}
+      {set $crowdmetercustomtexture TRUE}
+      {set $crowdmeter rb4}
+      {set $multiringcustomtexture TRUE}
+      {set $multiring rb4}
+      {set $odbarcustomtexture TRUE}
+      {set $odbar rb4}
+      {set $railscustomtexture TRUE}
+      {set $rails rb4}
+      {set $scorecustomtexture TRUE}
+      {set $scoretex rb4}
+      {set $flamescustomtexture TRUE}
+      {set $flames rb4}
+      {set $smashercustomtexture TRUE}
+      {set $smasher rb4}
+      {set $gemcustomtexture TRUE}
+      {set $gem rb4}
+      {set $voxarrowcustomtexture TRUE}
+      {set $voxarrow rb4}
+      {set $voxhwcustomtexture TRUE}
+      {set $voxhw rb4}
+      {set $animatedgems TRUE}
+      {set $animatedgemscustomtexture TRUE}
+      {set $animatedgemname rb4}
+   ;   {set $keyboardcustomtexture TRUE}
+   ;   {set $keyboard none}
+      {if {modifier_mgr is_modifier_active mod_rb2sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+      {unless {modifier_mgr is_modifier_active mod_rb4sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+   )
+   (os_rb2thm
+      {set $animatedgems FALSE}
+      {set $emissivecustomtexture FALSE}
+      {set $emissive none}
+      {set $emissivegtrcustomtexture TRUE}
+      {set $emissivegtr rb2_guitar_yellow}
+      {set $emissivebasscustomtexture TRUE}
+      {set $emissivebass rb2_bass_yellow}
+      {set $emissivedrumcustomtexture TRUE}
+      {set $emissivedrum rb2_drums_yellow}
+      {set $emissivekeyscustomtexture TRUE}
+      {set $emissivekeys none}
+      {set $spotlightcustomtexture TRUE}
+      {set $spotlight rb2_bass_superstreak}
+      {set $spotlightgtrcustomtexture FALSE}
+      {set $spotlightgtr none}
+      {set $spotlightbasscustomtexture FALSE}
+      {set $spotlightbass none}
+      {set $spotlightdrumcustomtexture FALSE}
+      {set $spotlightdrum none}
+      {set $spotlightkeyscustomtexture FALSE}
+      {set $spotlightkeys none}
+      {set $highwaycustomtexture TRUE}
+      {set $highway _black_highway}
+      {set $highwaygtrcustomtexture FALSE}
+      {set $highwaygtr none}
+      {set $highwaybasscustomtexture FALSE}
+      {set $highwaybass none}
+      {set $highwaydrumcustomtexture FALSE}
+      {set $highwaydrum none}
+      {set $highwaykeyscustomtexture FALSE}
+      {set $highwaykeys none}
+      {set $crowdmetercustomtexture TRUE}
+      {set $crowdmeter rb2}
+      {set $multiringcustomtexture TRUE}
+      {set $multiring rb2}
+      {set $odbarcustomtexture TRUE}
+      {set $odbar rb2}
+      {set $railscustomtexture TRUE}
+      {set $rails rb3}
+      {set $scorecustomtexture TRUE}
+      {set $scoretex rb2}
+      {set $flamescustomtexture TRUE}
+      {set $flames rb2}
+      {set $smashercustomtexture TRUE}
+      {set $smasher rb2}
+      {set $gemcustomtexture TRUE}
+      {set $gem rb3}
+      {set $voxarrowcustomtexture TRUE}
+      {set $voxarrow gdrb}
+      {set $voxhwcustomtexture TRUE}
+      {set $voxhw rb3}
+   ;   {set $keyboardcustomtexture TRUE}
+   ;   {set $keyboard none}
+      {if {modifier_mgr is_modifier_active mod_rb4sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
+      {unless {modifier_mgr is_modifier_active mod_rb2sustain}
+         {modifier_mgr toggle_modifier_enabled mod_rb2sustain}}
+   )
+   (os_settex
+     {$this show_state kState_RB3TextureMenu}
+   )
+   })
+   (on_cancel
+      {options_audio.lst set_selected 0}
+      {$this show_state kState_RB3EAppearanceMenu})
+   (exit {options_audio.lst set_selected 0}))
+(kState_RB3TextureMenu
+   (view options_audio)
+   (enter
+   {options_extras.lst set_selected $rb3texval}
+   {options_audio.lst set_data 
+   (
+      os_fretboard
+      os_spotlight
+      os_emissive
+      os_gems
+      os_smashers
+      os_flames
+      os_sus
+      os_score
+      os_crowdmeter
+      os_rails
+      os_odbar
+      os_multiring
+      os_keyboard
+      os_voxhw
+      os_voxarrow
+      os_animation
+   )})
+   (SELECT_MSG
+   {set $rb3texval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_fretboard
+     {$this show_state kState_RB3EInstHW})
+   (os_spotlight
+     {$this show_state kState_RB3EInstStrk})
+   (os_emissive
+     {$this show_state kState_RB3EInstOD})
+   (os_gems
+     {$this show_state kState_RB3EGemSelector})
+   (os_smashers
+     {$this show_state kState_RB3ESmasherSelector})
+   (os_flames
+     {$this show_state kState_RB3EFlamesSelector})
+   (os_sus 
+     {$this show_state kState_RB3ESustainSel})
+   (os_score
+     {$this show_state kState_RB3EScoreSelector})
+   (os_rails
+     {$this show_state kState_RB3ERailsSelector})
+   (os_odbar
+     {$this show_state kState_RB3EODbarSelector})
+   (os_multiring
+     {$this show_state kState_RB3EMultiRingSelector})
+   (os_crowdmeter
+     {$this show_state kState_RB3ECrowdMeterSelector})
+   (os_keyboard
+     {$this show_state kState_RB3EKeyboardSelector})
+   (os_voxhw
+     {$this show_state kState_RB3EVoxHWSelector})
+   (os_voxarrow
+     {$this show_state kState_RB3EVoxArrowSelector})
+   (os_animation
      {$this show_state kState_RB3EAnimatedGemSelector})
-   (os_animatedsmasher
-     {$this show_state kState_RB3EAnimatedSmasherSelector})
-   (os_animatedhighway
-     {$this show_state kState_RB3EAnimatedHighwaySelector})
+   })
+   (on_cancel
+      {options.lst set_selected 4}
+      {$this show_state kState_RB3EThemeMenu})
+   (exit {options.lst set_selected 4}))
+(kState_RB3EAudioMenu
+   (view options_end_game)
+   (enter
+   {options_end_game.lst set_selected $rb3audval}
+   {options_end_game.lst set_data
+      (os_fcaudio os_cyclefx)})
+   (SELECT_MSG
+      {set $rb3audval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_cyclefx
+      {cycle_guitar_fx})
+   (os_fcaudio
+      {$this show_state kState_RB3EFullComboSFXSelector})
    })
    (on_cancel
       {$this show_state kState_RB3EAppearanceMenu}))
-(kState_RB3ECameraMenu
+(kState_RB3EAngleMenu
    (view options_extras)
    (enter
-   {options_extras.lst set_data 
+      {set $anglesld TRUE}
+      {options_extras.lst set_selected $rb3eangleval}
+      {options_extras.lst set_data (os_noang os_angmult)}
+      {bg_music.sld set_num_steps 16} ;number of steps for track angle slider
+      {bg_music.sld set_current {int {/ {- $multiangle 1} {/ 3 15}}}}
+   )
+   (update_view
+      {handle
+         ($this
+            update_slider
+            bg_music.sld
+            "")})
+   (SELECT_MSG
+   {set $rb3eangleval {$component selected_sym}}
+   {switch
+   {$component selected_sym}
+   (os_noang
+      {set $forcemultiangle FALSE}
+      {set $multiangle 1}
+   )
+   (os_angmult
+      {set $forcemultiangle TRUE}
+      {bg_music.sld store}
+      {bg_music.sld set_showing TRUE}
+      {$this set_focus bg_music.sld}
+   )
+   (os_p1
+      {set $forcemultiangle TRUE}
+      {set $multiangle 1}
+   )
+   (os_p2
+      {set $forcemultiangle TRUE}
+      {set $multiangle 2}
+   )
+   (os_p3
+      {set $forcemultiangle TRUE}
+      {set $multiangle 3}
+   )
+   (os_p4
+      {set $forcemultiangle TRUE}
+      {set $multiangle 4}
+   )})
+   (BUTTON_DOWN_MSG
+      {if_else
+         {find_elem
+            ("instruments.sld"
+               "bg_music.sld"
+               "crowd.sld")
+            {$this focus_name}}
+         {switch
+            $action
+            ((kAction_Confirm kAction_Cancel)
+               {{$this
+                     find
+                     {$this focus_name}}
+                  confirm}
+               {{$this
+                     find
+                     {$this focus_name}}
+                  set_showing
+                  FALSE}
+                  {do {$this show_state kState_TrackAngleSliderMsg} {$this set_focus confirm_action.lst}})
+            kDataUnhandled}
+         kDataUnhandled})
+   (SCROLL_SELECT_MSG
+      {$this on_slider_change $component $user})
+   (SCROLL_MSG
+      {$this on_slider_change $component $user})
+   (on_cancel
+      {set $anglesld FALSE}
+      {$this show_state kState_RB3EAppearanceMenu}))
+(kState_TrackAngleSliderMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message
+         {switch $multiangle 
+            (1 {sprintf {localize os_angleset1} {int {+ {* -16.66 $multiangle} 116.66}}})
+            (2 {sprintf {localize os_angleset2} {int {+ {* -16.66 $multiangle} 116.66}}})
+            (3 {sprintf {localize os_angleset3} {int {+ {* -16.66 $multiangle} 116.66}}})
+            (4 {sprintf {localize os_angleset4} {int {+ {* -16.66 $multiangle} 116.66}}})
+            {sprintf {localize os_angleset} {int {+ {* -16.66 $multiangle} 116.66}}}
+         }
+         )
+      }
+   )
+   (SELECT_MSG
+      {$this show_state kState_RB3EAngleMenu}))
+(kState_RB3ECameraMenu
+   (view online_options)
+   (enter
+   {online_options.lst set_selected $rb3camval}
+   {options_audio.lst set circular 0}
+   {online_options.lst set_data 
    (
+      os_menubg
       overshell_freecam
       overshell_postproc
+      os_reload
       os_scrsvr
    )})
    (SELECT_MSG
+      {set $rb3camval {$component selected_sym}}
   {switch
    {$component selected_sym}
+   (os_menubg
+      {$this show_state kState_RB3EMenuBG})
    (overshell_freecam
       {if {&& {$this in_song} {modifier_mgr is_modifier_active mod_auto_play}} {cycle_free_camera}})
    (overshell_postproc
       {rnd toggle_all_postprocs})
+   (os_reload
+      {if_else {$this in_game}
+      {$this show_state kState_RB3EReloadDenyMsg}
+      {ui goto_screen meta_loading_main_screen}})
    (os_scrsvr
       {$this show_state kState_RB3EScreensaver})
    })
    (on_cancel
+      {options.lst set_selected 4}
+      {$this show_state kState_RB3ESettings}))
+(kState_RB3EMenuBG
+   (view options)
+   (enter
+   {options.lst set_selected $rb3bgval}
+   {options.lst set_data
+      (os_bg8 os_bg3 os_bg4 os_bg5 os_bg2)})
+   (SELECT_MSG
+      {set $rb3bgval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_bg8
+      {set $svnumber 8}
+      {$this show_state kState_RB3EMenuBGWarn})
+   (os_bg3
+      {set $svnumber 3}
+      {$this show_state kState_RB3EMenuBGWarn})
+   (os_bg2
+      {set $svnumber 2}
+      {$this show_state kState_RB3EMenuBGWarn})
+   (os_bg4
+      {set $svnumber 4}
+      {$this show_state kState_RB3EMenuBGWarn})
+   (os_bg5
+      {set $svnumber 5}
+      {$this show_state kState_RB3EMenuBGWarn})
+   })
+   (on_cancel
+      {$this show_state kState_RB3ECameraMenu}))
+(kState_RB3EMenuBGWarn
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprintf {localize os_bgwarn}})})
+   (SELECT_MSG
+      {set $fpsslider FALSE}
+      {$this show_state kState_RB3EMenuBG}))
+(kState_RB3EFXMenu
+   (view online_options)
+   (enter
+   {online_options.lst set_selected $rb3fxval}
+   {online_options.lst set_data
+      (os_cyclefx os_fx0 os_fx1 os_fx2 os_fx3 os_fx4 os_fx5)})
+   (SELECT_MSG
+      {set $rb3fxval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_cyclefx
+      {cycle_guitar_fx})
+   (os_fx0
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 0})
+   (os_fx1
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 1})
+   (os_fx2
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 2})
+   (os_fx3
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 3})
+   (os_fx4
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 4})
+   (os_fx5
+      {cycle_guitar_fx}
+      {set $test_guitar_fx 5})
+   })
+   (on_cancel
+      {options.lst set_selected 5}
       {$this show_state kState_RB3ESettings}))
 (kState_RB3EUIThemes
    (view options_end_game)
@@ -2706,22 +4239,14 @@
    (on_cancel
       {$this show_state kState_RB3EAppearanceMenu}))
 (kState_RB3ETrackThemes
-   (view options)
+   (view options_extras)
    (enter
-   {options.lst set_selected 0}
-   {options.lst set_data
-      (mod_rb4trk mod_rb2trk mod_noflames mod_noflares mod_nopart)})
+   {options_extras.lst set_selected 0}
+   {options_extras.lst set_data
+      (mod_noflames mod_noflares mod_nopart)})
    (SELECT_MSG
   {switch
    {$component selected_sym}
-   (mod_rb4trk
-      {modifier_mgr toggle_modifier_enabled mod_rb4trk}
-      {set $rb4trkcustomtexture TRUE}
-      {overshell update_all})
-   (mod_rb2trk
-      {modifier_mgr toggle_modifier_enabled mod_rb2trk}
-      {set $rb2trkcustomtexture TRUE}
-      {overshell update_all})
    (mod_noflames
       {modifier_mgr toggle_modifier_enabled mod_noflames}
       {set $rb2trkcustomtexture TRUE}
@@ -2740,21 +4265,24 @@
       {overshell update_all})
    })
    (on_cancel
-      {$this show_state kState_RB3EAppearanceMenu})
-   (exit
-   {options.lst set_selected 3}))
+      {$this show_state kState_RB3EAppearanceMenu}))
 (kState_RB3EOvershellThemes
    (view options)
    (enter
    {options.lst set_selected 0}
-   {options.lst set_data (mod_rb4os mod_ps3os mod_xboxos mod_wiios)})
+   {options.lst set_data (os_rb3os mod_rb4os mod_ps3os mod_xboxos mod_wiios)})
    (SELECT_MSG
   {switch
    {$component selected_sym}
+               (os_rb3os
+                  {if {modifier_mgr is_modifier_active mod_rb4os}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4os}
+                     {$this show_state kState_RB3EOSResetWarn}})
                (mod_rb4os
-                  {modifier_mgr toggle_modifier_enabled mod_rb4os}
-                  OVERSHELL_RB4OS
-                  {overshell update_all})
+                  {unless {modifier_mgr is_modifier_active mod_rb4os}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4os}
+                     OVERSHELL_RB4OS
+                     {overshell update_all}})
                (mod_xboxos
                   {modifier_mgr toggle_modifier_enabled mod_xboxos}
                   {if {modifier_mgr is_modifier_active mod_ps3os}
@@ -2779,11 +4307,19 @@
                      {modifier_mgr toggle_modifier_enabled mod_xboxos}}
                   {overshell exit}
                   {overshell enter})}
-               {options.lst set_data (mod_rb4os mod_ps3os mod_xboxos mod_wiios)})
+               {options.lst set_data (os_rb3os mod_rb4os mod_ps3os mod_xboxos mod_wiios)})
    (on_cancel
       {$this show_state kState_RB3EAppearanceMenu})
    (exit
-   {options.lst set_selected 3}))
+   {options_audio.lst set_selected 1}))
+(kState_RB3EOSResetWarn
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprintf {localize os_bgwarn}})})
+   (SELECT_MSG
+      {set $fpsslider FALSE}
+      {$this show_state kState_RB3EOvershellThemes}))
 (kState_RB3EVenueSelector
  (view options_audio)
  (enter
@@ -2807,7 +4343,7 @@
       {switch
          {$component selected_sym}
          (random
-            {set $force FALSE} {ui goto_screen meta_loading_main_screen})
+            {set $force FALSE} {set $venue VENUES} {ui goto_screen meta_loading_main_screen})
 		 (none
             {set $force TRUE} {set $venue BLACK_VENUE} {ui goto_screen meta_loading_main_screen})}
       {$this show_state kState_RB3ESettings} {ui pop_screen})
@@ -2815,6 +4351,7 @@
   {options_audio.lst set circular 0}
   {options_audio.lst set_selected 0})
  (on_cancel
+  {options.lst set_selected 2}
   {$this show_state kState_RB3ESettings}))
 (kState_SaveloadManagerNotIdle
    (view confirm_action)
@@ -2968,6 +4505,7 @@
 (kState_AutoPlayWarn
    (view confirm_action)
    (enter
+      {confirm_action.lst set_selected 1}
       {handle
          ($this set_confirm_actions autoplay_warning (overshell_continue overshell_cancel))})
    (SELECT_MSG
@@ -3116,6 +4654,11 @@
    (overshell_guitar
     overshell_bass
     overshell_keys)}}
+      {if {== {{$this get_user} get_controller_type} kControllerDrum}
+  {choose_part.lst
+   set_data
+   (overshell_drums
+    overshell_drums_pro)}}
       {if {== {{$this get_user} get_controller_type} kControllerVocals}
   {choose_part.lst
    set_data

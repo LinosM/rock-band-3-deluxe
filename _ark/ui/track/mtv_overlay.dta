@@ -21,6 +21,7 @@
                      {exists fade.anim}
                      {fade.anim animate}})))
          (enter
+            {$this set_pos}
             {if
                {exists game}
                {game
@@ -33,6 +34,9 @@
                {if_else {modifier_mgr is_modifier_active mod_songtitle}
 			   {fade.anim set_frame 50}
 			   {fade.anim set_frame 0}}}})
+         (set_pos
+            {Group.grp set_local_pos $mtvpos_0 $mtvpos_1 $mtvpos_2}
+         )
          (exit
             {if
                {exists game}
@@ -105,9 +109,12 @@
                                  {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\nCH MODE"}}
                                  {if_else {modifier_mgr is_modifier_active mod_auto_play}
                                     {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\nAUTOPLAY"}}
-                                    {if_else {!= $speedmod 1.0}
-                                       {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)"}}
-                                       {song.lbl set_song_name $short_name}
+                                    {if_else {modifier_mgr is_modifier_active mod_fastermode}
+                                       {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\n" {localize mod_fastermode} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)"}}
+                                       {if_else {!= $speedmod 1.0}
+                                          {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)"}}
+                                          {song.lbl set_song_name $short_name}
+                                       }
                                     }
                                  }
                               }
