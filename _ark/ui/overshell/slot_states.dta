@@ -1116,7 +1116,11 @@
             {$this select_part kTrackBass})
          (overshell_drums
             {$this select_part kTrackDrum})
-			(overshell_vocal_solo
+         (overshell_vocal_solo
+			{do
+               {$this select_part kTrackVocals}
+			   {$this select_vocal_part FALSE}})
+         (overshell_vocal_harmony
 			{do
                {$this select_part kTrackVocals}
 			   {$this select_vocal_part TRUE}})
