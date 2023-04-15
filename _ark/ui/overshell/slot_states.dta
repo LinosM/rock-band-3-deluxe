@@ -1061,6 +1061,7 @@
 				overshell_bass
 				overshell_drums
 				overshell_vocal_solo
+				overshell_vocal_harmony
                 #ifdef HX_XBOX
                 overshell_audition
                 #endif)})
@@ -1117,13 +1118,13 @@
          (overshell_drums
             {$this select_part kTrackDrum})
          (overshell_vocal_solo
-			{do
+            {do
                {$this select_part kTrackVocals}
 			   {$this select_vocal_part FALSE}})
          (overshell_vocal_harmony
-			{do
+            {do
                {$this select_part kTrackVocals}
-			   {$this select_vocal_part TRUE}})
+               {$this select_vocal_part TRUE}})
 	  })
    (on_cancel
       {$this show_game_options}))
