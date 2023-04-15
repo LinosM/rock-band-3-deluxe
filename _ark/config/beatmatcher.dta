@@ -97,7 +97,7 @@
          750
          {if_else {<= $speedmod 1.0}
             {if_else {modifier_mgr is_modifier_active mod_calibration}
-               5 
+               10 
 			   100 ;if 100% or less, use stock 100ms window (which is proportional)
                {if_else {modifier_mgr is_modifier_active mod_precision}
                   100 ;if precision modifier on and speedup, use stock 100ms window (which is proportional)
