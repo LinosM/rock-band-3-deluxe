@@ -66,6 +66,9 @@
             (gem_texture
                (gem_texture $gem)
             )
+            (sustain_texture
+               (sustain_texture $sustain)
+            )
             (smasher_texture
                (smasher_texture $smasher)
             )
@@ -227,6 +230,9 @@
             )
             (mod_fcclip
                (mod_fcclip {if_else {modifier_mgr is_modifier_active mod_fcclip} TRUE FALSE})
+            )
+            (mod_nojurgen
+               (mod_nojurgen {if_else {modifier_mgr is_modifier_active mod_nojurgen} TRUE FALSE})
             )
          )
       }
