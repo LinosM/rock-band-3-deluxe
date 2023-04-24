@@ -391,10 +391,6 @@
 #endif
 (calibration_skip
    "Continue")
-(music_store
-   "Tweaks")
-(dlc_store "Set Speeds")
-(redeem_code "Set Venue FPS")
 (message_motd "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
 (message_motd_signin "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
 (message_motd_noconnection "Rock Band 3 Deluxe devbuild Loaded! Thanks for playing!")
@@ -1043,6 +1039,7 @@
 (mod_doublespeed_1.25x
    "breakneck speed 1.25x")
 (mod_doublespeed "breakneck speed")
+(mod_synced_track_speeds "Synced Track Speeds")
 (mod_stopcrashing "Disable Custom Textures")
 (os_rb3os "Rock Band 3")
 (mod_rb4os "Rock Band 4")
