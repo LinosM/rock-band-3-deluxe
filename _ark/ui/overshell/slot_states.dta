@@ -1113,9 +1113,9 @@
             #else
             {$this leave_options}
             #endif)
-			(overshell_keys
+         (overshell_keys
             {$this select_part kTrackKeys})
-			(overshell_real_keys
+         (overshell_real_keys
             {$this select_part kTrackRealKeys})
          (overshell_guitar
             {$this select_part kTrackGuitar})
