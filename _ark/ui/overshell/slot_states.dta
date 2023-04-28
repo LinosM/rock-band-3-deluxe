@@ -4777,7 +4777,8 @@
     overshell_bass
     overshell_keys
 	overshell_vocal_solo
-    overshell_vocal_harmony)}}
+    overshell_vocal_harmony)}
+   {choose_part.lst set_selected $default_guitar}}
       {if {== {{$this get_user} get_controller_type} kControllerVocals}
   {choose_part.lst
    set_data
@@ -4791,7 +4792,8 @@
 	overshell_real_bass
     overshell_drums
 	overshell_drums_pro
-	)}}
+	)}
+   {choose_part.lst set_selected $default_vocals}}
 	{if {== {{$this get_user} get_controller_type} kControllerDrum}
   {choose_part.lst
    set_data
@@ -4805,7 +4807,8 @@
 	overshell_real_bass
 	overshell_vocal_solo
     overshell_vocal_harmony
-	)}}
+	)}
+   {choose_part.lst set_selected $default_drum}}
 	{if {== {{$this get_user} get_controller_type} kControllerKeys}
   {choose_part.lst
    set_data
@@ -4819,9 +4822,28 @@
 	overshell_real_bass
 	overshell_vocal_solo
     overshell_vocal_harmony
-	)}}
+	)}
+   {choose_part.lst set_selected $default_keys}}
+      {if {== {{$this get_user} get_controller_type} kControllerRealGuitar}
+  {choose_part.lst
+   set_data
+   (overshell_real_guitar
+    overshell_real_bass
+    overshell_guitar
+    overshell_bass)}
+   {choose_part.lst set_selected $default_real_guitar}}
     )
    (SELECT_MSG
+      {switch
+         {{$this get_user}
+            get_controller_type}
+         (kControllerGuitar {set $default_guitar {$component selected_sym}})
+         (kControllerRealGuitar {set $default_real_guitar {$component selected_sym}})
+         (kControllerVocals {set $default_vocals {$component selected_sym}})
+         (kControllerKeys {set $default_keys {$component selected_sym}})
+         (kControllerDrum {set $default_drum {$component selected_sym}})
+         {fail
+            "No choose part view for this controller type"}}
       {switch
          {$component selected_sym}
          (overshell_guitar
