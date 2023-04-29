@@ -4770,7 +4770,7 @@
       {choose_part.lst set_selected $focus_item})
    (enter
       {$this update_part_select_list}
-  {if {== {{$this get_user} get_controller_type} kControllerGuitar}
+      {if {== {{$this get_user} get_controller_type} kControllerGuitar}
   {choose_part.lst
    set_data
    (overshell_guitar
