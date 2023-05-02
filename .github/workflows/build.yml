@@ -25,9 +25,6 @@ jobs:
           chmod +x dependencies/linux/superfreq
           pip install gitpython
           pip install mido
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove rb3_plus keys
         run: |
           python dependencies/dev_scripts/remove_rb3_plus_keys.py
@@ -70,9 +67,6 @@ jobs:
           chmod +x dependencies/linux/superfreq
           pip install gitpython
           pip install mido
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove rb3_plus keys
         run: |
           python dependencies/dev_scripts/remove_rb3_plus_keys.py
@@ -117,9 +111,6 @@ jobs:
       - name: fetch TrueAncestor PKG Repacker
         run: |
           python dependencies/dev_scripts/download_ta_pkg_repacker.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Add rb3_plus keys into the patch ark
         run: |
           python dependencies/dev_scripts/add_rb3_plus_keys.py
