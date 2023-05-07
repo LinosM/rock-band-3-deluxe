@@ -5,7 +5,6 @@ rb3_plus
 rbdx_animated_textures
 main_xbox
 project_files
-animated_smashers
 animated_surfaces
 ta_pkg_repacker_tools
 magick
@@ -44,6 +43,8 @@ dx-settings-loader.xex
 dxsl_xbox.hdr
 dxsl_xbox_0.ark
 dx.dta
+mod.dta
+val.dta
 
 RB3Enhanced-master.zip
 RB3Enhanced_0.6-Xbox.zip

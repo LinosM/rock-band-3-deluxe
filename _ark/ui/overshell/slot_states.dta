@@ -817,6 +817,8 @@
 (kState_OptionsAudio
    (view options_audio)
    (on_cancel
+      {unless $dontsavemod
+         {do INIT_MOD_WRITER}}
       {$this show_options_av_settings})
    (lst_reset
       {options_audio.lst set_data (AUDIO_DATA)}
@@ -935,6 +937,7 @@
 (kState_OptionsVocal
    (view options_vocal)
    (on_cancel
+      {do INIT_VAL_WRITER}
       {$this show_game_options})
    (enter
       {vocal_track.sld set_num_steps 12}
@@ -1516,13 +1519,14 @@
       {$this show_state kState_RB3EMTVXYZ})
    })
    (on_cancel
+      {options_audio.lst set_selected 0}
       {$this show_state kState_RB3EAppearanceMenu}))
 
 (kState_RB3EMTVXYZ
-   (view options)
+   (view options_audio)
    (enter
-   {options.lst set_selected $rb3emtvval}
-   {options.lst set_data 
+   {options_audio.lst set_selected $rb3emtvval}
+   {options_audio.lst set_data 
    (
       os_100
       os_50
@@ -1535,7 +1539,8 @@
       os_minus25
       os_minus50
       os_minus100
-   )})
+   )
+   {options_audio.lst set scroll_time 0}})
    (SELECT_MSG
    {set $rb3emtvval {$component selected_sym}}
   {switch
@@ -1621,6 +1626,7 @@
    {{{gamemode get track_panel} find mtv_overlay} set_pos}
    )
    (on_cancel
+      {options_audio.lst set scroll_time 0.25}
       {$this show_state kState_RB3EMTVSetup}))
 
 (kState_RB3ESpotlightSelectorAll
@@ -2033,6 +2039,9 @@
          {set $animatedgems TRUE}
          {set $animatedgemscustomtexture TRUE}
          {set $animatedgemname rb4}
+         {set $animatedsmashers FALSE}
+         {set $animatedsmasherscustomtexture FALSE}
+         {set $animatedsmashername none}
       ;   {set $keyboardcustomtexture TRUE}
       ;   {set $keyboard none}
          {if {modifier_mgr is_modifier_active mod_nosustain}
@@ -2062,11 +2071,26 @@
       (on_cancel
       {$this show_state kState_RB3TextureMenu}))
 
+(kState_RB3EAnimatedSmasherWarn
+   (view confirm_action)
+   (enter
+      {confirm_action.lst set_selected 1}
+      {handle
+         ($this set_confirm_actions os_animsmshmsg (overshell_continue overshell_cancel))})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+      (overshell_continue
+         {$this show_state kState_RB3EAnimatedSmasherSelector})
+      (overshell_cancel
+         {$this show_state kState_RB3TextureMenu})})
+      (on_cancel
+      {$this show_state kState_RB3TextureMenu}))
+
 (kState_RB3EAnimatedGemSelector
  (view online_options)
  (enter
     {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $animatedgemmenu}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2095,34 +2119,38 @@
   {choose_character.mesh set_local_pos_index 2 300}
   {online_options.grp remove_object choose_character.mesh}))
   
-;(kState_RB3EAnimatedSmasherSelector
-; (view online_options)
-; (enter
-;    {online_options.lst set circular 1}
-;    {online_options.lst set_selected $animatedsmashermenu}
-;    {online_options.grp add_object choose_character.mesh}
-;    {choose_character.mesh set_local_pos_index 2 175}
-;    {choose_character.mesh set_local_scale_index 0 0.2}
-;    {choose_character.mesh set_local_scale_index 2 0.4}
-;    {choose_character.mat set diffuse_tex choose_character.tex}
-;    {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_shiny/gem_smasher_guitar_shiny_0.png"}}
-;    {online_options.lst set_data ("shiny" "starlight")}
-; )
-;   (SCROLL_MSG
-;      {set $animatedsmashermenu {$component selected_sym}}
-;      {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashermenu "/gem_smasher_guitar_" $animatedsmashermenu "_0.png"}}
-;      {$this update})
-;   (SELECT_MSG
-;        {set $animatedsmashers TRUE}
-;        {set $animatedsmasherscustomtexture TRUE}
-;        {set $animatedsmashername {$component selected_sym}}
-;        {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashername "/gem_smasher_guitar_" $animatedsmashername "_0.png"}})
-; (on_cancel
-;  {$this show_state kState_RB3AnimationMenu}
-;  {choose_character.mesh set_local_scale_index 0 0.5}
-;  {choose_character.mesh set_local_scale_index 2 1}
-;  {choose_character.mesh set_local_pos_index 2 300}
-;  {online_options.grp remove_object choose_character.mesh}))
+(kState_RB3EAnimatedSmasherSelector
+ (view online_options)
+ (enter
+    {online_options.lst set scroll_time 0}
+    {online_options.lst set circular 0}
+    {online_options.lst set_selected $animatedsmashermenu}
+    {online_options.grp add_object choose_character.mesh}
+    {choose_character.mesh set_local_pos_index 2 175}
+    {choose_character.mesh set_local_scale_index 0 0.2}
+    {choose_character.mesh set_local_scale_index 2 0.4}
+    {choose_character.mat set diffuse_tex choose_character.tex}
+    {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_shiny/gem_smasher_guitar_shiny_0.png"}}
+    {online_options.lst set_data ("shiny" "starlight")}
+ )
+   (SCROLL_MSG
+      {set $animatedsmashermenu {$component selected_sym}}
+      {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashermenu "/gem_smasher_guitar_" $animatedsmashermenu "_0.png"}}
+      {$this update})
+   (SELECT_MSG
+        {set $smashercustomtexture TRUE}
+        {set $smasher rb4legacy}
+        {set $animatedsmashers TRUE}
+        {set $animatedsmasherscustomtexture TRUE}
+        {set $animatedsmashername {$component selected_sym}}
+        {choose_character.tex set_bitmap {sprint "ui/track/animated_smashers/gem_smasher_guitar_" $animatedsmashername "/gem_smasher_guitar_" $animatedsmashername "_0.png"}})
+ (on_cancel
+  {online_options.lst set scroll_time 0.25}
+  {$this show_state kState_RB3TextureMenu}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {online_options.grp remove_object choose_character.mesh}))
 
 ;(kState_RB3EAnimatedHighwaySelector
 ; (view online_options)
@@ -2157,7 +2185,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $smasher}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2174,6 +2202,8 @@
    (SELECT_MSG
         {set $smashercustomtexture TRUE}
         {set $smasher {$component selected_sym}}
+        {set $animatedsmashers FALSE}
+        {set $animatedsmasherscustomtexture FALSE}
         {choose_character.tex set_bitmap {sprint "ui/track/smashers/gem_smashers_guitar_" $smasher ".png"}})
  (on_cancel
   {online_options.lst set scroll_time 0.25}
@@ -2187,7 +2217,7 @@
  (view online_options)
  (enter
     {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $flames}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2217,7 +2247,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $scoretex}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2247,7 +2277,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $rails}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2277,7 +2307,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $odbar}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2307,7 +2337,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $multiring}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2337,7 +2367,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $crowdmeter}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2367,7 +2397,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $gemmenu}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2430,7 +2460,7 @@
  (view online_options)
  (enter
    {online_options.lst set scroll_time 0}
-    {online_options.lst set circular 1}
+    {online_options.lst set circular 0}
     {online_options.lst set_selected $voxhw}
     {online_options.grp add_object choose_character.mesh}
     {choose_character.mesh set_local_pos_index 2 175}
@@ -2490,7 +2520,7 @@
    (view options)
    (enter
    {options.lst set_selected 0}
-   {options.lst set_data (os_rb3sus os_rb4sus os_rb2sus os_nosus)})
+   {options.lst set_data (os_nosus os_rb2sus os_rb3sus os_rb4sus)})
    (SELECT_MSG
   {switch
    {$component selected_sym}
@@ -2528,7 +2558,7 @@
                      {modifier_mgr toggle_modifier_enabled mod_rb4sustain}}
                   {unless {modifier_mgr is_modifier_active mod_nosustain}
                      {modifier_mgr toggle_modifier_enabled mod_nosustain}})}
-               {options.lst set_data (os_rb3sus os_rb4sus os_rb2sus os_nosus)})
+               {options.lst set_data (os_nosus os_rb2sus os_rb3sus os_rb4sus)})
    (on_cancel
       {$this show_state kState_RB3TextureMenu}))
 
@@ -3379,145 +3409,47 @@
  (enter
  {options.lst set_selected $rb3esettingsval}
  {online_options.lst set circular 0}
-;  {set $rb3eslider TRUE}
-;  {instruments.sld set_num_steps 60} ;number of steps for venue fps slider
-;  {bg_music.sld set_num_steps 41} ;number of steps for note speed slider
-;  {crowd.sld set_num_steps 31} ;number of steps for song speed slider
-;  {instruments.sld set_current {int {- $emulatefps 1}}} ;set FPS slider based on current value
-;  {bg_music.sld set_current {int {+ 0.5 {/ {+ {- $trackspeed 1} 0.5} 0.05}}}} ;set note speed slider based on current value
-;  {crowd.sld set_current {int {+ 0.5 {/ {- $speedmod 1} 0.05}}}} ;set song speed slider based on current value
-;  {trackspeed_msg set_token_fmt {sprintf {localize trackspeed_msg} {int {+ 0.5 {* $trackspeed 100}}}}} ;set note speed msg (or not, thanks rb3)
-;  {speed_msg.lbl set_token_fmt {sprintf {localize speed_msg} {int {+ 0.5 {* $speedmod 100}}}}} ;set song speed msg (or not, thanks rb3)
-;  {fps_msg set_token_fmt {sprintf {localize fps_msg} {int $emulatefps}}} ;set venue fps msg (or not, thanks rb3)
   {if_else {== {{$this get_user} get_controller_type} kControllerVocals}
   {options.lst
    set_data
    (os_writesettings
     os_spds
-;    os_venuefps
-;    os_trkspd
-;    os_sngspd
     os_venuesel
     os_thm
-;    os_fretboard
-;    os_spotlight
-;    os_emissive
-;	os_keyboard
-;    os_gems
-;    os_smashers
-;    #ifdef ANIMATION_ENABLED
-;    os_animatedgem
-;    os_animatedsmasher
-;    os_animatedhighway
-;    #endif
-;    os_setcol
-;    os_scrsvr
     os_cam
-;    os_fx
       )}
   {if_else {== {{$this get_user} get_controller_type} kControllerRealGuitar}
   {options.lst
    set_data
    (os_writesettings
     os_spds
-;    os_venuefps
-;    os_trkspd
-;    os_sngspd
     os_venuesel
     os_thm
-;    os_fretboard
-;    os_spotlight
-;    os_emissive
-;	os_keyboard
-;    os_gems
-;    os_smashers
-;    #ifdef ANIMATION_ENABLED
-;    os_animatedgem
-;    os_animatedsmasher
-;    os_animatedhighway
-;    #endif
-;    os_scrsvr
     os_cam
-;    os_fx
       )}
   {options.lst
    set_data
    (os_writesettings
     os_spds
-;    os_venuefps
-;    os_trkspd
-;    os_sngspd
     os_venuesel
     os_thm
-;    os_fretboard
-;    os_spotlight
-;    os_emissive
-;	os_keyboard
-;    os_gems
-;    os_smashers
-;    #ifdef ANIMATION_ENABLED
-;    os_animatedgem
-;    os_animatedsmasher
-;    os_animatedhighway
-;    #endif
-;    os_setcol
-;    os_scrsvr
     os_cam
-;    os_fx
 	)}}})
  (SELECT_MSG
  {set $rb3esettingsval {$component selected_sym}}
   {switch
    {$component selected_sym}
    (os_writesettings
-         {do INIT_DTA_WRITER {$this show_state kState_SettingsSave}}
+      {if_else $dxwritesseen
+         {$this show_state kState_SettingsSaveError}
+         {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_state kState_SettingsSave}}}
    )
    (os_spds
       {$this show_state kState_RB3ESpeedMenu})
    (os_thm
       {$this show_state kState_RB3EAppearanceMenu})
-;   (os_venuefps
-;      {set $fpsslider TRUE}
-;      {instruments.sld store}
-;      {instruments.sld set_showing TRUE}
-;      {$this set_focus instruments.sld})
-;   (os_trkspd
-;    {set $trackspeedslider TRUE}
-;    {bg_music.sld store}
-;    {bg_music.sld set_showing TRUE}
-;    {$this set_focus bg_music.sld})
-;   (os_sngspd
-;      {set $songspeedslider TRUE}
-;      {crowd.sld store}
-;      {crowd.sld set_showing TRUE}
-;      {$this set_focus crowd.sld})
    (os_venuesel
     {$this show_state kState_RB3EVenueSelector})
-;   (os_fretboard
-;    {$this show_state kState_RB3EFretboardSelector})
-;   (os_spotlight
-;    {$this show_state kState_RB3ESpotlightSelector})
-;   (os_emissive
-;    {$this show_state kState_RB3EEmissiveSelector})
-;   (os_keyboard
-;    {$this show_state kState_RB3EKeyboardSelector})
-;   (os_gems
-;    {$this show_state kState_RB3EGemSelector})
-;   (os_smashers
-;    {$this show_state kState_RB3ESmasherSelector})
-;   (os_animatedgem
-;    {$this show_state kState_RB3EAnimatedGemSelector})
-;   (os_animatedsmasher
-;    {$this show_state kState_RB3EAnimatedSmasherSelector})
-;   (os_animatedhighway
-;    {$this show_state kState_RB3EAnimatedHighwaySelector})
-;   (os_setcol
-;    {do {set $rb3eslider FALSE} {if_else {== {{$this get_user} get_controller_type} kControllerDrum}
-;    {$this show_state kState_RB3EDrumColorSelector} {if_else {== {{$this get_user} get_controller_type} kControllerKeys}
-;    {$this show_state kState_RB3EKeysColorWarning}
-;    {$this show_state kState_RB3EColorSelector}}}})
-;   (os_scrsvr
-;    {$this show_state kState_RB3EScreensaver})
    (os_cam
     {$this show_state kState_RB3ECameraMenu})
    (os_fx
@@ -3538,7 +3470,11 @@
                overshell_mute #endif}
             {push_back $options overshell_disconnect}
             {online_options.lst set_data $options}}
-            {$this show_game_options}))
+      {if_else {modifier_mgr is_modifier_active mod_skipsavemsg}
+         {if_else $dxwritesseen
+            {$this show_state kState_RB3ESaveWarnError}
+            {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_game_options}}}
+         {$this show_state kState_RB3ESaveWarn}}))
 (kState_RB3ESpeedMenu
    (view online_options)
    (on_cancel
@@ -3803,6 +3739,9 @@
       (overshell_continue
          {set $animatedgems FALSE}
          {set $emissivecustomtexture FALSE}
+         {set $animatedsmashers FALSE}
+         {set $animatedsmasherscustomtexture FALSE}
+         {set $animatedsmashername none}
          {set $emissive none}
          {set $emissivegtrcustomtexture FALSE}
          {set $emissivegtr none}
@@ -3971,9 +3910,9 @@
       {set $spotlightcustomtexture FALSE}
       {set $spotlight none}
       {set $spotlightgtrcustomtexture TRUE}
-      {set $spotlightgtr _spotlight_guitar_track}
+      {set $spotlightgtr _spotlight_bass_track}
       {set $spotlightbasscustomtexture TRUE}
-      {set $spotlightbass _spotlight_bass_track}
+      {set $spotlightbass _spotlight_guitar_track}
       {set $spotlightdrumcustomtexture TRUE}
       {set $spotlightdrum _spotlight_drums_track}
       {set $spotlightkeyscustomtexture TRUE}
@@ -4013,6 +3952,9 @@
       {set $animatedgems FALSE}
       {set $animatedgemscustomtexture FALSE}
       {set $animatedgemname none}
+      {set $animatedsmashers FALSE}
+      {set $animatedsmasherscustomtexture FALSE}
+      {set $animatedsmashername none}
    ;   {set $keyboardcustomtexture TRUE}
    ;   {set $keyboard none}
       {if {modifier_mgr is_modifier_active mod_nosustain}
@@ -4047,7 +3989,7 @@
       {set $spotlightkeyscustomtexture FALSE}
       {set $spotlightkeys none}
       {set $highwaycustomtexture TRUE}
-      {set $highway _black_highway}
+      {set $highway rb2}
       {set $highwaygtrcustomtexture FALSE}
       {set $highwaygtr none}
       {set $highwaybasscustomtexture FALSE}
@@ -4081,6 +4023,9 @@
       {set $animatedgems FALSE}
       {set $animatedgemscustomtexture FALSE}
       {set $animatedgemname none}
+      {set $animatedsmashers FALSE}
+      {set $animatedsmasherscustomtexture FALSE}
+      {set $animatedsmashername none}
    ;   {set $keyboardcustomtexture TRUE}
    ;   {set $keyboard none}
       {if {modifier_mgr is_modifier_active mod_nosustain}
@@ -4110,6 +4055,7 @@
       os_gems
       os_animation
       os_smashers
+      os_animatedsmashers
       os_flames
       os_sus
       os_score
@@ -4120,7 +4066,8 @@
       os_keyboard
       os_voxhw
       os_voxarrow
-   )})
+   )}
+   {options_audio.lst set scroll_time 0})
    (SELECT_MSG
    {set $rb3texval {$component selected_sym}}
   {switch
@@ -4159,11 +4106,15 @@
       {if_else $animatedgems
       {$this show_state kState_RB3EAnimatedGemSelector}
       {$this show_state kState_RB3EAnimatedGemWarn}})
+   (os_animatedsmashers
+      {if_else $animatedsmashers
+      {$this show_state kState_RB3EAnimatedSmasherSelector}
+      {$this show_state kState_RB3EAnimatedSmasherWarn}})
    })
    (on_cancel
       {options.lst set_selected 4}
       {$this show_state kState_RB3EThemeMenu})
-   (exit {options.lst set_selected 4}))
+   (exit {options.lst set_selected 4} {options_audio.lst set scroll_time 0.25}))
 (kState_RB3EAudioMenu
    (view options_end_game)
    (enter
@@ -4182,11 +4133,11 @@
    (on_cancel
       {$this show_state kState_RB3EAppearanceMenu}))
 (kState_RB3EAngleMenu
-   (view #ifdef HX_PS3 options_audio #else options_extras #endif)
+   (view #ifdef HX_PS3 options #else options_extras #endif)
    (enter
       {set $anglesld TRUE}
-      {#ifdef HX_PS3 options_audio.lst #else options_extras.lst #endif set_selected $rb3eangleval}
-      {#ifdef HX_PS3 options_audio.lst #else options_extras.lst #endif set_data (os_noang os_angmult)}
+      {#ifdef HX_PS3 options.lst #else options_extras.lst #endif set_selected $rb3eangleval}
+      {#ifdef HX_PS3 options.lst #else options_extras.lst #endif set_data (os_noang os_angmult)}
       {bg_music.sld set_num_steps 16} ;number of steps for track angle slider
       {bg_music.sld set_current {int {/ {- $multiangle 1} {/ 3 15}}}}
    )
@@ -4548,6 +4499,8 @@
    (view modifiers)
    (update_view
       {$this update_modifiers_list})
+   (enter
+      {modifiers.lst set scroll_time 0})
    (exit
       {unless
 	  {'||'
@@ -4562,9 +4515,24 @@
             $modifier
                (modifier_enter_entry_name
                {$this show_modifier_unlock})
+               (mod_nohud
+                  {if {modifier_mgr is_modifier_active mod_nohud}
+                     {if {modifier_mgr is_modifier_active mod_fakejuke}
+                        {modifier_mgr toggle_modifier_enabled mod_fakejuke}
+                        {modifier_mgr toggle_modifier_enabled mod_auto_play}
+                        {modifier_mgr toggle_modifier_enabled mod_nopause}}}
+                  {modifier_mgr toggle_modifier_enabled mod_nohud}
+                  {overshell update_all})
                (mod_nolanes
+                  {if {modifier_mgr is_modifier_active mod_rb4lanes}
+                     {modifier_mgr toggle_modifier_enabled mod_rb4lanes}}
                   {modifier_mgr toggle_modifier_enabled mod_nolanes}
                   {set $nolanes {! $nolanes}}
+                  {overshell update_all})
+               (mod_rb4lanes
+                  {if {modifier_mgr is_modifier_active mod_nolanes}
+                     {modifier_mgr toggle_modifier_enabled mod_nolanes}}
+                  {modifier_mgr toggle_modifier_enabled mod_rb4lanes}
                   {overshell update_all})
                (mod_practiceoverdrive
                   {modifier_mgr toggle_modifier_enabled mod_practiceoverdrive}
@@ -4596,6 +4564,24 @@
                (mod_doublespeed
                   {modifier_mgr toggle_modifier_enabled mod_doublespeed}
                   {overshell update_all})
+               (mod_fakejuke
+               {do {session disconnect}
+               {session_mgr disconnect}}
+               {unless {{$this get_session_mgr} is_online_enabled}
+               {unless
+                  {modifier_mgr is_modifier_active mod_fakejuke}
+                  {$this show_state kState_FakeJukeWarn}}
+               {if
+                  {modifier_mgr is_modifier_active mod_fakejuke}
+                  {do
+                  {modifier_mgr toggle_modifier_enabled $modifier}
+                  {if {modifier_mgr is_modifier_active mod_auto_play}
+                     {modifier_mgr toggle_modifier_enabled mod_auto_play}}
+                  {if {modifier_mgr is_modifier_active mod_nohud}
+                     {modifier_mgr toggle_modifier_enabled mod_nohud}}
+                  {if {modifier_mgr is_modifier_active mod_nopause}
+                     {modifier_mgr toggle_modifier_enabled mod_nopause}}
+                  {overshell update_all}}}})
                (mod_auto_play
                {do {session disconnect}
                {session_mgr disconnect}}
@@ -4607,6 +4593,10 @@
                   {modifier_mgr is_modifier_active mod_auto_play}
                   {do
                   {modifier_mgr toggle_modifier_enabled $modifier}
+                  {if {modifier_mgr is_modifier_active mod_fakejuke}
+                     {modifier_mgr toggle_modifier_enabled mod_fakejuke}
+                     {modifier_mgr toggle_modifier_enabled mod_nohud}
+                     {modifier_mgr toggle_modifier_enabled mod_nopause}}
                   {overshell update_all}}}})
                (mod_auto_kick
                {do
@@ -4669,6 +4659,9 @@
                {$this show_modifier_delayed_effect}}
             {overshell update_all}}})
    (on_cancel
+      {unless $dontsavemod
+         {do INIT_MOD_WRITER}}
+      {modifiers.lst set scroll_time 0.25}
       {$this show_game_options}))
 (kState_AutoPlayWarn
    (view confirm_action)
@@ -4687,6 +4680,36 @@
       {$this show_modifiers})
    (on_cancel
       {$this show_modifiers}))
+(kState_FakeJukeWarn
+   (view confirm_action)
+   (enter
+      {confirm_action.lst set_selected 1}
+      {handle
+         ($this set_confirm_actions fakejuke_warning (overshell_continue overshell_cancel))})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+      (overshell_continue
+      {set $dontsavemod TRUE}
+      {modifier_mgr toggle_modifier_enabled mod_fakejuke}
+         {unless {modifier_mgr is_modifier_active mod_auto_play}
+            {modifier_mgr toggle_modifier_enabled mod_auto_play}}
+         {unless {modifier_mgr is_modifier_active mod_nohud}
+            {modifier_mgr toggle_modifier_enabled mod_nohud}}
+         {unless {modifier_mgr is_modifier_active mod_nopause}
+            {modifier_mgr toggle_modifier_enabled mod_nopause}}
+         {if {modifier_mgr is_modifier_active mod_songtitle}
+            {modifier_mgr toggle_modifier_enabled mod_songtitle}}
+         {if {modifier_mgr is_modifier_active mod_drum_fills}
+            {modifier_mgr toggle_modifier_enabled mod_drum_fills}}
+         {if {modifier_mgr is_modifier_active mod_nointro}
+            {modifier_mgr toggle_modifier_enabled mod_nointro}}
+      {set $gotcha FALSE}
+      {saveload_mgr disable_autosave $user}
+      {overshell update_all}
+		{ui goto_screen meta_loading_main_screen})}
+      {$this show_modifiers})
+   (on_cancel
+      {$this show_modifiers}))
 (kState_SettingsWarn
    (view confirm_action)
    (enter
@@ -4696,11 +4719,46 @@
       {$this show_modifiers})
    (on_cancel
       {$this show_modifiers}))
+(kState_RB3ESaveWarn
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_actions save_warning (os_save os_dontsave))})
+   (on_cancel
+      {$this show_game_options})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+         (os_save
+            {if_else $dxwritesseen
+            {$this show_state kState_RB3ESaveWarnError}
+            {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_game_options}}})
+         (os_dontsave
+            {$this show_game_options})}))
+(kState_RB3ESaveWarnError
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_actions settings_error (overshell_continue))})
+   (on_cancel
+      {$this show_game_options})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+         (overshell_continue
+            {$this show_game_options})}))
 (kState_SettingsSave
    (view confirm_action)
    (enter
       {handle
          ($this set_confirm_actions settings_save (overshell_continue))})
+   (SELECT_MSG
+      {$this show_state kState_RB3ESettings})
+   (on_cancel
+      {$this show_state kState_RB3ESettings}))
+(kState_SettingsSaveError
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_actions settings_error (overshell_continue))})
    (SELECT_MSG
       {$this show_state kState_RB3ESettings})
    (on_cancel
@@ -4891,6 +4949,8 @@
     overshell_bass)}
    {choose_part.lst set_selected $default_real_guitar}}
     )
+   (exit
+      {do INIT_VAL_WRITER})
    (SELECT_MSG
       {switch
          {{$this get_user}
