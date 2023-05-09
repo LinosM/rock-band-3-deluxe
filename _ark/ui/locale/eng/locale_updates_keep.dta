@@ -1047,6 +1047,8 @@
    "No Flames")
 (mod_songtitle
    "Song Title Always")
+(mod_songtitlestats
+   "Detailed Song Info")
 (mod_doublespeed_1.25x
    "breakneck speed 1.25x")
 (mod_doublespeed "breakneck speed")
@@ -1634,3 +1636,6 @@
 (os_color_b "B")
 (color_msg "Current Color:\n")
 (os_default "[Default]")
+(author "Author")
+(album "Album")
+(year "Year")
