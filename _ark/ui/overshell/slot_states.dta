@@ -819,7 +819,9 @@
    (on_cancel
       {unless $dontsavemod
          {do INIT_MOD_WRITER}}
-      {$this show_options_av_settings})
+      {if_else $settingserror
+      {$this show_state kState_RB3ESaveWarnErrorAV}
+      {$this show_options_av_settings}})
    (lst_reset
       {options_audio.lst set_data (AUDIO_DATA)}
       {if $audiomenuval
@@ -938,7 +940,9 @@
    (view options_vocal)
    (on_cancel
       {do INIT_VAL_WRITER}
-      {$this show_game_options})
+      {if_else $settingserror
+      {$this show_state kState_RB3ESaveWarnError}
+      {$this show_game_options}})
    (enter
       {vocal_track.sld set_num_steps 12}
       {vocal_sens1.sld set_num_steps 12}
@@ -1641,6 +1645,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlight ".png"}} ;hide the texture on first entry because the script is bad whatever
+    ;{choose_character.tex iterate_refs $ref {$ref set color {pack_color $spotlight_r $spotlight_g $spotlight_b}}}
+    ;{choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
  )
    (SCROLL_MSG
@@ -1679,6 +1685,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightgtr ".png"}} ;hide the texture on first entry because the script is bad whatever
+    ;{choose_character.tex iterate_refs $ref {$ref set color {pack_color $spotlight_r $spotlight_g $spotlight_b}}}
+    ;{choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
  )
    (SCROLL_MSG
@@ -1688,6 +1696,7 @@
    (SELECT_MSG
         {set $spotlightgtrcustomtexture TRUE}
         {set $spotlightgtr {$component selected_sym}}
+        {set $spotlight none}
         {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightgtr ".png"}})
  (on_cancel
   {online_options.lst set scroll_time 0.25}
@@ -1709,6 +1718,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightbass ".png"}} ;hide the texture on first entry because the script is bad whatever
+    ;{choose_character.tex iterate_refs $ref {$ref set color {pack_color $spotlight_r $spotlight_g $spotlight_b}}}
+    ;{choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
  )
    (SCROLL_MSG
@@ -1739,6 +1750,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightdrum ".png"}} ;hide the texture on first entry because the script is bad whatever
+    ;{choose_character.tex iterate_refs $ref {$ref set color {pack_color $spotlight_r $spotlight_g $spotlight_b}}}
+    ;{choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
  )
    (SCROLL_MSG
@@ -1748,6 +1761,7 @@
    (SELECT_MSG
         {set $spotlightdrumcustomtexture TRUE}
         {set $spotlightdrum {$component selected_sym}}
+        {set $spotlight none}
         {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightdrum ".png"}})
  (on_cancel
   {online_options.lst set scroll_time 0.25}
@@ -1769,6 +1783,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightkeys ".png"}} ;hide the texture on first entry because the script is bad whatever
+    ;{choose_character.tex iterate_refs $ref {$ref set color {pack_color $spotlight_r $spotlight_g $spotlight_b}}}
+    ;{choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/spotlights/spotlights.dta)}
  )
    (SCROLL_MSG
@@ -1778,6 +1794,7 @@
    (SELECT_MSG
         {set $spotlightkeyscustomtexture TRUE}
         {set $spotlightkeys {$component selected_sym}}
+        {set $spotlight none}
         {choose_character.tex set_bitmap {sprint "ui/track/spotlights/" $spotlightkeys ".png"}})
  (on_cancel
   {online_options.lst set scroll_time 0.25}
@@ -1829,6 +1846,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissive ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+    {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
  )
    (SCROLL_MSG
@@ -1853,6 +1872,8 @@
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1.0 1.0 1.0}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify 0}}
   {online_options.grp remove_object choose_character.mesh}))
   
 (kState_RB3EEmissiveSelectorGtr
@@ -1867,6 +1888,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivegtr ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+    {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
  )
    (SCROLL_MSG
@@ -1883,6 +1906,8 @@
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1.0 1.0 1.0}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify 0}}
   {online_options.grp remove_object choose_character.mesh}))
 
 (kState_RB3EEmissiveSelectorBass
@@ -1897,6 +1922,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivebass ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+    {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
  )
    (SCROLL_MSG
@@ -1913,6 +1940,8 @@
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1.0 1.0 1.0}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify 0}}
   {online_options.grp remove_object choose_character.mesh}))
 
 (kState_RB3EEmissiveSelectorDrum
@@ -1927,6 +1956,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivedrum ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+    {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
  )
    (SCROLL_MSG
@@ -1943,6 +1974,8 @@
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1.0 1.0 1.0}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify 0}}
   {online_options.grp remove_object choose_character.mesh}))
 
 (kState_RB3EEmissiveSelectorKeys
@@ -1957,6 +1990,8 @@
     {choose_character.mesh set_local_scale_index 2 0.4}
     {choose_character.mat set diffuse_tex choose_character.tex}
     {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissivekeys ".png"}} ;hide the texture on first entry because the script is bad whatever
+    {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+    {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
     {online_options.lst set_data (#include ../track/emissives/emissives.dta)}
  )
    (SCROLL_MSG
@@ -1973,6 +2008,8 @@
   {choose_character.mesh set_local_scale_index 0 0.5}
   {choose_character.mesh set_local_scale_index 2 1}
   {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1.0 1.0 1.0}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify 0}}
   {online_options.grp remove_object choose_character.mesh}))
 
 (kState_RB3ERB4ThemeWarn
@@ -2980,14 +3017,15 @@
       {set $drumslds FALSE}
       {$this show_state kState_RB3ESmasherColorSelector}))
 (kState_RB3EColorSelector
- (view options_extras)
+ (view options)
  (enter
- {options_extras.lst set_selected $color5menuval}
-  {options_extras.lst
+ {options.lst set_selected $color5menuval}
+  {options.lst
    set_data
    (os_gemcol
     os_fretcol
-    os_suscol)})
+    os_suscol
+    os_emissivecolor)})
  (SELECT_MSG
  {set $color5menuval {$component selected_sym}}
   {switch
@@ -2997,7 +3035,9 @@
    (os_fretcol
     {$this show_state kState_RB3EFretColorSelector})
    (os_suscol
-    {$this show_state kState_RB3ESusColorSelector})})
+    {$this show_state kState_RB3ESusColorSelector})
+   (os_emissivecolor
+    {$this show_state kState_RB3Ergbcolormenu})})
  (on_cancel
   {$this show_state kState_RB3EAppearanceMenu}))
 (kState_RB3EGemColorSelector
@@ -3440,7 +3480,7 @@
   {switch
    {$component selected_sym}
    (os_writesettings
-      {if_else $dxwritesseen
+      {if_else $settingserror
          {$this show_state kState_SettingsSaveError}
          {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_state kState_SettingsSave}}}
    )
@@ -3471,7 +3511,7 @@
             {push_back $options overshell_disconnect}
             {online_options.lst set_data $options}}
       {if_else {modifier_mgr is_modifier_active mod_skipsavemsg}
-         {if_else $dxwritesseen
+         {if_else $settingserror
             {$this show_state kState_RB3ESaveWarnError}
             {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_game_options}}}
          {$this show_state kState_RB3ESaveWarn}}))
@@ -3588,6 +3628,134 @@
   {set $rb3eslider FALSE})
  (on_cancel
   {$this show_game_options}))
+(kState_RB3Ergbcolormenu
+   (view online_options)
+   (enter
+   {set $colorslider TRUE}
+   {online_options.lst set_selected $colormenuval}
+   {online_options.grp add_object choose_character.mesh}
+   {choose_character.mesh set_local_pos_index 0 25}
+   {choose_character.mesh set_local_pos_index 2 175}
+   {choose_character.mesh set_local_scale_index 0 0.2}
+   {choose_character.mesh set_local_scale_index 2 0.4}
+   {choose_character.mat set diffuse_tex choose_character.tex}
+   {if_else $emissivecustomtexture
+   {choose_character.tex set_bitmap {sprint "ui/track/emissives/" $emissive ".png"}} ;hide the texture on first entry because the script is bad whatever
+   {choose_character.tex set_bitmap {sprint "ui/track/emissives/rb3_guitar.png"}}}
+   {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+   {choose_character.tex iterate_refs $ref {$ref set intensify TRUE}}
+   {instruments.sld set_num_steps 100} ;number of steps for venue fps slider
+   {bg_music.sld set_num_steps 100} ;number of steps for note speed slider
+   {crowd.sld set_num_steps 100} ;number of steps for song speed slider
+   {instruments.sld set_current {int {* $emissive_r 100}}} ;set FPS slider based on current value
+   {bg_music.sld set_current {int {* $emissive_g 100}}} ;set note speed slider based on current value
+   {crowd.sld set_current {int {* $emissive_b 100}}} ;set song speed slider based on current value
+   {trackspeed_msg set_token_fmt {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b}} ;set note speed msg (or not, thanks rb3)
+   {speed_msg.lbl set_token_fmt {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b}} ;set song speed msg (or not, thanks rb3)
+   {fps_msg set_token_fmt {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b}} ;set venue fps msg (or not, thanks rb3)
+   {online_options.lst set_data 
+   (
+      os_default
+      os_color_r
+      os_color_g
+      os_color_b
+   )})
+  (update_view
+      {handle
+         ($this
+            update_slider
+            instruments.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            bg_music.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            crowd.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            sfx.sld
+            "")}
+      {handle
+         ($this
+            update_slider
+            voice_chat.sld
+            "")})
+   (SELECT_MSG
+   {set $colormenuval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_color_r
+      {set $colorrslider TRUE}
+      {instruments.sld store}
+      {instruments.sld set_showing TRUE}
+      {$this set_focus instruments.sld})
+   (os_color_g
+    {set $colorgslider TRUE}
+    {bg_music.sld store}
+    {bg_music.sld set_showing TRUE}
+    {$this set_focus bg_music.sld})
+   (os_color_b
+      {set $colorbslider TRUE}
+      {crowd.sld store}
+      {crowd.sld set_showing TRUE}
+      {$this set_focus crowd.sld})
+    (os_default
+      {set $emissive_r 0.71} {set $emissive_g 0.54} {set $emissive_b 0.0}
+      {do {$this show_state kState_colorbSliderMsg} {$this set_focus confirm_action.lst}})
+   })
+(BUTTON_DOWN_MSG
+      {if_else
+         {find_elem
+            ("instruments.sld"
+               "bg_music.sld"
+               "crowd.sld")
+            {$this focus_name}}
+         {switch
+            $action
+            ((kAction_Confirm kAction_Cancel)
+               {{$this
+                     find
+                     {$this focus_name}}
+                  confirm}
+               {{$this
+                     find
+                     {$this focus_name}}
+                  set_showing
+                  FALSE}
+               {if_else $colorrslider
+                  {do {$this show_state kState_colorrSliderMsg} {$this set_focus confirm_action.lst}}
+               {if_else $colorgslider
+                  {do {$this show_state kState_colorgSliderMsg} {$this set_focus confirm_action.lst}}
+               {if_else $colorbslider
+                  {do {$this show_state kState_colorbSliderMsg} {$this set_focus confirm_action.lst}}
+                  {$this set_focus options_audio.lst}}}})
+            kDataUnhandled}
+         kDataUnhandled})
+   (SCROLL_SELECT_MSG
+      {$this on_slider_change $component $user}
+      {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}})
+   (SCROLL_MSG
+      {$this on_slider_change $component $user}
+      {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}})
+ (exit
+  {set $rb3eslider FALSE})
+ (on_cancel
+  {options_audio.lst set scroll_time 0.25}
+  {$this show_state kState_RB3EColorSelector}
+  {choose_character.mesh set_local_pos_index 0 0}
+  {choose_character.mesh set_local_scale_index 0 0.5}
+  {choose_character.mesh set_local_scale_index 2 1}
+  {choose_character.mesh set_local_pos_index 2 300}
+  {choose_character.tex iterate_refs $ref {$ref set color {pack_color 1 1 1}}}
+  {choose_character.tex iterate_refs $ref {$ref set intensify FALSE}}
+  {online_options.grp remove_object choose_character.mesh}
+  {$this show_state kState_RB3EColorSelector}))
 #define FASTER_DATA
 (
    {if_else {modifier_mgr is_modifier_active mod_fastermode} os_disable os_enable}
@@ -3714,6 +3882,14 @@
    (SELECT_MSG
       {set $fpsslider FALSE}
       {$this show_state kState_RB3ESpeedMenu}))
+(kState_VenueFPSSliderMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprintf {localize os_fps} {int $emulatefps}})})
+   (SELECT_MSG
+      {set $fpsslider FALSE}
+      {$this show_state kState_RB3ESpeedMenu}))
 (kState_RB3ESpeedDenyMsg
    (view confirm_action)
    (enter
@@ -3830,6 +4006,31 @@
    (SELECT_MSG
       {set $trackspeedslider FALSE}
       {$this show_state kState_RB3ESpeedMenu}))
+(kState_colorrSliderMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b})})
+   (SELECT_MSG
+      {set $colorrslider FALSE}
+      {$this show_state kState_RB3Ergbcolormenu}))
+(kState_colorgSliderMsg
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b})})
+   (SELECT_MSG
+      {set $colorrslider FALSE}
+      {$this show_state kState_RB3Ergbcolormenu}))
+(kState_colorbSliderMsg
+   (view confirm_action)
+   (enter
+      {choose_character.tex iterate_refs $ref {$ref set color {pack_color $emissive_r $emissive_g $emissive_b}}}
+      {handle
+         ($this set_confirm_message {sprint {localize color_msg} " " $emissive_r  ", " $emissive_g ", " $emissive_b})})
+   (SELECT_MSG
+      {set $colorrslider FALSE}
+      {$this show_state kState_RB3Ergbcolormenu}))
 (kState_RB3EKeysColorWarning
    (view confirm_action)
    (enter
@@ -3900,13 +4101,13 @@
       {set $emissivecustomtexture FALSE}
       {set $emissive none}
       {set $emissivegtrcustomtexture TRUE}
-      {set $emissivegtr _guitar_track_emmissive}
+      {set $emissivegtr rb3_bass}
       {set $emissivebasscustomtexture TRUE}
-      {set $emissivebass _bass_track_emissive}
+      {set $emissivebass rb3_guitar}
       {set $emissivedrumcustomtexture TRUE}
-      {set $emissivedrum _drums_track_emissive}
+      {set $emissivedrum rb3_drums}
       {set $emissivekeyscustomtexture TRUE}
-      {set $emissivekeys _keys_track_emissive}
+      {set $emissivekeys rb3_keys}
       {set $spotlightcustomtexture FALSE}
       {set $spotlight none}
       {set $spotlightgtrcustomtexture TRUE}
@@ -3971,13 +4172,13 @@
       {set $emissivecustomtexture FALSE}
       {set $emissive none}
       {set $emissivegtrcustomtexture TRUE}
-      {set $emissivegtr rb2_bass_yellow}
+      {set $emissivegtr rb2_bass}
       {set $emissivebasscustomtexture TRUE}
-      {set $emissivebass rb2_guitar_yellow}
+      {set $emissivebass rb2_guitar}
       {set $emissivedrumcustomtexture TRUE}
-      {set $emissivedrum rb2_drums_yellow}
+      {set $emissivedrum rb2_drums}
       {set $emissivekeyscustomtexture TRUE}
-      {set $emissivekeys rb2_bass_yellow}
+      {set $emissivekeys rb2_bass}
       {set $spotlightcustomtexture TRUE}
       {set $spotlight rb2_bass_superstreak}
       {set $spotlightgtrcustomtexture FALSE}
@@ -4603,6 +4804,8 @@
                {session disconnect}
                {session_mgr disconnect}
                {modifier_mgr toggle_modifier_enabled $modifier}
+               {if {$this in_game}
+                  {$this show_state kState_ModifierSongLoad}}
                {overshell update_all}})
                (mod_chmode
                {unless
@@ -4628,15 +4831,20 @@
                (mod_whammyfx
                   {modifier_mgr toggle_modifier_enabled $modifier}
                   {set $whammyfx {! $whammyfx}}
+                  {if {$this in_game}
+                     {$this show_state kState_ModifierSongLoad}}
                   {overshell update_all}) ;whammy fx modifier
 				(mod_nomv
 					{modifier_mgr toggle_modifier_enabled mod_nomv}
-					{do {$this show_state kState_RB3ENoMusicVideos} {$this set_focus confirm_action.lst}}
-					{ui goto_screen meta_loading_main_screen})
+					{if_else {$this in_game}
+                  {$this show_state kState_ModifierSongLoad}
+                  {do {$this show_state kState_RB3ENoMusicVideos} {$this set_focus confirm_action.lst} {ui goto_screen meta_loading_main_screen}}})
 				(mod_blackmenu
 					{modifier_mgr toggle_modifier_enabled mod_blackmenu}
-					{ui goto_screen meta_loading_main_screen})
-               (mod_calibration
+               {if_else {$this in_game}
+                  {$this show_state kState_ModifierSongLoad}
+                  {ui goto_screen meta_loading_main_screen}})
+            (mod_calibration
                {unless
                   {modifier_mgr is_modifier_active mod_calibration}
                   {$this show_state kState_CalibrationWarn}}
@@ -4662,7 +4870,9 @@
       {unless $dontsavemod
          {do INIT_MOD_WRITER}}
       {modifiers.lst set scroll_time 0.25}
-      {$this show_game_options}))
+      {if_else $settingserror
+      {$this show_state kState_RB3ESaveWarnError}
+      {$this show_game_options}}))
 (kState_AutoPlayWarn
    (view confirm_action)
    (enter
@@ -4729,7 +4939,7 @@
    (SELECT_MSG
       {switch {$component selected_sym}
          (os_save
-            {if_else $dxwritesseen
+            {if_else $settingserror
             {$this show_state kState_RB3ESaveWarnError}
             {do INIT_DX_WRITER {unless $dontsavemod INIT_MOD_WRITER} INIT_VAL_WRITER {$this show_game_options}}})
          (os_dontsave
@@ -4745,6 +4955,17 @@
       {switch {$component selected_sym}
          (overshell_continue
             {$this show_game_options})}))
+(kState_RB3ESaveWarnErrorAV
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_actions settings_error (overshell_continue))})
+   (on_cancel
+      {$this show_options_av_settings})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+         (overshell_continue
+            {$this show_options_av_settings})}))
 (kState_SettingsSave
    (view confirm_action)
    (enter
@@ -4788,7 +5009,8 @@
       {switch {$component selected_sym}
       (overshell_continue
       {modifier_mgr toggle_modifier_enabled mod_calibration}
-      {overshell update_all})}
+      {overshell update_all}
+      {ui goto_screen meta_loading_main_screen})}
       {$this show_modifiers})
    (on_cancel
       {$this show_modifiers}))
@@ -4832,6 +5054,19 @@
       {$this show_modifiers})
    (on_cancel
       {$this show_modifiers}))
+(kState_ModifierSongLoad
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_actions modifier_song_load (overshell_confirm_yes overshell_confirm_no))})
+   (on_cancel
+      {$this show_modifiers})
+   (SELECT_MSG
+      {switch {$component selected_sym}
+         (overshell_confirm_yes
+            {ui goto_screen meta_loading_main_screen})
+         (overshell_confirm_no
+            {$this show_modifiers})}))
 (kState_AutoVocalsDenial
    (view confirm_action)
    (enter

@@ -201,6 +201,16 @@
 {set $smasher3_color 2} ;blue
 {set $smasher4_color 3} ;green
 
+;set default colors for overdrive textures (gold)
+{set $emissive_r 0.71}
+{set $emissive_g 0.54}
+{set $emissive_b 0.0}
+
+;set default colors for overdrive textures (gold)
+{set $spotlight_r 0.05}
+{set $spotlight_g 0.40}
+{set $spotlight_b 0.69}
+
 ;set default part selection per instrument
 {set $default_guitar overshell_guitar}           ;guitar
 {set $default_real_guitar overshell_real_guitar} ;pro guitar
@@ -451,6 +461,17 @@
             {elem {find $entry emissive_texture} 1}
          }
       }
+      {if {== {elem $entry 0} {basename emissive_color}}
+         {set $emissive_r
+            {elem {find $entry emissive_color} 1}
+         }
+         {set $emissive_g
+            {elem {find $entry emissive_color} 2}
+         }
+         {set $emissive_b
+            {elem {find $entry emissive_color} 3}
+         }
+      }
       {if {== {elem $entry 0} {basename emissive_gtr_texture}}
          {set $emissivegtr
             {elem {find $entry emissive_gtr_texture} 1}
@@ -564,11 +585,6 @@
       {if {== {elem $entry 0} {basename mod_whammyfx}} ;LEGACY, DO NOT TOUCH
          {if {== {elem {find $entry mod_whammyfx} 1} 1}
             {modifier_mgr toggle_modifier_enabled mod_whammyfx}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_nocrowd}} ;LEGACY, DO NOT TOUCH
-         {if {== {elem {find $entry mod_nocrowd} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_nocrowd}
          }
       }
       {if {== {elem $entry 0} {basename mod_nosustain}}
@@ -724,11 +740,6 @@
       {if {== {elem $entry 0} {basename mod_whammyfx}}
          {if {== {elem {find $entry mod_whammyfx} 1} 1}
             {modifier_mgr toggle_modifier_enabled mod_whammyfx}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_nocrowd}}
-         {if {== {elem {find $entry mod_nocrowd} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_nocrowd}
          }
       }
       {if {== {elem $entry 0} {basename mod_songselectnoise}}
