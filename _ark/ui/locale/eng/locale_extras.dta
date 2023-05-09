@@ -1,8 +1,11 @@
+;DO NOT MAKE COMMITS TO THIS FILE ON GITHUB
+;put your own custom locale strings here
+;ex.
+;(overshell_rb3esettings "FART Settings")
+
 (linosrb
 	"Linos' Customs")
 (3rs
 	"ThreeAreEss' Customs")
 (prc_fight_the_power
 	"Fight the power!")
-(mod_calibration
-	"Calibration Mode")
