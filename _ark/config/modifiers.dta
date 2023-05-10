@@ -18,4 +18,5 @@
 ;   (mod_nomuting)
    (mod_nosustain)
    (mod_rb2sustain)
-   (mod_songselectnoise))
+   (mod_songselectnoise)
+   (mod_nopause))

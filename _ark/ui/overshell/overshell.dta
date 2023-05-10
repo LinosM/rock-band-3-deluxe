@@ -121,6 +121,7 @@
                set_overshell_pause
                {&&
                   {session is_local}
+                  {! {modifier_mgr is_modifier_active mod_nopause}}
                   {'||'
                      {$this should_pause}
                      {platform_mgr guide_showing}}}}

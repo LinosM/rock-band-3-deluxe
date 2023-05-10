@@ -955,3 +955,5 @@
    "Song Lessons are not available for RBN songs")
 (bad_review_showing
    "Show 1-Lighter Reviewed Songs")
+(os_pause "Toggle Pause")
+(mod_nopause "Disable in-game Pause")
