@@ -2230,6 +2230,8 @@
    (view modifiers)
    (update_view
       {$this update_modifiers_list})
+   (enter
+      {modifiers.lst set scroll_time 0})
    (exit
       {unless
 	  {'||'
@@ -2283,6 +2285,7 @@
                {$this show_modifier_delayed_effect}}
             {overshell update_all}}})
    (on_cancel
+      {modifiers.lst set scroll_time 0.25}
       {$this show_game_options}))
 (kState_ModifiersDrumWarning
    (view confirm_action)
