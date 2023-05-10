@@ -44,6 +44,7 @@
 {modifier_mgr toggle_modifier_enabled mod_songtitle}
 {modifier_mgr toggle_modifier_enabled mod_miss_sounds}
 {modifier_mgr toggle_modifier_enabled mod_nosfx}
+{modifier_mgr toggle_modifier_enabled mod_auto_vocals}
 
 #ifdef UI_INIT_DTA
 #else
