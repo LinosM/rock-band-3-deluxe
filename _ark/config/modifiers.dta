@@ -19,5 +19,6 @@
    (mod_nosustain)
    (mod_rb2sustain)
    (mod_songselectnoise)
+   (mod_nosfx)
    (mod_calibration)
    (mod_nopause))

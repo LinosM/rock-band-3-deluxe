@@ -958,3 +958,4 @@
 (os_pause "Toggle Pause")
 (mod_nopause "Disable in-game Pause")
 (mod_calibration "Calibration Mode")
+(mod_nosfx "No Scroll SFX")

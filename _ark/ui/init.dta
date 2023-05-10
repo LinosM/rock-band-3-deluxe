@@ -43,6 +43,7 @@
 {modifier_mgr toggle_modifier_enabled mod_rb2sustain}
 {modifier_mgr toggle_modifier_enabled mod_songtitle}
 {modifier_mgr toggle_modifier_enabled mod_miss_sounds}
+{modifier_mgr toggle_modifier_enabled mod_nosfx}
 
 #ifdef UI_INIT_DTA
 #else
