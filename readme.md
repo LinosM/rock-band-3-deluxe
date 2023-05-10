@@ -4,7 +4,30 @@
 
 ## Introduction
 
-The purpose of this branch is to use an old version of Rock Band 3 Deluxe as a base and back-port any newer QoL features without any of the custom textures for stability on 360 hardware
+The purpose of this branch is to use an old version of Rock Band 3 Deluxe as a base and back-port any newer QoL features without any of the custom textures for stability on 360 hardware. Build specifically tailored for parties/events.
+
+## Features
+
+- Customizable track speed
+- Customizable song speed 
+- Vocal Options available on every instrument while in AIM
+- Disable pausing for party play
+- Calibration Mode
+- Faster Menu scrolling
+- Toggle Scrolling SFX
+- Venue Select
+- Gem color selector
+
+### Settings turned on by default
+
+- All Instruments Mode
+- Venue set to big_club_02
+- Mic Volumes set to 1
+- Miss Sounds off
+- Song Title always on
+- Scroll SFX off
+- Track Speed at 115%
+- Larger hit-window
 
 ## Install
 
