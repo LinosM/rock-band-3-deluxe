@@ -979,6 +979,9 @@
 (gdrb "Green Day: Rock Band")
 (tbrb "The Beatles: Rock Band")
 (yarg "YARG")
+(rb2dx "Rock Band 2 DX")
+(rb4legacy "RB4 (Legacy)")
+(rb4legacyalt "RB4 (Legacy, Alt)")
 (cursors "Mouse Cursors")
 (rivals "RB4 (Rivals)")
 (noflm "[No Flames]")
@@ -1020,6 +1023,7 @@
 (mod_wiios "Wii")
 (mod_staticfills
    "Drum Auto Deploy")
+(mod_dx_no_overdrive "No Overdrive")
 (mod_songselectnoise
    "Song Select Ambience")
 (mod_nocrowd
@@ -1067,6 +1071,7 @@
 (mod_mirror_mode "Mirror Mode (Guitar Only)")
 (mod_color_shuffle "Gem Color Shuffle")
 (mod_mhx_color_shuffle "Gem Color Shuffle")
+(mod_dx_showbpm "Show Song BPM")
 (chmode_warning "Drunk Mode changes the hit window to be more lenient. Saving will be disabled and a message will be added to the end screen if you enable this.")
 (rb3e_mod_string "RB3DX devbuild")
 (breakneck_warning
@@ -1090,10 +1095,6 @@
 #ifdef HX_PS3
 (accomplishment_launch_wrong_instrument
    "You can't start this goal because the required instrument is not saving Career progress. To start saving Career progress the required instrument should drop out of this session and rejoin.")
-(rb4legacy
-   "RB4 (Legacy)")
-(rb4legacyalt
-   "RB4 (Legacy, Alt)")
 #endif
 (prc_ugc_section_10_0
    "0% - 10%")
@@ -1576,6 +1577,13 @@
 (spotlight_rb4_rivals_silver "RB4 Rivals (Silver)")
 (spotlight_rb4_rivals_yellow "RB4 Rivals (Yellow)")
 (_no_spotlight "[None]")
+(yarg_aqua "YARG (Aqua)")
+(yarg_green "YARG (Green)")
+(yarg_orange "YARG (Orange)")
+(yarg_pink "YARG (Pink)")
+(yarg_purple "YARG (Purple)")
+(yarg_red "YARG (Red)")
+(yarg_yellow "YARG (Yellow)")
 ;emissives
 (_no_emissive "[None]")
 (rb3_guitar "RB3 Guitar")
@@ -1640,6 +1648,20 @@
 (album "Album")
 (year "Year")
 
+(overshell_dx_bot_settings "Autoplay Settings")
+(os_dx_bot_skill "Accuracy")
+(os_dx_bot_1_on "Player 1: Yes")
+(os_dx_bot_2_on "Player 2: Yes")
+(os_dx_bot_3_on "Player 3: Yes")
+(os_dx_bot_4_on "Player 4: Yes")
+(os_dx_bot_5_on "Player 5: Yes")
+(os_dx_bot_1_off "Player 1: No")
+(os_dx_bot_2_off "Player 2: No")
+(os_dx_bot_3_off "Player 3: No")
+(os_dx_bot_4_off "Player 4: No")
+(os_dx_bot_5_off "Player 5: No")
+(os_dx_bot_overdrive_on "Overdrive: Yes")
+(os_dx_bot_overdrive_off "Overdrive: No")
 
 ;ALWAYS KEEP THIS LAST SO IT LOADS ON TOP OF EVERYTHING ELSE
 ;user added locale strings

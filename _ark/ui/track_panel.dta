@@ -744,6 +744,19 @@
 
 {if $smashercustomtexture ;check if a new texture is queued
    {unless {== $smasher none} ;check the texture is not set to default
+      {if_else {|| {!= $smasher rb4v2} {!= $smasher rb2}}
+      {do
+         {gem_smashers_guitar_nomip.tex iterate_refs $ref {$ref set prelit TRUE}}
+         {gem_smashers_guitar.tex iterate_refs $ref {$ref set prelit TRUE}}
+         {gem_smashers_drum_nomip.tex iterate_refs $ref {$ref set prelit TRUE}}
+         {gem_smashers_drum.tex iterate_refs $ref {$ref set prelit TRUE}}
+      }
+      {do
+         {gem_smashers_guitar_nomip.tex iterate_refs $ref {$ref set prelit FALSE}}
+         {gem_smashers_guitar.tex iterate_refs $ref {$ref set prelit FALSE}}
+         {gem_smashers_drum_nomip.tex iterate_refs $ref {$ref set prelit FALSE}}
+         {gem_smashers_drum.tex iterate_refs $ref {$ref set prelit FALSE}}
+      }}
       {gem_smashers_guitar_nomip.tex set_bitmap {sprint "ui/track/smashers/gem_smashers_guitar_" $smasher ".png"}}
       {gem_smashers_guitar.tex set_bitmap {sprint "ui/track/smashers/gem_smashers_guitar_" $smasher ".png"}}
       {gem_smashers_drum_nomip.tex set_bitmap {sprint "ui/track/smashers/gem_smashers_drum_" $smasher ".png"}}
@@ -768,6 +781,7 @@
       {gliss_gems.tex set_bitmap {sprint "ui/track/gems/gliss_gems_" $gem ".png"}}
       {prism_gems.tex set_bitmap {sprint "ui/track/gems/prism_gems_" $gem ".png"}}
       {prism_gem_emissive.tex set_bitmap {sprint "ui/track/gems/prism_gem_emissive_" $gem ".png"}}
+      {prism_gem_emissive_dynamic.tex set_bitmap {sprint "ui/track/gems/prism_gem_emissive_dynamic_" $gem ".png"}}
       {prism_gem_keyboard_style.tex set_bitmap {sprint "ui/track/gems/prism_gem_keyboard_style_" $gem ".png"}}
    }
 }
@@ -903,7 +917,7 @@
       {if {&& {exists gamemode}{gamemode get play_track_intro_sfx}} ;if we are allowed to play the track intro sound effects for this track entry
          {$this play_seq track_beg.cue} ;play the track sound effects
          {unless
-            {|| ;check for a vareity of game modes where song speed is not allowed to be adjusted
+            {|| ;check for a variety of game modes where song speed is not allowed to be adjusted
                {gamemode in_mode pro_song_lessons_keyboard} {gamemode in_mode pro_song_lessons_real_guitar}
                {gamemode in_mode pro_song_lessons_real_bass} {gamemode in_mode drum_freestyle}
                {gamemode in_mode trainer} {gamemode in_mode trainer_drums} {gamemode in_mode trainer_pro_drums}

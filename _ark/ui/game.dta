@@ -21,6 +21,11 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {active_events_parser
          add_sink
          $this
@@ -59,6 +64,11 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {{gamemode get game_screen}
          set_showing
          TRUE}
@@ -77,6 +87,11 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {{gamemode get game_screen}
          set_showing
          TRUE}
@@ -109,6 +124,12 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $dx_mtvup FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {{{{gamemode get track_panel}
                find
                mtv_overlay}
@@ -148,6 +169,11 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {beatmatch set_realtime TRUE}
       {beatmatch
          foreach_active_player
@@ -176,6 +202,11 @@
       {set $bass_groove_active FALSE} {set $bass_firstnote FALSE} {set $guitar_firstnote FALSE} {set $real_bass_firstnote FALSE} {set $real_drum_firstnote FALSE} {set $real_guitar_firstnote FALSE} {set $keys_firstnote FALSE} {set $real_keys_firstnote FALSE} {set $drum_firstnote FALSE}
 	  {set $drum_groove_active FALSE}
 	  {set $guitar_groove_active FALSE}
+      {set $authorvar FALSE} ;clears out the variables used for song information to be populated again
+      {set $artistvar FALSE}
+      {set $yearvar FALSE}
+      {set $albumvar FALSE}
+      {set $dx_readdtaonce FALSE}
       {if
          {&&
             {==
@@ -234,10 +265,22 @@
       {if_else
          {modifier_mgr is_modifier_active mod_auto_play}
          {do
-            {beatmatch
-               foreach_active_player
-               $player
-               {$player set_auto_play 1}}}
+            {if {>= {beatmatch num_active_players} 1}
+               {{beatmatch active_player 0} set_auto_play $dx_bot_1}
+            }
+            {if {>= {beatmatch num_active_players} 2}
+               {{beatmatch active_player 1} set_auto_play $dx_bot_2}
+            }
+            {if {>= {beatmatch num_active_players} 3}
+               {{beatmatch active_player 2} set_auto_play $dx_bot_3}
+            }
+            {if {>= {beatmatch num_active_players} 4}
+               {{beatmatch active_player 3} set_auto_play $dx_bot_4}
+            }
+            {if {>= {beatmatch num_active_players} 5}
+               {{beatmatch active_player 4} set_auto_play $dx_bot_5}
+            }
+         }
          {do
             {beatmatch
                foreach_active_player

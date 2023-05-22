@@ -1,10 +1,61 @@
+#define DX_ALL_BOTS_ENABLED
+(
+   {&& 
+      $dx_bot_1
+      {&&
+         {&&
+            $dx_bot_2
+            $dx_bot_3
+         }
+         {&&
+            $dx_bot_4
+            $dx_bot_5
+         }
+      }
+   }
+)
+
 (callbacks
    (sixteenth_note
       {if_else
          $stagekit
          {stagekit_left_right kStageSweepLeft_fast kStageSweepRight_fast}
          {handle
-            (game quarterbeat)}})
+            (game quarterbeat)}}
+
+      {if {&& $dx_bot_overdrive {! DX_ALL_BOTS_ENABLED}} {do
+         {set $dx_tmp FALSE}
+         {beatmatch foreach_active_player $player 
+            {if {$player is_deploying} {set $dx_tmp TRUE}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 1} $dx_bot_1}
+            {set $player {beatmatch active_player 0}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 2} $dx_bot_2}
+            {set $player {beatmatch active_player 1}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 3} $dx_bot_3}
+            {set $player {beatmatch active_player 2}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 4} $dx_bot_4}
+            {set $player {beatmatch active_player 3}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 5} $dx_bot_5}
+            {set $player {beatmatch active_player 4}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+      }}
+
+   )
    (eighth_note
       {if
          $stagekit
@@ -12,6 +63,15 @@
          ;{if {exists beatmatch} {{{gamemode get track_panel} find mtv_overlay} setup_text}} ;dont do this it crashed endgame
          )
    (beat
+      {if {&& {modifier_mgr is_modifier_active mod_dx_showbpm} $dx_mtvup}
+         {set $dx_tmp {int {+ 0.5 {seconds_to_beat {/ {beatmatch get_song_ms} 1000}}}}}
+         {set $dx_bpm_counter {* {* 60 {/ 1 {- {beat_to_seconds {+ $dx_tmp 1}} {beat_to_seconds $dx_tmp}}}} $speedmod}}
+         {{{gamemode get track_panel} find mtv_overlay} setup_text} ;refresh the mtv overlay to show the current bpm
+      }
+      ; this is likely the single dumbest thing in the whole codebase
+      {if {! $dx_bot_overdrive}
+         {beatmatch foreach_active_player $player {$player empty_band_energy}}
+      }
    #ifdef HX_XBOX
       {unless
          {||
@@ -85,7 +145,19 @@
          {beatmatch set_music_speed $speedmod}
       }
    #endif
-	{if {modifier_mgr is_modifier_active mod_staticfills} {beatmatch foreach_active_player $player {switch {$player instrument} (bass) (guitar) (vocals) (drum {$player deploy_if_possible})}}}
+
+   {if_else {&& $dx_bot_overdrive {&& {modifier_mgr is_modifier_active mod_auto_play} DX_ALL_BOTS_ENABLED}}
+      {beatmatch foreach_active_player $player {unless {mod $measure 4} {$player deploy_if_possible}}}
+
+      {if {modifier_mgr is_modifier_active mod_staticfills}
+         {beatmatch foreach_active_player $player {switch {$player instrument}
+            (bass)
+            (guitar)
+            (vocals) 
+            (drum {$player deploy_if_possible})
+         }}
+      }
+   }
 	  {unless
          $stagekit
          {handle
@@ -108,7 +180,20 @@
       }
    )
    (cheat_error 0)
-   (autoplay_accuracy 100)
+   (autoplay_accuracy {switch $dx_bot_skill
+      (0 50)      ; 1 / 2
+      (1 80)      ; 1 / 5 
+      (2 90)      ; 1 / 10
+      (3 95)      ; 1 / 20
+      (4 96.666)  ; 1 / 30
+      (5 98)      ; 1 / 50
+      (6 99)      ; 1 / 100
+      (7 99.6)    ; 1 / 250
+      (8 99.8)    ; 1 / 500
+      (9 99.9)    ; 1 / 1000
+      (10 99.96)  ; 1 / 2500
+      (11 100)    ; 1 / infinity
+   })
    (pitch_bend_range 1)
    (ms_to_full_pitch_bend 1000)
    (cymbal_autoplay_ms 0)
