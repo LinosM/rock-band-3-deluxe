@@ -21,7 +21,6 @@ The purpose of this branch is to use an old version of Rock Band 3 Deluxe as a b
 ### Settings turned on by default
 
 - All Instruments Mode
-- Venue set to big_club_02
 - Mic Volumes set to 1
 - Miss Sounds off
 - Song Title always on

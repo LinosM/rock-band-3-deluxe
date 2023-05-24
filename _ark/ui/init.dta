@@ -1,8 +1,7 @@
 {set $speedmod 1.0}
 {set $leaderspeed 1.0}
-{set $force TRUE}
-;{set $forcedvenue VENUES}
-{set $venue big_club_02}
+{set $force FALSE}
+{set $forcedvenue VENUES}
 {set $screensaver TRUE}
 {set $gotcha TRUE}
 {set $trackspeed 1.15}
