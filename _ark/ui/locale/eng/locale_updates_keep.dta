@@ -959,3 +959,7 @@
 (mod_nopause "Disable in-game Pause")
 (mod_calibration "Calibration Mode")
 (mod_nosfx "No Scroll SFX")
+(overshell_keys
+   "5 Keys")
+(overshell_real_keys
+   "25 Pro Keys")
