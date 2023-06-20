@@ -5,6 +5,79 @@
 #define CUSTOMSOURCE (1) ;we can use custom sources
 ; #define KEYS_ENABLED (1); toggle this for legacy key upgrades
 ;#define STORE_ENABLED (1) ;show music store on main menu
+#define DX_FILE_PATH
+(
+   #ifdef HX_XBOX "GAME:/dx.dta" #endif
+   #ifdef HX_PS3 "GD:/dev_hdd0/game/BLUS30463/USRDIR/dx.dta" #endif
+)
+#define MOD_FILE_PATH
+(
+   #ifdef HX_XBOX "GAME:/mod.dta" #endif
+   #ifdef HX_PS3 "GD:/dev_hdd0/game/BLUS30463/USRDIR/mod.dta" #endif
+)
+#define VAL_FILE_PATH
+(
+   #ifdef HX_XBOX "GAME:/val.dta" #endif
+   #ifdef HX_PS3 "GD:/dev_hdd0/game/BLUS30463/USRDIR/val.dta" #endif
+)
+#define MENU_BACKGROUND_BIK_PATH
+(
+   #ifdef HX_XBOX "GAME:/main_background.bik" #endif
+   #ifdef HX_PS3 "GD:/dev_hdd0/game/BLUS30463/USRDIR/main_background.bik" #endif
+)
+#define DX_BOOT_FILE_CHECKER
+(
+   {$this check_dx}
+   {$this check_xeniawrites}
+)
+#define SV_PANEL_HANDLER
+(
+   {switch $svnumber
+      (0 "sv2_panel")
+      (1 "sv2_panel")
+      (2 "sv2_panel")
+      (3 "sv3_panel")
+      (4 "sv4_panel")
+      (5 "sv5_panel")
+      (6 "sv5_panel")
+      (7 "sv7_panel")
+      (8 "sv8_panel")
+      (9 "sv8_panel")
+      (10 "sv8_panel")
+      kDataUnhandled
+   }
+)
+#define SV_PANEL
+(
+   {if_else {file_exists MENU_BACKGROUND_BIK_PATH}
+      song_movie_panel
+      SV_PANEL_HANDLER
+   }
+)
+#define DX_MAIN_BUTTON_DISABLER
+(
+   {$this disable mb_shop.btn}
+   {$this disable customize_band.btn}
+   {$this disable customize_character.btn}
+   {if {! {modifier_mgr is_modifier_active mod_chmode}} {$this disable mb_trainers.btn}}
+   {$this disable mb_career.btn}
+   {$this disable pn_tour.btn}
+   {$this disable create_character.btn}
+   {$this disable mb_musicstore.btn}
+   {$this disable qp_setlist.btn}
+   {$this disable qp_fmp.btn}
+   {$this disable tour_new.btn}
+   {$this disable tour_fmp.btn}
+   {$this disable career_progress.btn}
+   {$this disable career_songs.btn}
+   {$this disable career_leaderboard.btn}
+   {if {! {modifier_mgr is_modifier_active mod_chmode}} {$this disable training_band_practice.btn}}
+   {$this disable training_trainers.btn}
+   {$this disable training_pro_song_lessons.btn}
+   {$this disable training_drum_freestyle.btn}
+   {$this disable dlc_store.btn}
+   {$this disable redeem_token.btn}
+)
 #define BLACK_VENUE
 (none)
 #define SMALL_CLUB_01
@@ -95,8 +168,42 @@
 (video_06)
 #define VIDEO_07
 (video_07)
+#define SMALL_VENUES
+(small_club_01 small_club_02 small_club_03 small_club_04 small_club_05 small_club_06 small_club_10 small_club_11 small_club_13 small_club_14 small_club_15)
+#define BIG_VENUES
+(big_club_01 big_club_02 big_club_04 big_club_05 big_club_06 big_club_07 big_club_08 big_club_09 big_club_10 big_club_11 big_club_12 big_club_13 big_club_14 big_club_15 big_club_17)
+#define ARENA_VENUES
+(arena_01 arena_02 arena_03 arena_04 arena_06 arena_07 arena_10 arena_11 arena_12)
+#define FESTIVAL_VENUES
+(festival_01 festival_02)
 #define ALL_VENUES
 (small_club_01 small_club_02 small_club_03 small_club_04 small_club_05 small_club_06 small_club_10 small_club_11 small_club_13 small_club_14 small_club_15 big_club_01 big_club_02 big_club_04 big_club_05 big_club_06 big_club_07 big_club_08 big_club_09 big_club_10 big_club_11 big_club_12 big_club_13 big_club_14 big_club_15 big_club_17 arena_01 arena_02 arena_03 arena_04 arena_06 arena_07 arena_10 arena_11 arena_12 festival_01 festival_02)
+#define DX_AUTOSAVE
+(
+   {unless
+      {'||'
+         {! $gotcha}
+         {modifier_mgr is_modifier_active mod_auto_play}
+      }
+      {saveload_mgr autosave}
+   }
+)
+#define DX_DISCONNECT
+(
+   {if
+      {||
+         {modifier_mgr is_modifier_active mod_auto_play}
+         {modifier_mgr is_modifier_active mod_auto_kick}
+      }
+      {do
+         {session send_msg_to_all {'`' (ui goto_screen meta_loading_main_screen) kNetReliable}}
+         {session send_msg_to_all {'`' (session disconnect) kNetReliable}}
+         {session send_msg_to_all {'`' (session_mgr disconnect) kNetReliable}}
+         {session disconnect}
+         {session_mgr disconnect}
+      }
+   }
+)
 #define DX_ALL_BOTS_ENABLED
 (
    {&& 
@@ -109,6 +216,69 @@
          {&&
             $dx_bot_4
             $dx_bot_5
+         }
+      }
+   }
+)
+#define DX_AUTOPLAYER_HANDLER
+(
+   {if_else {modifier_mgr is_modifier_active mod_auto_play}
+      {do
+         {if {>= {beatmatch num_active_players} 1}
+            {{beatmatch active_player 0} set_auto_play $dx_bot_1}
+         }
+         {if {>= {beatmatch num_active_players} 2}
+            {{beatmatch active_player 1} set_auto_play $dx_bot_2}
+         }
+         {if {>= {beatmatch num_active_players} 3}
+            {{beatmatch active_player 2} set_auto_play $dx_bot_3}
+         }
+         {if {>= {beatmatch num_active_players} 4}
+            {{beatmatch active_player 3} set_auto_play $dx_bot_4}
+         }
+         {if {>= {beatmatch num_active_players} 5}
+            {{beatmatch active_player 4} set_auto_play $dx_bot_5}
+         }
+      }
+      {do
+         {beatmatch foreach_active_player $player
+            {$player set_auto_play 0}
+         }
+      }
+   }
+)
+#define DX_BOT_OVERDRIVE_HANDLER
+(
+   {if {&& $dx_bot_overdrive {! DX_ALL_BOTS_ENABLED}}
+      {do
+         {set $dx_tmp FALSE}
+         {beatmatch foreach_active_player $player
+            {if {$player is_deploying} {set $dx_tmp TRUE}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 1} $dx_bot_1}
+            {set $player {beatmatch active_player 0}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 2} $dx_bot_2}
+            {set $player {beatmatch active_player 1}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 3} $dx_bot_3}
+            {set $player {beatmatch active_player 2}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 4} $dx_bot_4}
+            {set $player {beatmatch active_player 3}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
+         }
+         {if {&& {>= {beatmatch num_active_players} 5} $dx_bot_5}
+            {set $player {beatmatch active_player 4}}
+            {if $dx_tmp {$player deploy_if_possible}}
+            {if {>= {$player band_energy} 1} {$player deploy_if_possible}}
          }
       }
    }
@@ -138,20 +308,275 @@
       }
    }
 )
-#define DX_SET_SPEEDS
+#define DX_VENUE_SETTER
 (
    {unless
-      {||
-         {gamemode in_mode pro_song_lessons_keyboard} {gamemode in_mode pro_song_lessons_real_guitar}
-         {gamemode in_mode pro_song_lessons_real_bass} {gamemode in_mode drum_freestyle}
-         {gamemode in_mode trainer} {gamemode in_mode trainer_drums} {gamemode in_mode trainer_pro_drums}
-         {gamemode in_mode trainer_real_guitar} {gamemode in_mode trainer_pro_keyboard}
-         #ifdef HX_XBOX {gamemode in_mode audition} #endif {&& {gamemode in_mode practice} {> {gamecfg get practice_speed} 0}}
+      {'||'
+         {gamemode in_mode campaign}
+         {gamemode in_mode tour}
       }
-      {if {is_leader_local} {session send_msg_to_all {` (beatmatch set_music_speed {, $speedmod}) kNetReliable}}}
-      {beatmatch set_music_speed $speedmod}
+      {if_else {== $force TRUE} ;prioritizes a forced venue over the no music video modifier
+         {if_else {== $venue small_venues}
+            {do
+               {gamecfg set_venue {random_elem (SMALL_VENUES)}}
+               {meta_performer set_venue {random_elem (SMALL_VENUES)}}
+            }
+            {if_else {== $venue big_venues}
+               {do
+                  {gamecfg set_venue {random_elem (BIG_VENUES)}}
+                  {meta_performer set_venue {random_elem (BIG_VENUES)}}
+               }
+               {if_else {== $venue arena_venues}
+                  {do
+                     {gamecfg set_venue {random_elem (ARENA_VENUES)}}
+                     {meta_performer set_venue {random_elem (ARENA_VENUES)}}
+                  }
+                  {if_else {== $venue festival_venues}
+                     {do
+                        {gamecfg set_venue {random_elem (FESTIVAL_VENUES)}}
+                        {meta_performer set_venue {random_elem (FESTIVAL_VENUES)}}
+                     }
+                     {if_else {== $venue venues_video}
+                        {do
+                           {gamecfg set_venue {random_elem (VENUES_VIDEO)}}
+                           {meta_performer set_venue {random_elem (VENUES_VIDEO)}}
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         {do
+            {gamecfg set_venue $venue}
+            {meta_performer set_venue $venue}
+         }
+         {if 
+            {&&
+               {modifier_mgr is_modifier_active mod_nomv}
+               ;prevent online desync if host doesn't have no_mv turned on
+               {session_mgr is_leader_local}
+            }
+            ;selects a random venue from the VENUES array without VENUES_VIDEO
+            {do
+               {gamecfg set_venue {random_elem (VENUES)}}
+               {meta_performer set_venue {random_elem (VENUES)}}
+            }
+         }
+      }
+   }
+   {if $videobg {gamecfg set_venue BLACK_VENUE}}
+   {if $videobg {meta_performer set_venue BLACK_VENUE}}
+)
+#define DX_SPEED_SETTER
+(
+   {set $speedmod $leaderspeed}
+   {set $speedmod_top $leaderspeed}
+   {session send_msg_to_all {'`' (set $speedmod  {',' $leaderspeed}) kNetReliable}}
+)
+#define DX_SET_SPEEDS
+(
+   {if {exists gamemode}
+      {unless
+         {|| ;check for a variety of game modes where song speed is not allowed to be adjusted
+            {gamemode in_mode pro_song_lessons_keyboard} {gamemode in_mode pro_song_lessons_real_guitar}
+            {gamemode in_mode pro_song_lessons_real_bass} {gamemode in_mode drum_freestyle}
+            {gamemode in_mode trainer} {gamemode in_mode trainer_drums} {gamemode in_mode trainer_pro_drums}
+            {gamemode in_mode trainer_real_guitar} {gamemode in_mode trainer_pro_keyboard}
+            #ifdef HX_XBOX {gamemode in_mode audition} #endif ;audition is xbox only, ps3 will crash if you check for it
+            {&& {gamemode in_mode practice} {> {gamecfg get practice_speed} 0}} ;if we are in practice and selected something other than 100% speed
+         }
+         {if {is_leader_local} {session send_msg_to_all {` (beatmatch set_music_speed {, $speedmod}) kNetReliable}}}
+         {beatmatch set_music_speed $speedmod} ;apply the current selected speed in game
+      }
+      {if {&& {gamemode in_mode practice} {> {gamecfg get practice_speed} 0}} ;if we are in practice and selected something other than 100% speed
+         {beatmatch set_music_speed $modifier} ;apply the practice specific speed selection in game
+      }
    }
 )
+#define DX_TRACKSPEED_HANDLER
+(
+   (easy {* {'/' {if_else {modifier_mgr is_modifier_active mod_synced_track_speeds} 1.2 2.4} $trackspeed} $speedmod})
+   (medium {* {'/' {if_else {modifier_mgr is_modifier_active mod_synced_track_speeds} 1.2 2.0} $trackspeed} $speedmod})
+   (hard {* {'/' {if_else {modifier_mgr is_modifier_active mod_synced_track_speeds} 1.2 1.6} $trackspeed} $speedmod})
+   (expert {* {'/' 1.2 $trackspeed} $speedmod})
+)
+;inside the ark
+#define SONGPATH
+(
+   {song_mgr song_file_path {meta_performer song} "/../../gen/songs.dtb"} ;if we loaded a song from on disc, this is the location of the loaded songs.dta
+)
+;a dlc dta
+#define SONGPATH2
+(
+   {song_mgr song_file_path {meta_performer song} "/../../songs.dta"} ;if we loaded a dlc song, this is the location of the loaded songs.dta
+)
+;on disc update
+#define SONGPATH3
+(
+   {song_mgr song_file_path {meta_performer song} {sprint "/../../../dta_collection/gen/" {meta_performer song} ".dtb"}} ;if we loaded a dlc song that has an on disc update, we have to probe our lookup table
+)
+#define SONGPATH4
+(
+   {song_mgr song_file_path {meta_performer song} {sprint "/../../../dta_collection/dta_updates_collection/gen/" {meta_performer song} ".dtb"}} ;if we loaded a dlc song that has an on disc update, we have to probe our lookup table
+)
+#define MTV_READER
+(
+   {unless $dx_readdtaonce
+   {set $dx_readdtaonce TRUE}
+      {if_else {session_mgr is_local}
+         {do
+            {if {file_exists SONGPATH} {set $theactualpath SONGPATH}} ;inside the ark
+            {if {file_exists SONGPATH2} {set $theactualpath SONGPATH2}} ;a dlc dta
+            {if {file_exists SONGPATH3} {set $theactualpath SONGPATH3}} ;on disc update
+            {unless {|| {file_exists SONGPATH} {file_exists SONGPATH2} {file_exists SONGPATH3}} ;if we couldn't find a path that exists
+               {set $theactualpath {song_mgr song_file_path {meta_performer song} ""}} ;we need to set our var to an invalid state
+            }
+            {do
+               {if_else {file_exists $theactualpath} ;if we found a path that is valid
+                  {do
+                     {unless {== $theactualpath SONGPATH3}
+                        {set $songdtareader {read_file $theactualpath}} ;load the dta into memory
+                     }
+                     {if_else {file_exists SONGPATH3} ;if we have the dta already collected in our wares
+                        {set $authorvar "Harmonix"} ;assume the author is Harmonix
+                        {foreach $entry $songdtareader ;otherwise scan our loaded dta
+                           {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                              {if {find $entry author} ;check if we have an author tag in the dta
+                                 {set $authorvar {elem {find $entry author} 1}} ;apply the author tag to our tracked variable
+                              }
+                           }
+                        }
+                     }
+                     {if_else {== $theactualpath SONGPATH3}
+                        {do
+                           {set $songdtareader {read_file $theactualpath}} ;load the dta into memory
+                           {foreach $entry $songdtareader ;artist we have to read for every song, and SHOULD always be included in any loaded dta
+                              {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                                 {if {find $entry artist} ;check if we have an artist tag in the dta
+                                    {set $artistvar {elem {find $entry artist} 1}} ;apply the artist tag to our tracked variable
+                                 }
+                              }
+                           }
+                        }
+                        {foreach $entry $songdtareader ;artist we have to read for every song, and SHOULD always be included in any loaded dta
+                           {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                              {if {find $entry artist} ;check if we have an artist tag in the dta
+                                 {set $artistvar {elem {find $entry artist} 1}} ;apply the artist tag to our tracked variable
+                              }
+                           }
+                        }
+                     }
+                     {if {|| {modifier_mgr is_modifier_active mod_songtitlestats} {modifier_mgr is_modifier_active mod_fakejuke}}
+                        {if_else {== $theactualpath SONGPATH3} ;if we SPECIFICALLY are an on disc update
+                           {foreach $entry $songdtareader ;first probe the internal look up table
+                              {if {== {elem $entry 0} {basename {meta_performer song}}}
+                                 {if_else {find $entry year_released} ;check if we find a year value
+                                    {set $yearvar {elem {find $entry year_released} 1}} ;if we do, hooray!
+                                    {do 
+                                       {if {file_exists SONGPATH3} ;if we are specifically in on disc updates
+                                          {set $additionalreader {read_file SONGPATH4}} ;we need to load our additional dta information file
+                                      }
+                                      {foreach $entry $additionalreader ;if we didnt find year there, we need to scan our updates dta
+                                         {if {== {elem $entry 0} {basename {meta_performer song}}}
+                                            {if {find $entry year_released} ;check for year again
+                                               {set $yearvar {elem {find $entry year_released} 1}} ;hooray we found a year!
+                                            }
+                                         }
+                                      }
+                                    }
+                                 }
+                              }
+                           }
+                           {foreach $entry $songdtareader ;if we are reading on disc, or dlc, we can just read the damn year
+                              {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                                 {if {find $entry year_released} ;you better be there
+                                    {set $yearvar {elem {find $entry year_released} 1}} ;hooray we found a year!
+                                 }
+                              }
+                           }
+                        }
+                        {if_else {== $theactualpath SONGPATH3} ;if we SPECIFICALLY are an on disc update
+                           {foreach $entry $songdtareader ;first probe the internal look up table
+                              {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                                 {if_else {find $entry album_name} ;check if we find an album_name value
+                                    {set $albumvar {elem {find $entry album_name} 1}} ;if we do, hooray!
+                                    {do
+                                       {foreach $entry $additionalreader ;if we didnt find album_name there, we need to scan our updates dta
+                                          {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                                             {if {find $entry album_name} ;check for album_name again
+                                                {set $albumvar {elem {find $entry album_name} 1}} ;hooray we found an album_name!
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                           {foreach $entry $songdtareader ;if we are reading on disc, or dlc, we can just read the damn album_name
+                              {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
+                                 {if {find $entry album_name} ;check for album_name
+                                    {set $albumvar {elem {find $entry album_name} 1}} ;hooray we found a year!
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+                  {set $authorvar failed} ;if we couldn't find a file to load at all, we fucked up
+                 ;{set $authorvar {sprint "failed - path is: " $theactualpath}} ;if we couldn't find a file to load at all, we fucked up
+              }
+            }
+            ;{song.lbl set_token_fmt $authorvar}
+         }
+         kDataUnhandled
+      }
+   }
+)
+#define MTV_WRITER
+(
+   {do
+      {if {modifier_mgr is_modifier_active mod_fakejuke} ;if fake jukebox mode is enabled
+          {set $authorvar FALSE} ;just completely disregard the author so our next script lands in the correct spot
+      }
+      {if_else {&& $authorvar {modifier_mgr is_modifier_active mod_songtitlestats}};check if we have a valid author currently loaded
+         {artist.lbl set_token_fmt {sprint $artistvar ", " $yearvar "\n" $albumvar "\n" {localize author} ": " $authorvar}} ;if yes to author and detailed info, print everything we have
+         {if_else {&& {! $authorvar} {modifier_mgr is_modifier_active mod_songtitlestats}};check if we have a valid author currently loaded
+            {artist.lbl set_token_fmt {sprint $artistvar ", " $yearvar "\n" $albumvar "\n"}} ;if yes to author and detailed info, print everything we have
+            {if_else {&& $authorvar {! {modifier_mgr is_modifier_active mod_songtitlestats}}}
+               {artist.lbl set_token_fmt {sprint $artistvar "\n" {localize author} ": " $authorvar}} ;if yes to author and detailed info, print everything we have
+               {if_else {&& {! $authorvar} {! {modifier_mgr is_modifier_active mod_songtitlestats}}}
+                  {artist.lbl set_token_fmt {sprint $artistvar}} ;if detailed but no author present (fake jukebox) print what we do have
+                  {artist.lbl set_token_fmt {sprint $artistvar ", " $yearvar "\n" $albumvar "\n" {localize author} ": " $authorvar}} ;if detailed but no author present (fake jukebox) print what we do have
+               }
+            }
+         }
+      }
+   }
+)
+#define DX_ADDED_SOURCES
+(
+   (kFilterSource rb1_dlc)
+   (kFilterSource rb3_dlc)
+   (kFilterSource rb4_dlc)
+   (kFilterSource rb3dlc)
+   (kFilterSource rb4dlc)
+   (kFilterSource rbtp_acdc)
+   (kFilterSource rbtp_classic_rock)
+   (kFilterSource rbtp_country_1)
+   (kFilterSource rbtp_country_2)
+   (kFilterSource rbtp_metal)
+   (kFilterSource rbtp_vol_1)
+   (kFilterSource rbtp_vol_2)
+   (kFilterSource beatles)
+   (kFilterSource rb_blitz)
+)
+#define DX_ADDED_UGC
+(
+   (kFilterSource ugc1)
+   (kFilterSource ugc2)
+   (kFilterSource ugc_plus)
+)
+
 #define GEMCOLOR_SET
 (green red yellow blue orange)
 #define DRUMCOLOR_SET
@@ -277,4 +702,44 @@
          $sus5_color
       }
    }
+)
+#define DX_GAME_RESET_HANDLER
+(
+    ;clears out the variables used for song information, sinks, and callbacks to be populated again
+   {set $guitar_milosong FALSE}
+   {set $bass_milosong FALSE}
+   {set $real_guitar_milosong FALSE}
+   {set $real_drum_milosong FALSE}
+   {set $real_bass_milosong FALSE}
+   {set $keys_milosong FALSE}
+   {set $real_keys_milosong FALSE}
+   {set $drum_milosong FALSE}
+
+   {set $real_guitar_caughtmissed FALSE}
+   {set $real_bass_caughtmissed FALSE}
+   {set $real_drum_caughtmissed FALSE}
+   {set $real_keys_caughtmissed FALSE}
+   {set $keys_caughtmissed FALSE}
+   {set $guitar_caughtmissed FALSE}
+   {set $bass_caughtmissed FALSE}
+   {set $drum_caughtmissed FALSE}
+
+   {set $bass_firstnote FALSE}
+   {set $guitar_firstnote FALSE}
+   {set $real_bass_firstnote FALSE}
+   {set $real_drum_firstnote FALSE}
+   {set $real_guitar_firstnote FALSE}
+   {set $keys_firstnote FALSE}
+   {set $real_keys_firstnote FALSE}
+   {set $drum_firstnote FALSE}
+
+   {set $bass_groove_active FALSE}
+   {set $drum_groove_active FALSE}
+   {set $guitar_groove_active FALSE}
+
+   {set $authorvar FALSE}
+   {set $artistvar FALSE}
+   {set $yearvar FALSE}
+   {set $albumvar FALSE}
+   {set $dx_readdtaonce FALSE}
 )
