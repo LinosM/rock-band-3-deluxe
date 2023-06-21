@@ -39,13 +39,15 @@
 
 > Contains additional Keys/Pro Keys upgrades from [rb3_plus](https://github.com/rjkiv/rb3_plus). Significantly larger file size. More info [here](#-rb3_plus-keys-upgrades).
 
-📥 [RB3DX (Without Chart Fixes) for PS3](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-PS3-original-mids.zip)
+📥 [RB3DX (Original Song Updates) for PS3](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-PS3-original-mids.zip)
 
-> By default, Rock Band 3 Deluxe has chart upgrades to fix things, this build does not contain those.
+> By default, Rock Band 3 Deluxe contains additional song updates. This version reverts them to vanilla.
 
-📥 [RB3DX (Stock Instrument Mapping) for PS3](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-PS3-stock-instrument-mapping.zip)
+<br/>
 
-> Use this if you're on a real PS3 and using a Guitar Hero or Rock Revolution drum kit.
+Continue to: 
+    - [Installing on RPCS3](#-installing-on-rpcs3)
+    - [Installing on PS3](#-installing-on-ps3)
 
 ## Xbox 360
 ![last updated:](https://img.shields.io/github/last-commit/hmxmilohax/rock-band-3-deluxe?label=last%20updated%3A)
@@ -57,17 +59,23 @@
 
 > Contains additional Keys/Pro Keys upgrades from [rb3_plus](https://github.com/rjkiv/rb3_plus). Significantly larger file size. More info [here](#-rb3_plus-keys-upgrades).
 
-📥 [RB3DX (Without Chart Fixes) for Xbox 360](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-Xbox-original-mids.zip)
+📥 [RB3DX (Original Song Updates) for Xbox 360](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-Xbox-original-mids.zip)
 
-> By default, Rock Band 3 Deluxe has chart upgrades to fix things, this build does not contain those.
+> By default, Rock Band 3 Deluxe contains additional song updates. This version reverts them to vanilla.
 
 📥 [RB3DX (Series X/S Xenia) for Xbox 360](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-Xbox-Base-Force-Guitar-Controller.zip)
 
 > Forces all instruments to be Guitar controllers since Xenia UWP does not support them at the moment.
 
-📥 [RB3DX (Series X/S Xenia Without Chart Fixes) for Xbox 360](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-Xbox-original-mids-Force-Guitar-Controller.zip)
+📥 [RB3DX (Series X/S Xenia, Original Song Updates) for Xbox 360](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-Xbox-original-mids-Force-Guitar-Controller.zip)
 
 > See above two.
+
+<br/>
+
+Continue to: 
+    - [Installing on Xbox 360](#-installing-on-xbox-360)
+    - [Installing on Xbox Series X/S](#-installing-on-xbox-series-xs-xenia-uwp)
 
 ## Wii
 ![last updated:](https://img.shields.io/github/last-commit/hmxmilohax/rock-band-3-deluxe/wii?label=last%20updated%3A)
@@ -77,11 +85,16 @@
 
 <br/>
 
+Continue to: 
+    - [Installing on Wii/Dolphin (Outdated)](https://github.com/hmxmilohax/rock-band-3-deluxe/tree/wii#install)
+
+<br/>
+
 # 📩 How to Install
 
 ### Select your Platform of Choice
 
-  - [RPCS3 (Recommended for PC)](#-installing-on-rpcs3-recommended-for-pc)
+  - [RPCS3 (Recommended for PC)](#-installing-on-rpcs3)
   - [PlayStation 3](#-installing-on-ps3)
   - [Xbox 360](#-installing-on-xbox-360)
   - [Xbox Series X/S (Xenia UWP)](#-installing-on-xbox-series-xs-xenia-uwp)
@@ -89,7 +102,7 @@
   - [Wii (Unsupported)](https://github.com/hmxmilohax/rock-band-3-deluxe/tree/wii#install)
 <br/>
 
-## 📩 Installing on [RPCS3](https://rpcs3.net/) (Recommended for PC)
+## 📩 Installing on [RPCS3](https://rpcs3.net/)
 
 * **Install your North American copy of Rock Band 3** through the emulator. The [**official RPCS3 site covers this nicely**](https://rpcs3.net/quickstart).
   * Remember, **Rock Band 3 needs to be** ***BLUS30463***. RPCS3 will tell you this in the game selection GUI under the `Serial` column.
@@ -132,10 +145,6 @@ We highly recommend you check out [**Optional Upgrades**](#-optional-upgrades) f
 ### ✅ ***Rock Band 3 Deluxe is now installed!***
 
 We highly recommend you check out [**Optional Upgrades**](#-optional-upgrades) for songs and other cool stuff you can add to your game.
-
-<br/>
-
-***Sidenote:*** *if you're using a Guitar Hero or Rock Revolution drum kit, download the* [***Stock Instrument Mapping***](https://nightly.link/hmxmilohax/rock-band-3-deluxe/workflows/build/main/RB3DX-PS3-stock-instrument-mapping.zip) *version of Deluxe instead.*
 
 <br/>
 
@@ -214,7 +223,7 @@ We highly recommend you check out [**Optional Upgrades**](#-optional-upgrades) f
 ![D3D12](dependencies/images/d3d12.png)
 ![Readback Resolve](dependencies/images/readbackresolve.png)
 
-*This will fix all texture issues but will drastically affect the framerate, you also may experience BSODs. If you don't want to deal with any of this, we recommend using [RPCS3](#-installing-on-rpcs3-recommended-for-pc) instead.*
+*This will fix all texture issues but will drastically affect the framerate, you also may experience BSODs. If you don't want to deal with any of this, we recommend using [RPCS3](#-installing-on-rpcs3) instead.*
 
 <br/>
 
