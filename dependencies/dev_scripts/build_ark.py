@@ -25,7 +25,7 @@ def make_executable_binaries():
 
 # if xbox is true, build the Xbox ARK
 # else, build the PS3 ARK
-def build_patch_ark(xbox: bool):
+def build_patch_ark(xbox: bool, pull: bool):
     # directories used in this script
     print("Building Rock Band 3 Deluxe patch arks...")
     cwd = Path().absolute() # current working directory (dev_scripts)
@@ -42,10 +42,11 @@ def build_patch_ark(xbox: bool):
             make_executable_binaries()
     patch_hdr_version = "patch_xbox" if xbox else "patch_ps3"
 
-    # pull the latest changes from the Rock Band 3 Deluxe repo if necessary
-    if not check_git_updated(repo_url="https://github.com/hmxmilohax/rock-band-3-deluxe", repo_root_path=root_dir):
-        cmd_pull = "git pull https://github.com/hmxmilohax/rock-band-3-deluxe main".split()
-        subprocess.run(cmd_pull, shell=(platform == "win32"), cwd="..")
+    if pull:
+        # pull the latest changes from the Rock Band 3 Deluxe repo if necessary
+        if not check_git_updated(repo_url="https://github.com/hmxmilohax/rock-band-3-deluxe", repo_root_path=root_dir):
+            cmd_pull = "git pull https://github.com/hmxmilohax/rock-band-3-deluxe main".split()
+            subprocess.run(cmd_pull, shell=(platform == "win32"), cwd="..")
 
     # temporarily move other console's files out of the ark to reduce overall size
     for f in ark_dir.rglob(files_to_remove):

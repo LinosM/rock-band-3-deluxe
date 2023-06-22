@@ -9,5 +9,5 @@ if not download_mackiloha():
     print("Failed to download and extract Mackiloha-suite-archive.zip. Exiting.")
     sys.exit(1)
 
-if build_patch_ark(True, True):
+if build_patch_ark(True, False):
     print("You may find the files needed to place on your Xbox 360 in /_build/Xbox/.")
