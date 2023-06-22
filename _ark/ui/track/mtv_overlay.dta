@@ -21,21 +21,24 @@
                      {exists fade.anim}
                      {fade.anim animate}})))
          (enter
-            {$this set_pos}
-            {if
-               {exists game}
-               {game
-                  add_sink
-                  $this
-                  (intro_end)}
-               {$this setup_text}
-               {if
-                  {exists fade.anim}
-               {if_else {modifier_mgr is_modifier_active mod_songtitle}
-			   {fade.anim set_frame 50}
-			   {fade.anim set_frame 0}}}})
+            {$this set_pos} ;set the custom position of the mtv_overlay on enter
+            {if {exists game}
+               {set $dx_mtvup TRUE}
+               {game add_sink $this (intro_end)}
+               {$this setup_text} ;setup the text with all parameters we currently have enabled
+               {if {exists fade.anim}
+                  {if_else {modifier_mgr is_modifier_active mod_songtitle} ;if song title always is enable
+                     {fade.anim set_frame 50} ;set the current frame of the fade animation to 50, which is all the way on
+                     {fade.anim set_frame 0} ;set the current frame of the fade animation to 0, which is invisible
+                  }
+               }
+            }
+         )
          (set_pos
-            {Group.grp set_local_pos $mtvpos_0 $mtvpos_1 $mtvpos_2}
+            {if_else {modifier_mgr is_modifier_active mod_fakejuke} ;check if fake jukebox mode is enabled
+               {Group.grp set_local_pos 0 -30 -136} ;if it is, hard set the location of the mtv overlay for style
+               {Group.grp set_local_pos $mtvpos_0 $mtvpos_1 $mtvpos_2} ;otherwise put it in the custom location
+            }
          )
          (exit
             {if
@@ -46,86 +49,60 @@
                {&&
                   {exists game}
                   {gamemode get show_mtv_overlay}
-                  {exists fade.anim}}
-               {$this setup_text}
-			   {if
                   {exists fade.anim}
-               {if_else {modifier_mgr is_modifier_active mod_songtitle}
-			   {fade.anim set_frame 50}
-			   {fade.anim animate}}}
-               })
+               }
+               {$this setup_text} ;setup the text with all parameters we currently have enabled
+               {if {exists fade.anim}
+                  {if_else {modifier_mgr is_modifier_active mod_songtitle} ;if song title always is enable
+                     {fade.anim set_frame 50} ;set the current frame of the fade animation to 50, which is all the way on
+                     {fade.anim animate} ;otherwise animate the entire animation from off, to on, to off again
+                  }
+               }
+            }
+         )
          (setup_text
             {do
                ($short_name
                   {meta_performer song}
                )
-               ;inside the ark
-               #define SONGPATH
-               (
-                  {song_mgr song_file_path {meta_performer song} "/../../gen/songs.dtb"}
-               )
-               ;a dlc dta
-               #define SONGPATH2
-               (
-                  {song_mgr song_file_path {meta_performer song} "/../../songs.dta"}
-               )
-               ;internal Look Up Table
-               #define SONGPATH3
-               (
-                  {song_mgr song_file_path {meta_performer song} "/../../gen/vanilla_songs_lut.dtb"}
+               ($song_title
+                  {{song_mgr get_meta_data {meta_performer song}} title}
                )
                {if {exists song.lbl}
-                ;{set $debugmode TRUE}
-                  {set $testingvar 'author not found'}
-                  {if_else $debugmode
-                     {do
-                        {if {file_exists SONGPATH} {set $theactualpath SONGPATH}} ;inside the ark
-                        {if {file_exists SONGPATH2} {set $theactualpath SONGPATH2}} ;a dlc dta
-                        {if {file_exists SONGPATH3} {set $theactualpath SONGPATH3}} ;a dlc dta
-                        {unless {|| {file_exists SONGPATH} {file_exists SONGPATH2} {file_exists SONGPATH3}}
-                           {set $theactualpath {song_mgr song_file_path {meta_performer song} ""}}
-                        }
-                        {if_else {file_exists $theactualpath}
-                           {do
-                              {set $songdtareader {read_file $theactualpath}}
-                              {foreach $entry $songdtareader
-                                 {if {== {elem $entry 0} {basename $short_name}}
-                                    {if {find $entry author}
-                                       {set $testingvar {elem {find $entry author} 1}}
-                                    }
-                                 }
-                              }
-                           }
-                           {set $testingvar {sprint "failed - path is: " $theactualpath}}
-                        }
-                        {song.lbl set_token_fmt $testingvar}
+                  {do
+                     MTV_READER
+                     {set $dx_tmp ""}
+                     {set $dx_tmp2 ""}
+                     {if {modifier_mgr is_modifier_active mod_fastermode}
+                        {set $dx_tmp2 {sprint $dx_tmp2 {localize mod_fastermode} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%) " }}
                      }
-                     {do
-                        {if_else {&& {modifier_mgr is_modifier_active mod_chmode} {!= $speedmod 1.0}}
-                           {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)" "\nCH MODE"}} 
-                           {if_else {&& {modifier_mgr is_modifier_active mod_auto_play} {!= $speedmod 1.0}}
-                              {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)" "\nAUTOPLAY"}}
-                              {if_else {modifier_mgr is_modifier_active mod_chmode}
-                                 {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\nCH MODE"}}
-                                 {if_else {modifier_mgr is_modifier_active mod_auto_play}
-                                    {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\nAUTOPLAY"}}
-                                    {if_else {modifier_mgr is_modifier_active mod_fastermode}
-                                       {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} "\n" {localize mod_fastermode} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)"}}
-                                       {if_else {!= $speedmod 1.0}
-                                          {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)"}}
-                                          {song.lbl set_song_name $short_name}
-                                       }
-                                    }
-                                 }
-                              }
-                           }
+                     {if {modifier_mgr is_modifier_active mod_chmode}
+                        {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "DRUNK MODE"}}
+                     }
+                     {if {&& {modifier_mgr is_modifier_active mod_auto_play} {! {modifier_mgr is_modifier_active mod_fakejuke}}}
+                        {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "AUTOPLAY"}}
+                     }
+                     {if {modifier_mgr is_modifier_active mod_dx_showbpm}
+                        {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "BPM: " $dx_bpm_counter}
                         }
+                     }
+                     {if {&& {!= $speedmod 1.0} {! {modifier_mgr is_modifier_active mod_fastermode}}}
+                        {set $dx_tmp {sprint $dx_tmp " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)" }}
+                     }
+                     {if {!= $dx_tmp2 ""}
+                        {set $dx_tmp {sprint $dx_tmp "\n" $dx_tmp2}}
+                     }
+                     {if_else {!= $dx_tmp ""}
+                        {song.lbl set_token_fmt {sprint $song_title $dx_tmp}}
+                        {song.lbl set_song_name $short_name} ;if nothing else needs to be reported at all. just print the shortname
                      }
                   }
                }
-               {if
-                  {exists artist.lbl}
-                  {artist.lbl set_artist_name_from_shortname $short_name}
+               {if {exists artist.lbl}
+                  {if_else {!= $authorvar failed}
+                     MTV_WRITER
+                     {artist.lbl set_artist_name_from_shortname $short_name} ;this is the vanilla function for setting the author line we no longer use
+                  }
                }
             }
          )

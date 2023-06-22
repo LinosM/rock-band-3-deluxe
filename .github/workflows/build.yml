@@ -3,6 +3,34 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  
+  build_updates_only:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Remove PS3 files
+        run: |
+          find . -name "*.*_ps3" -type f -delete
+      - name: Clean up files
+        run: |
+           rm _ark/songs/missing_song_data.dta
+           rm _ark/songs/missing_song_data_updates.dta
+           rm  -rf _ark/songs/dta_sections
+           rm  -rf _ark/songs/dta_collection
+           mv _ark/songs/beencaughtstealing _ark/songs/updates/beencaughtstealing
+           mv _ark/songs/getupstandup _ark/songs/updates/getupstandup
+           mv _ark/songs/nooneknows _ark/songs/updates/nooneknows
+           mv _ark/songs/radarlove _ark/songs/updates/radarlove
+           mv _ark/songs/thepoweroflove _ark/songs/updates/thepoweroflove
+           mv _ark/songs/updates _ark/songs/songs_updates
+      
+      - name: Upload result
+        uses: actions/upload-artifact@v2
+        with:
+          name: RB3DX-YARG-Updates
+          path: _ark/songs
+
   build_xbox_standard:
     runs-on: ubuntu-latest
 
@@ -25,9 +53,6 @@ jobs:
           chmod +x dependencies/linux/superfreq
           pip install gitpython
           pip install mido
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove PS3 files
         run: |
           find . -name "*.*_ps3" -type f -delete
@@ -67,9 +92,6 @@ jobs:
           chmod +x dependencies/linux/superfreq
           pip install gitpython
           pip install mido
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove PS3 files
         run: |
           find . -name "*.*_ps3" -type f -delete
@@ -77,7 +99,7 @@ jobs:
         run: |
           echo $GITHUB_SHA_SHORT
           python dependencies/dev_scripts/add_devbuild.py $GITHUB_SHA_SHORT
-          sed -i -e "s/;#define PAD_IS_ACTUAL_GUITAR (1)/#define PAD_IS_ACTUAL_GUITAR (1)/" _ark/config/macros.dta
+          sed -i -e "s/;#define PAD_IS_ACTUAL_GUITAR (1)/#define PAD_IS_ACTUAL_GUITAR (1)/" _ark/config/dx_macros.dta
       - name: Build ARK
         run: |
           dependencies/linux/arkhelper dir2ark ./_ark ./_build/xbox/gen -n "patch_xbox" -e -v 6
@@ -117,9 +139,6 @@ jobs:
       - name: Disable mid updates in dta
         run: |
           python dependencies/dev_scripts/disable_chart_updates.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove PS3 files
         run: |
           find . -name "*.*_ps3" -type f -delete
@@ -166,9 +185,6 @@ jobs:
       - name: Disable mid updates in dta
         run: |
           python dependencies/dev_scripts/disable_chart_updates.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove PS3 files
         run: |
           find . -name "*.*_ps3" -type f -delete
@@ -176,7 +192,7 @@ jobs:
         run: |
           echo $GITHUB_SHA_SHORT
           python dependencies/dev_scripts/add_devbuild.py $GITHUB_SHA_SHORT
-          sed -i -e "s/;#define PAD_IS_ACTUAL_GUITAR (1)/#define PAD_IS_ACTUAL_GUITAR (1)/" _ark/config/macros.dta
+          sed -i -e "s/;#define PAD_IS_ACTUAL_GUITAR (1)/#define PAD_IS_ACTUAL_GUITAR (1)/" _ark/config/dx_macros.dta
       - name: Build ARK
         run: |
           dependencies/linux/arkhelper dir2ark ./_ark ./_build/xbox/gen -n "patch_xbox" -e -v 6
@@ -209,9 +225,6 @@ jobs:
           chmod +x dependencies/linux/superfreq
           pip install gitpython
           pip install mido
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Add rb3_plus keys into the patch ark
         run: |
           python dependencies/dev_scripts/add_rb3_plus_keys.py
@@ -253,9 +266,6 @@ jobs:
       - name: fetch TrueAncestor PKG Repacker
         run: |
           python dependencies/dev_scripts/download_ta_pkg_repacker.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove Xbox files
         run: |
           Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
@@ -302,14 +312,11 @@ jobs:
           python dependencies/dev_scripts/download_ta_pkg_repacker.py
       - name: Revert mid updates to their originals
         run: |
-          Get-ChildItem _ark/ -recurse -include *.mid | remove-item
+          Get-ChildItem _ark/ -recurse -include *.mid | Sort-Object -Property FullName -Descending | remove-item
           Get-ChildItem -Recurse -Directory | ? { -Not ($_.EnumerateFiles('*',1) | Select-Object -First 1) } | Remove-Item -Recurse
       - name: Disable mid updates in dta
         run: |
           python dependencies/dev_scripts/disable_chart_updates.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Remove Xbox files
         run: |
           Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
@@ -354,9 +361,6 @@ jobs:
       - name: fetch TrueAncestor PKG Repacker
         run: |
           python dependencies/dev_scripts/download_ta_pkg_repacker.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
       - name: Add rb3_plus keys into the patch ark
         run: |
           python dependencies/dev_scripts/add_rb3_plus_keys.py
@@ -381,50 +385,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: RB3DX-PS3-keys
-          path: '*.pkg'
-
-  build_ps3_stock_inst_mapping:
-    runs-on: windows-2019
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download Mackiloha
-        run: |
-          pip install requests
-          python dependencies/dev_scripts/download_mackiloha.py
-      - name: Set env
-        run: |
-          pip install mido
-          pip install gitpython
-          pip install requests
-      - name: fetch TrueAncestor PKG Repacker
-        run: |
-          python dependencies/dev_scripts/download_ta_pkg_repacker.py
-      - name: Add rb3_plus pro strings into the patch ark
-        run: |
-          python dependencies/dev_scripts/add_rb3_plus_pro_strings.py
-      - name: Remove Xbox files
-        run: |
-          Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
-      - name: Restore stock instrument mapping
-        run: |
-          python dependencies/dev_scripts/enable_stock_pad.py
-      - name: Print build info
-        run: |
-          $GITHUB_SHA_SHORT="$(git rev-parse --short HEAD)".ToUpper()
-          python dependencies/dev_scripts/add_devbuild.py $GITHUB_SHA_SHORT
-      - name: Build ARK
-        run: |
-          dependencies/windows/arkhelper.exe dir2ark _ark _build/ps3/USRDIR/gen -n "patch_ps3" -e -v 6
-      - name: Build PKG
-        run: |
-          $sha_short="$(git rev-parse --short HEAD)".ToUpper()
-          $content="UP8802-BLUS30463_00-RB3DXINST"
-          $packageversion="1.05"
-          dependencies/ta_pkg_repacker_tools/make_package_npdrm_retail.exe --k-licensee 0x00000000000000000000000000000000 --drm-type Local --package-version $packageversion --content-type GameData --content-id ($content + $sha_short) dependencies/ta_pkg_repacker_tools/package.conf _build/ps3
-
-      - name: Upload result
-        uses: actions/upload-artifact@v3
-        with:
-          name: RB3DX-PS3-stock-instrument-mapping
           path: '*.pkg'

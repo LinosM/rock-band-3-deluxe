@@ -125,9 +125,10 @@
                $size_frame
                {'+'
                   $aspect_frame_offset
-                  {if_else {&& $forcemultiangle {> $multiangle [num_gem_tracks]}}
-                  $multiangle
-                  [num_gem_tracks]}}}
+                  {if_else {&& $forcemultiangle {> $multiangle [num_gem_tracks]}} ; dx - allows forcing of different track angles based of # of players
+                     $multiangle
+                     [num_gem_tracks]}}
+            }
             {switch
                $track_slot
                (0
@@ -851,44 +852,20 @@
                reset}))))
 (view_times
    (drum
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (bass
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (guitar
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (real_guitar
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.2 $trackspeed} $speedmod})
-      (hard {* {'/' 1.8 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (real_bass
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.2 $trackspeed} $speedmod})
-      (hard {* {'/' 1.8 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (real_keys
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (keys
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (pending
-      (easy {* {'/' 2.4 $trackspeed} $speedmod})
-      (medium {* {'/' 2.0 $trackspeed} $speedmod})
-      (hard {* {'/' 1.6 $trackspeed} $speedmod})
-      (expert {* {'/' 1.2 $trackspeed} $speedmod}))
+      DX_TRACKSPEED_HANDLER)
    (description
       "Specifies track speed via view times for various difficulties on various instruments."))
