@@ -28,7 +28,7 @@
             (game beat)}})
    (downbeat
       DX_SET_SPEEDS
-      {if {modifier_mgr is_modifier_active mod_staticfills}
+      {if {modifier_mgr is_modifier_active mod_static_fills}
          {beatmatch foreach_active_player $player
             {switch {$player instrument}
                (bass)
