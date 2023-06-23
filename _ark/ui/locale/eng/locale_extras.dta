@@ -3,9 +3,10 @@
 ;ex.
 ;(overshell_rb3esettings "FART Settings")
 
-(linosrb
-	"Linos' Customs")
-(3rs
-	"ThreeAreEss' Customs")
-(prc_fight_the_power
-	"Fight the power!")
+(linosrb "Linos' Customs")
+(3rs "ThreeAreEss' Customs")
+(prc_fight_the_power "Fight the power!")
+(mod_force22gtr "Force 22 Fret Pro Guitar")
+(mod_force22gtr_desc "Forces the 22 fret Pro Guitar chart to be played on any instrument\n(Author Use Only)")
+(mod_force22bass "Force 22 Fret Pro Bass")
+(mod_force22bass_desc "Forces the 22 fret Pro Bass chart to be played on any instrument\n(Author Use Only)")
