@@ -12,7 +12,7 @@ if not download_mackiloha():
     print("Failed to download and extract Mackiloha-suite-archive.zip. Exiting.")
     sys.exit(1)
 
-if build_patch_ark(True):
+if build_patch_ark(True, True):
     print("Checking for updates to Xenia Canary")
     setup_xenia()
     cmd_xenia = "_xenia\\xenia_canary.exe _build\\xbox\\default.xex"
