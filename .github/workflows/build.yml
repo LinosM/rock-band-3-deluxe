@@ -73,6 +73,7 @@ jobs:
       - name: Remove Xbox files
         run: |
           Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
+          Get-ChildItem _ark/ -recurse -include *.*_wii | remove-item
       - name: Print build info
         run: |
           $GITHUB_SHA_SHORT="$(git rev-parse --short HEAD)".ToUpper()
