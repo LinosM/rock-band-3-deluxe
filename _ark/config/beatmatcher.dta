@@ -38,7 +38,7 @@
       #endif)
    (downbeat
       DX_SET_SPEEDS
-      ;DX_DRUM_OD_DEPLOY_HANDLER
+      DX_DRUM_OD_DEPLOY_HANDLER
       {unless
          $stagekit
          {handle
