@@ -1,3 +1,32 @@
+DX_LOG_CLEAR
+{func
+   dx_log_writer
+   ($dx_log_writer)
+   #ifndef HX_WII
+   {if {modifier_mgr is_modifier_active mod_dx_logging}
+      {do
+         DX_GAMEMODE_CHECKER
+         {if_else {file_exists LOG_FILE_PATH}
+            {set $dx_log_reader {read_file LOG_FILE_PATH}}
+            {set $dx_log_reader ("start of log")}
+         }
+         {if {== $dx_log_counter 3}
+            {push_back $dx_log_reader "Game Entered three times, starting new log."}
+            {write_file PREV_LOG_FILE_PATH $dx_log_reader}
+            {set $dx_log_counter 0}
+            {set $dx_log_reader ({sprint "Game Entered three times, log reset. Number of songs completed this session: " $dx_num_songs_this_session})}
+         }
+         {push_back $dx_log_reader $dx_log_writer}
+         {write_file LOG_FILE_PATH
+            {array
+               $dx_log_reader
+            }
+         }
+      }
+   }
+   #endif
+}
+DX_CURRENT_SONG_CLEAR
 ;sets default all instruments highway. must set variable to TRUE, name your selected texture
 ;list can be found in _ark\ui\track\highways\highways.dta
 {set $highway none}
@@ -178,6 +207,13 @@
 {set $dx_smasher3_color 2} ;blue
 {set $dx_smasher4_color 3} ;green
 
+{set $dx_protar_color1 0}
+{set $dx_protar_color2 1}
+{set $dx_protar_color3 2}
+{set $dx_protar_color4 3}
+{set $dx_protar_color5 4}
+{set $dx_protar_color6 5}
+
 ;set default colors for overdrive textures (gold)
 {set $emissive_r 0.71}
 {set $emissive_g 0.54}
@@ -202,6 +238,11 @@
 {set $dx_bot_overdrive TRUE}
 
 {set $dx_bot_skill 11}
+
+;log stuff
+{set $mod_dx_logging TRUE}
+{set $dx_num_songs_this_session 0}
+{set $dx_gamemode init}
 
 ;set controller reassignments
 {set $dx_joypad_type_guitar kControllerGuitar}
@@ -238,6 +279,11 @@ DX_PS3_HW_DETECTION
 {set $toggledthisboot FALSE}
 {set $dx_no_message_sound FALSE}
 {set $dx_menu_message ""}
+{if {modifier_mgr is_modifier_active mod_current_song_logging}
+   {unless {modifier_mgr is_modifier_active mod_songtitlestats}
+      {modifier_mgr toggle_modifier_enabled mod_songtitlestats} ;turn on song title stats if using this modifier
+   }
+}
 
 ;reset textures if set to rb3
 {do DX_TEXTURE_RESET_HANDLER}
@@ -309,6 +355,7 @@ DX_PS3_HW_DETECTION
 ;default pp
 {unless $blurisbackon {modifier_mgr toggle_modifier_enabled mod_noblur}}
 {unless $crustisbackon {modifier_mgr toggle_modifier_enabled mod_nocrust}}
+{if $mod_dx_logging {modifier_mgr toggle_modifier_enabled mod_dx_logging}}
 
 ;force a venue name. found in macros.dta.
 ;the following is all possible venue names internally

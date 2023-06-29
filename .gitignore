@@ -65,3 +65,6 @@ dependencies/windows/arkhelper.exe
 dependencies/windows/dtab.exe
 dependencies/windows/superfreq.exe
 *.bak*
+_build/xbox/log.dta
+_build/xbox/last_log.dta
+_build/xbox/currentsong.txt

@@ -47,7 +47,7 @@
                   {exists game}
                   {gamemode get show_mtv_overlay}
                   {exists fade.anim}}
-               {$this setup_text}
+               #ifdef HX_WII {$this setup_text} #endif ; dx - dont do this twice pls
                {if_else
                   {gamemode is_tour}
                   {script_task
@@ -55,9 +55,11 @@
                      (delay 7.0)
                      (script
                         {fade.anim animate})}
-               {if_else {modifier_mgr is_modifier_active mod_songtitle}
-                  {fade.anim set_frame 50} ;set the current frame of the fade animation to fully visible
-                  {fade.anim animate}}}})
+               {if_else {modifier_mgr is_modifier_active mod_current_song_logging}
+                     {fade.anim set_frame 0} ;set the current frame of the fade animation to fully visible
+                     {if_else {modifier_mgr is_modifier_active mod_songtitle}
+                        {fade.anim set_frame 50} ;set the current frame of the fade animation to fully visible
+                        {fade.anim animate}}}}})
          (setup_text
             {do
                ($short_name
@@ -66,6 +68,9 @@
                   {{song_mgr get_meta_data {meta_performer song}} title}
                )
                MTV_WRITER_CHOOSER ; dx - this is where we run mtv overlay setup
+               {unless $dx_mtv_read_once
+                  {set $dx_mtv_read_once TRUE}
+               }
             }
          )
       )

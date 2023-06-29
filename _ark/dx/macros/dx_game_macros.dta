@@ -1,211 +1,3 @@
-#define DX_GEMCOLOR_SET
-(green red yellow blue orange)
-#define DX_DRUMCOLOR_SET
-(red yellow blue green)
-#define NORMALGEM_SET
-(gem_green.wid gem_red.wid gem_yellow.wid gem_blue.wid gem_orange.wid star_gem.wid)
-#define HOPOGEM_SET
-(gem_green_hopo.wid gem_red_hopo.wid gem_yellow_hopo.wid gem_blue_hopo.wid gem_orange_hopo.wid star_hopo.wid)
-#define KICK_SET
-(gem_kick.wid star_kick.wid)
-#define DRUMGEM_SET
-(drum_red.wid drum_yellow.wid drum_blue.wid drum_green.wid drum_star.wid)
-#define CYM_SET
-(cymbal_gem_red.wid cymbal_gem_yellow.wid cymbal_gem_blue.wid cymbal_gem_green.wid cymbal_gem_star.wid)
-#define COLOR_SHUFFLE_SLOT_0
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot0_color
-   }
-)
-#define COLOR_SHUFFLE_SLOT_1
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot1_color
-   }
-)
-#define COLOR_SHUFFLE_SLOT_2
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot2_color
-   }
-)
-#define COLOR_SHUFFLE_SLOT_3
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot3_color
-   }
-)
-#define COLOR_SHUFFLE_SLOT_4
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot4_color
-   }
-)
-#define COLOR_SHUFFLE_SLOT_5
-(
-   {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-      {random_int 0 5}
-      $slot5_color
-   }
-)
-#define DRUMGEM_SLOT1
-(
-   {elem (DRUMGEM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $drum1_color
-      }
-   }
-)
-#define DRUMGEM_SLOT2
-(
-   {elem (DRUMGEM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $drum2_color
-      }
-   }
-)
-#define DRUMGEM_SLOT3
-(
-   {elem (DRUMGEM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $drum3_color
-      }
-   }
-)
-#define DRUMGEM_SLOT4
-(
-   {elem (DRUMGEM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $drum4_color
-      }
-   }
-)
-#define CYMGEM_SLOT1
-(
-   {elem (CYM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $cym1_color
-      }
-   }
-)
-#define CYMGEM_SLOT2
-(
-   {elem (CYM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $cym2_color
-      }
-   }
-)
-#define CYMGEM_SLOT3
-(
-   {elem (CYM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $cym3_color
-      }
-   }
-)
-#define CYMGEM_SLOT4
-(
-   {elem (CYM_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 4}
-         $cym4_color
-      }
-   }
-)
-#define KICKGEM_SLOT
-(
-   {elem
-      (KICK_SET)
-      $kick_color
-   }
-)
-#define DX_SLOT_COLORS
-(
-   {elem (DX_GEMCOLOR_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 5}
-         $sus1_color
-      }
-   }
-   {elem (DX_GEMCOLOR_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 5}
-         $sus2_color
-      }
-   }
-   {elem (DX_GEMCOLOR_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 5}
-         $sus3_color
-      }
-   }
-   {elem (DX_GEMCOLOR_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 5}
-         $sus4_color
-      }
-   }
-   {elem (DX_GEMCOLOR_SET)
-      {if_else {modifier_mgr is_modifier_active mod_mhx_color_shuffle}
-         {random_int 0 5}
-         $sus5_color
-      }
-   }
-)
-#define DX_SMASHER_COLOR_SETTER
-(
-   {unless [real_guitar]
-      {if_else [is_drum]
-         {do
-            {gem_smasher1 set_color
-               {if_else [lefty]
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher4_color}
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher1_color}
-               }
-            }
-            {gem_smasher2 set_color
-               {if_else [lefty]
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher3_color}
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher2_color}
-               }
-            }
-            {gem_smasher3 set_color
-               {if_else [lefty]
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher2_color}
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher3_color}
-               }
-            }
-            {gem_smasher4 set_color
-               {if_else [lefty]
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher1_color}
-                  {elem (DX_DRUMCOLOR_SET) $dx_smasher4_color}
-               }
-            }
-         }
-         {do
-            {gem_smasher0 set_color {elem (DX_GEMCOLOR_SET) $dx_fret1_color}}
-            {gem_smasher1 set_color {elem (DX_GEMCOLOR_SET) $dx_fret2_color}}
-            {gem_smasher2 set_color {elem (DX_GEMCOLOR_SET) $dx_fret3_color}}
-            {gem_smasher3 set_color {elem (DX_GEMCOLOR_SET) $dx_fret4_color}}
-            {gem_smasher4 set_color {elem (DX_GEMCOLOR_SET) $dx_fret5_color}}
-         }
-      }
-   }
-)
 #define DX_ALL_BOTS_ENABLED
 (
    {&& 
@@ -226,6 +18,7 @@
 (
    {if_else {modifier_mgr is_modifier_active mod_auto_play}
       {do
+         {dx_log_writer {sprint "Setting Autoplayers - 1: " $dx_bot_1 " - 2: " $dx_bot_2 " - 3: " $dx_bot_3 " - 4: " $dx_bot_4 " - 5: " $dx_bot_5}}
          {if {>= {beatmatch num_active_players} 1}
             {{beatmatch active_player 0} set_auto_play $dx_bot_1}
          }
@@ -251,6 +44,7 @@
 )
 #define DX_BOT_OVERDRIVE_HANDLER
 (
+   ;runs in beatmatcher, do not add log
    {if {&& $dx_bot_overdrive {! DX_ALL_BOTS_ENABLED}}
       {do
          {set $dx_tmp FALSE}
@@ -288,12 +82,14 @@
 #define DX_BOT_OVERDRIVE_DEPLETION_HANDLER
 (
    ; this is likely the single dumbest thing in the whole codebase
+   ;runs in beatmatcher, do not add log
    {if {! $dx_bot_overdrive}
       {beatmatch foreach_active_player $player {$player empty_band_energy}}
    }
 )
 #define DX_DRUM_OD_DEPLOY_HANDLER
 (
+   ;runs in beatmatcher, do not add log
    {if {modifier_mgr is_modifier_active mod_static_fills}
       {beatmatch foreach_active_player $player
          {if {== {$player instrument} drum}
@@ -304,10 +100,12 @@
 )
 #define DX_VENUE_SETTER
 (
-   {unless
-      {'||'
-         {gamemode in_mode campaign}
-         {gamemode in_mode tour}
+   {dx_log_writer {sprint "Setting Venue - Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {if
+      {||
+         {gamemode in_mode defaults} {gamemode in_mode qp_party_shuffle}
+         {gamemode in_mode qp_coop} {gamemode in_mode party_shuffle}
+         {gamemode in_mode practice} {gamemode in_mode qp_practice}
       }
       {if_else {== $force TRUE} ;prioritizes a forced venue over the no music video modifier
          {if_else {== $venue small_venues}
@@ -367,11 +165,42 @@
             }
          }
       }
+      {dx_log_writer {sprint "Venue set to " $venue " - Forced: " $force}}
+   }
+)
+#define DX_GAMEMODE_CHECKER
+(
+   {if_else {exists gamemode}
+      {do
+         {if {gamemode in_mode init} {set $dx_gamemode init}}
+         {if {gamemode in_mode campaign} {set $dx_gamemode campaign}}
+         {if {gamemode in_mode defaults} {set $dx_gamemode defaults}}
+         {if {gamemode in_mode tour} {set $dx_gamemode tour}}
+         {if {gamemode in_mode qp_career_songinfo} {set $dx_gamemode qp_career_songinfo}}
+         {if {gamemode in_mode qp_party_shuffle} {set $dx_gamemode qp_party_shuffle}}
+         {if {gamemode in_mode practice} {set $dx_gamemode practice}}
+         {if {gamemode in_mode qp_coop} {set $dx_gamemode qp_coop}}
+         {if {gamemode in_mode party_shuffle} {set $dx_gamemode party_shuffle}}
+         {if {gamemode in_mode qp_practice} {set $dx_gamemode qp_practice}}
+         {if {gamemode in_mode pro_song_lessons_keyboard} {set $dx_gamemode pro_song_lessons_keyboard}}
+         {if {gamemode in_mode pro_song_lessons_real_guitar} {set $dx_gamemode pro_song_lessons_real_guitar}}
+         {if {gamemode in_mode pro_song_lessons_real_bass} {set $dx_gamemode pro_song_lessons_real_bass}}
+         {if {gamemode in_mode drum_freestyle} {set $dx_gamemode drum_freestyle}}
+         {if {gamemode in_mode trainer_drums} {set $dx_gamemode trainer_drums}}
+         {if {gamemode in_mode trainer_pro_drums} {set $dx_gamemode trainer_pro_drums}}
+         {if {gamemode in_mode trainer_real_guitar} {set $dx_gamemode trainer_real_guitar}}
+         {if {gamemode in_mode trainer_pro_keyboard} {set $dx_gamemode trainer_pro_keyboard}}
+         {if {gamemode in_mode trainer} {set $dx_gamemode trainer}}
+         #ifdef HX_XBOX {if {gamemode in_mode audition} {set $dx_gamemode audition}} #endif
+      }
+      {set $dx_gamemode none}
    }
 )
 #define DX_LEADER_SPEED_SETTER
 (
    {if {is_leader_local} ; dx - sync speeds only if currently the lobby leader
+      {dx_log_writer {sprint "Sending Leader Speed to peers, Leaderspeed: " $leaderspeed " - Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+      DX_DISCONNECT
       {set $speedmod $leaderspeed}
       {set $speedmod_top $leaderspeed}
       {session send_msg_to_all {'`' (set $speedmod  {',' $leaderspeed}) kNetReliable}}
@@ -380,6 +209,7 @@
 #define DX_SET_SPEEDS
 (
    {if {exists gamemode}
+      ;{dx_log_writer {sprint "Setting up song speeds. Song Speed: " $speedmod}} ;runs in beatmatcher, do not enable under penalty of stutter
       {unless
          {|| ;check for a variety of game modes where song speed is not allowed to be adjusted
             {gamemode in_mode pro_song_lessons_keyboard} {gamemode in_mode pro_song_lessons_real_guitar}
@@ -425,6 +255,7 @@
 )
 #define DX_GAME_RESET_HANDLER
 (
+   {dx_log_writer {sprint "Clearing Song Variables" " - Current Screen: " {ui current_screen}}}
    ;clears out the variables used for song information, sinks, and callbacks to be populated again
    {set $guitar_milosong FALSE}
    {set $bass_milosong FALSE}
@@ -456,15 +287,6 @@
    {set $bass_groove_active FALSE}
    {set $drum_groove_active FALSE}
    {set $guitar_groove_active FALSE}
-   ;mtv
-   {set $authorvar FALSE}
-   {set $artistvar FALSE}
-   {set $yearvar FALSE}
-   {set $albumvar FALSE}
-   ;mtv
-   {set $dx_readdtaonce FALSE}
-   {set $dx_mtv_dta_reader_once FALSE}
-   {set $dx_hmxcheckedonce FALSE}
    ;acceleration mode
    {set $speedmod_top $leaderspeed}
    ;endgame sound effects
@@ -472,8 +294,26 @@
    {set $dx_someone_niced FALSE}
    {set $dx_someone_jurgend FALSE}
 )
+#define DX_MTV_RESET_HANDLER
+(
+   {dx_log_writer {sprint "Clearing MTV Variables - Current Screen: " {ui current_screen}}}
+   ;mtv
+   {set $song_title FALSE}
+   {set $authorvar FALSE}
+   {set $artistvar FALSE}
+   {set $yearvar FALSE}
+   {set $albumvar FALSE}
+   {set $dx_readdtaonce FALSE}
+   {set $dx_mtv_dta_reader_once FALSE}
+   {set $dx_mtv_written_once FALSE}
+   {set $dx_mtv_read_once FALSE}
+   {set $dx_hmxcheckedonce FALSE}
+   {set $dx_author_finder_failed FALSE}
+   {set $dx_path_failed FALSE}
+)
 #define DX_TEXTURE_RESET_HANDLER
 (
+   {dx_log_writer {sprint "Resetting Custom Textures to Default - Current Screen: " {ui current_screen}}}
    {if {== $smasher rb3} {set $smasher none}}
 
    {if {== $gem rb3} {set $gem none}}

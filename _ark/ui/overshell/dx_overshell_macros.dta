@@ -12,20 +12,21 @@
    {if {! {session is_in_game}}
       {{overshell_player_message find show.trg} trigger}
       {overshell_player_message set_showing FALSE}
+      {set $dx_menu_message ""}
       {set $dx_no_message_sound FALSE}} ;re-allows message sound to play after closing
 )
-#define DX_MENU_SCROLL_DESC
+#define DX_MENU_SCROLL_DESC ;used to show a description for each item on a list
 (
    {if {! {session is_in_game}}
       ($this setup_message_text
          {sprint {$component selected_sym} "_desc"})} ;appends _desc to selected item for locale descriptions
 )
-#define DX_MENU_DESC
+#define DX_MENU_DESC ;used to show one static message over an entire menu ( paired with {set $dx_menu_message ...} )
 (
    {if {! {session is_in_game}}
       ($this setup_message_text $dx_menu_message)}
 )
-#define DX_RESET_INST_TYPES
+#define DX_RESET_INST_TYPES ;sets all controllers back to their default instrument
 (
    {set $dx_joypad_type_guitar kControllerGuitar}
    {set $dx_joypad_type_keys kControllerKeys}
@@ -85,21 +86,24 @@
          {push_back $options os_thm}
          {push_back $options os_cam}
          {push_back $options os_audiomenu}
-         ;only show the controller menu on applicable instruments or when faking is active
+         ;only show the controller menu when not in-game and only on applicable instruments or when faking is active
          {if
-            {||
+            {&&
+               {! {session is_in_game}}
                {||
-                  {== {{$this get_user} get_controller_type} kControllerGuitar}
-                  {== {{$this get_user} get_controller_type} kControllerKeys}
-                  {== {{$this get_user} get_controller_type} kControllerVocals}
+                  {||
+                     {== {{$this get_user} get_controller_type} kControllerGuitar}
+                     {== {{$this get_user} get_controller_type} kControllerKeys}
+                     {== {{$this get_user} get_controller_type} kControllerVocals}
+                  }
+                  {||
+                     {! {== $dx_joypad_type_guitar kControllerGuitar}}
+                     {! {== $dx_joypad_type_keys kControllerKeys}}
+                     {! {== $dx_joypad_type_vocals kControllerVocals}}
+                  }
                }
-               {||
-                  {! {== $dx_joypad_type_guitar kControllerGuitar}}
-                  {! {== $dx_joypad_type_keys kControllerKeys}}
-                  {! {== $dx_joypad_type_vocals kControllerVocals}}
-               }
+               {push_back $options os_ctrlmenu}
             }
-            {do {push_back $options os_ctrlmenu}}
          }
          {#ifdef HX_WII profiles_wii.lst #else options_audio.lst #endif set_data $options}
    }
@@ -373,6 +377,27 @@
          }
       }
    )
+   (mod_songtitlestats
+      {do
+         {if_else {&& {modifier_mgr is_modifier_active mod_current_song_logging} {modifier_mgr is_modifier_active mod_songtitlestats}}
+            {do
+               {modifier_mgr toggle_modifier_enabled $modifier}
+               {modifier_mgr toggle_modifier_enabled mod_current_song_logging} ;turn off both modifiers if both modifiers are on
+            }
+            {modifier_mgr toggle_modifier_enabled $modifier}
+         }
+         {overshell update_all}
+      }
+   )
+   (mod_current_song_logging
+      {do
+         {modifier_mgr toggle_modifier_enabled $modifier}
+         {unless {modifier_mgr is_modifier_active mod_songtitlestats}
+            {modifier_mgr toggle_modifier_enabled mod_songtitlestats} ;turn on song title stats if using this modifier
+         }
+         {overshell update_all}
+      }
+   )
    (mod_auto_kick
       {do
          {session disconnect}
@@ -469,31 +494,22 @@
    {do
       ($options
          {array 0})
-      {if_else {== $dx_joypad_type_guitar kControllerDrum}
-         {
-            {do
-               {push_back $options overshell_guitar}
-               {push_back $options overshell_bass}
-               {push_back $options overshell_keys}
-            }
+      {push_back $options overshell_drums}
+      {push_back $options overshell_drums_pro}
+      {if 
+         {||
+            {== $dx_joypad_type_guitar kControllerDrum}
+            {== $dx_joypad_type_keys kControllerDrum}
+            {== $dx_joypad_type_vocals kControllerDrum}
          }
-            {if_else {== $dx_joypad_type_keys kControllerDrum}
-               {
-                  {do
-                     {push_back $options overshell_keys}
-                     {push_back $options overshell_real_keys}
-                     {push_back $options overshell_guitar}
-                     {push_back $options overshell_bass}
-                     {push_back $options overshell_drums}
-                  }
-               }
-               {
-                  {do
-                     {push_back $options overshell_drums}
-                     {push_back $options overshell_drums_pro}
-                  }
-               }
-            }
+         {do
+            {push_back $options overshell_guitar}
+            {push_back $options overshell_bass}
+            {push_back $options overshell_keys}
+         }
+      }
+      {if {== $dx_joypad_type_keys kControllerDrum}
+         {push_back $options overshell_real_keys}
       }
       {choose_part.lst set_data $options}
    }
@@ -509,7 +525,7 @@
       {push_back $options overshell_bass}
       {push_back $options overshell_keys}
       {if {== $dx_joypad_type_keys kControllerVocals}
-         {do {push_back $options overshell_real_keys}}}
+         {push_back $options overshell_real_keys}}
       {push_back $options overshell_drums}
       {choose_part.lst set_data $options}
    }
