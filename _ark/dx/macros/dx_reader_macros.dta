@@ -405,6 +405,26 @@
             {elem {find $entry rb3_venue} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_joypad_type_guitar}}
+         {set $dx_joypad_type_guitar
+            {elem {find $entry dx_joypad_type_guitar} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_joypad_type_keys}}
+         {set $dx_joypad_type_keys
+            {elem {find $entry dx_joypad_type_keys} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_joypad_type_vocals}}
+         {set $dx_joypad_type_vocals
+            {elem {find $entry dx_joypad_type_vocals} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_joypad_pad_mapping}}
+         {set $dx_joypad_pad_mapping
+            {elem {find $entry dx_joypad_pad_mapping} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename mod_nosustain}}
          {if {== {elem {find $entry mod_nosustain} 1} 1}
             {modifier_mgr toggle_modifier_enabled mod_nosustain}
@@ -631,6 +651,18 @@
                   }
                )
             )
+            (dx_joypad_type_guitar
+               (dx_joypad_type_guitar $dx_joypad_type_guitar)
+            )
+            (dx_joypad_type_keys
+               (dx_joypad_type_keys $dx_joypad_type_keys)
+            )
+            (dx_joypad_type_vocals
+               (dx_joypad_type_vocals $dx_joypad_type_vocals)
+            )
+            (dx_joypad_pad_mapping
+               (dx_joypad_pad_mapping $dx_joypad_pad_mapping)
+            )
             (mod_nosustain
                (mod_nosustain {modifier_mgr is_modifier_active mod_nosustain})
             )
@@ -748,6 +780,16 @@
       {if {== {elem $entry 0} {basename mod_no_crowd_meter}}
          {if {== {elem {find $entry mod_no_crowd_meter} 1} 1}
             {modifier_mgr toggle_modifier_enabled mod_no_crowd_meter}
+         }
+      }
+      {if {== {elem $entry 0} {basename mod_no_scoreboard}}
+         {if {== {elem {find $entry mod_no_scoreboard} 1} 1}
+            {modifier_mgr toggle_modifier_enabled mod_no_scoreboard}
+         }
+      }
+      {if {== {elem $entry 0} {basename mod_no_mtv_overlay}}
+         {if {== {elem {find $entry mod_no_mtv_overlay} 1} 1}
+            {modifier_mgr toggle_modifier_enabled mod_no_mtv_overlay}
          }
       }
       {if {== {elem $entry 0} {basename mod_nosfx}}
@@ -879,6 +921,12 @@
             )
             (mod_no_crowd_meter
                (mod_no_crowd_meter {modifier_mgr is_modifier_active mod_no_crowd_meter})
+            )
+            (mod_no_mtv_overlay
+               (mod_no_mtv_overlay {modifier_mgr is_modifier_active mod_no_mtv_overlay})
+            )
+            (mod_no_scoreboard
+               (mod_no_scoreboard {modifier_mgr is_modifier_active mod_no_scoreboard})
             )
             (mod_nosfx
                (mod_nosfx {modifier_mgr is_modifier_active mod_nosfx})
