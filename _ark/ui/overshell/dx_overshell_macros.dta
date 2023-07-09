@@ -555,11 +555,11 @@
       ;otherwise set instrument selection normally
       {do
          {switch {{$this get_user} get_controller_type}
-            (kControllerGuitar DX_PART_SELECT_GUITAR)
-            (kControllerDrum DX_PART_SELECT_DRUMS)
-            (kControllerVocals DX_PART_SELECT_VOCALS)
-            (kControllerKeys DX_PART_SELECT_KEYS)
-            (kControllerRealGuitar DX_PART_SELECT_REAL_GUITAR)
+            (kControllerGuitar DX_PART_SELECT_AUTOPLAY)
+            (kControllerDrum DX_PART_SELECT_AUTOPLAY)
+            (kControllerVocals DX_PART_SELECT_AUTOPLAY)
+            (kControllerKeys DX_PART_SELECT_AUTOPLAY)
+            (kControllerRealGuitar DX_PART_SELECT_AUTOPLAY)
             {fail "No choose part view for this controller type"}
          }
       }
