@@ -4,7 +4,6 @@
    (file seldiff.milo)
    (marquee_rotation_ms 3000)
    (enter
-      DX_DISCONNECT
       DX_VENUE_SETTER
       {tour.grp set_showing FALSE}
       {career.grp set_showing FALSE}
@@ -111,7 +110,7 @@
 {new
    BandScreen
    part_difficulty_screen
-   (panels meta {if_else {file_exists MENU_BACKGROUND_BIK_PATH} song_movie_panel sv4_panel} part_difficulty_panel)
+   (panels meta #ifdef HX_WII sv4_panel #else DX_SV4_PANEL #endif part_difficulty_panel)
    (enter
       {overshell add_sink $this}
       {if

@@ -11,9 +11,8 @@
       (kAction_ViewModify))
    (min_time 5.0)
    ENDGAME_PANEL_HANDLERS
-   (enter
-      DX_DISCONNECT
-      {set $dx_already_restarted FALSE} ;ensure the next time the track loads, it restarts once to be safe
+   (enter DX_PRESENCE_MANGER
+      DX_AUTO_ENDGAME
       {platform_mgr set_notify_ui_location kOSNotifyBottomCenter}
       {$this set_results}
       {overshell set_use_extended_mic_arrows TRUE}
@@ -246,9 +245,9 @@
       {if
          {&&
             {!
-               {ui in_transition}}
-            {!
-               {passive_messenger has_messages}}}
+               {ui in_transition}}}
+            ;{!
+            ;   {passive_messenger has_messages}}} ; dx - commenting this out prevents waiting for goals to finish before entering endgame
          {ui goto_screen coop_endgame_screen}})}
 {new
    GameTimePanel
