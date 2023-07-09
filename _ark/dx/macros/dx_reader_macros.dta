@@ -400,6 +400,11 @@
             {elem {find $entry dx_album_mtv_line} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_song_title_mtv_line}}
+         {set $dx_song_title_mtv_line
+            {elem {find $entry dx_song_title_mtv_line} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename dx_genre_mtv_line}}
          {set $dx_genre_mtv_line
             {elem {find $entry dx_genre_mtv_line} 1}
@@ -408,6 +413,16 @@
       {if {== {elem $entry 0} {basename dx_game_origin_mtv_line}}
          {set $dx_game_origin_mtv_line
             {elem {find $entry dx_game_origin_mtv_line} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_author_mtv_line}}
+         {set $dx_author_mtv_line
+            {elem {find $entry dx_author_mtv_line} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_author_mtv_line}}
+         {set $dx_author_mtv_line
+            {elem {find $entry dx_author_mtv_line} 1}
          }
       }
       {if {== {elem $entry 0} {basename rb3_venue}}
@@ -674,11 +689,17 @@
             (dx_album_mtv_line
                (dx_album_mtv_line $dx_album_mtv_line)
             )
+            (dx_song_title_mtv_line
+               (dx_song_title_mtv_line $dx_song_title_mtv_line)
+            )
             (dx_genre_mtv_line
                (dx_genre_mtv_line $dx_genre_mtv_line)
             )
             (dx_game_origin_mtv_line
                (dx_game_origin_mtv_line $dx_game_origin_mtv_line)
+            )
+            (dx_author_mtv_line
+               (dx_author_mtv_line $dx_author_mtv_line)
             )
             (rb3_venue
                (rb3_venue
@@ -950,7 +971,9 @@
    {resize $dx_current_song 0}
    {if_else $dx_currentsong_prefix
       {do
-         {push_back $dx_current_song {sprint "Song: " $song_title}}
+         {if $dx_song_title_mtv_line
+            {push_back $dx_current_song {sprint "Song: " $song_title}}
+         }
          {if_else {&& $dx_year_on_mtv $dx_year_on_one_mtv_line}
             {push_back $dx_current_song {sprint "Artist: " $artistvar ", " $yearvar}}
             {push_back $dx_current_song {sprint "Artist: " $artistvar}}
@@ -967,12 +990,16 @@
          {if $dx_game_origin_mtv_line
             {push_back $dx_current_song {sprint "Source: " {localize $sourcevar}}}
          }
-         {if $authorvar
-            {push_back $dx_current_song {sprint "Author: " $authorvar}}
+         {if $dx_author_mtv_line
+            {if $authorvar
+               {push_back $dx_current_song {sprint "Author: " $authorvar}}
+            }
          }
       }
       {do
-         {push_back $dx_current_song $song_title}
+         {if $dx_song_title_mtv_line
+            {push_back $dx_current_song {sprint "Song: " $song_title}}
+         }
          {if_else {&& $dx_year_on_mtv $dx_year_on_one_mtv_line}
             {push_back $dx_current_song {sprint $artistvar ", " $yearvar}}
             {push_back $dx_current_song $artistvar}
@@ -989,8 +1016,10 @@
          {if $dx_game_origin_mtv_line
             {push_back $dx_current_song {localize $sourcevar}}
          }
-         {if $authorvar
-            {push_back $dx_current_song $authorvar}
+         {if $dx_author_mtv_line
+            {if $authorvar
+               {push_back $dx_current_song $authorvar}
+            }
          }
       }
    }
