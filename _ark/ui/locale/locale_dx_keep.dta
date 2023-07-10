@@ -1270,6 +1270,26 @@
    "Song BPM: YES")
 (os_bpm_enable
    "Song BPM: NO")
+(os_practice
+   "Practice HUD")
+(os_all_item
+   "All Items")
+(os_speed_control
+   "Speed Control")
+(os_score_percent
+   "Percent Hit")
+(os_section
+   "Section Header")
+(os_ingame
+   "In Game HUD")
+(os_scoreboard_pos
+   "Score Position")
+(os_star_display_pos
+   "Star Position")
+(os_mtv_delay_disable
+   "Delay: YES")
+(os_mtv_delay_enable
+   "Delay: NO")
 #ifdef RB3E ;rb3enhanced specific modifiers
 (mod_black_background_desc "Disables the in-game venue")
 (mod_force_hopos_desc "Makes every note a HOPO")

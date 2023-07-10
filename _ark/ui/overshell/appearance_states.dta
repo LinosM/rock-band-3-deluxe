@@ -611,10 +611,34 @@
       {set $fpsslider FALSE}
       {$this show_state kState_RB3EOvershellThemes}))
 
+
 (kState_RB3EScreenEl
+   (view options_end_game)
+   (enter
+   {options_end_game.lst set_selected $rb3screenelval}
+   {options_end_game.lst set circular 0}
+   {options_end_game.lst set_data 
+   (
+      os_ingame
+      os_practice
+   )})
+   (SELECT_MSG
+   {set $rb3screenelval {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_ingame
+      {$this show_state kState_RB3EScreen_In_Game_HUD})
+   (os_practice
+      {$this show_state kState_RB3EScreen_Practice_HUD})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EAppearanceMenu}
+      {online_options.lst set_selected #ifdef HX_WII 1 #else 2 #endif}))
+
+(kState_RB3EScreen_In_Game_HUD
    (view options_extras)
    (enter
-   {options_extras.lst set_selected $rb3screenelval}
+   {options_extras.lst set_selected $dx_in_game_hud_menu_pos}
    {options_extras.lst set circular 0}
    {options_extras.lst set_data 
    (
@@ -623,7 +647,7 @@
       os_score
    )})
    (SELECT_MSG
-   {set $rb3screenelval {$component selected_sym}}
+   {set $dx_in_game_hud_menu_pos {$component selected_sym}}
   {switch
    {$component selected_sym}
    (os_mtv
@@ -634,8 +658,49 @@
       {$this show_state kState_RB3EScoreEl})
    })
    (on_cancel
-      {$this show_state kState_RB3EAppearanceMenu}
-      {online_options.lst set_selected #ifdef HX_WII 1 #else 2 #endif}))
+      {$this show_state kState_RB3EScreenEl}
+      {options_end_game.lst set_selected 0}))
+
+(kState_RB3EScreen_Practice_HUD
+   (view online_options)
+   (enter
+   {online_options.lst set_selected $dx_practice_hud_state_val}
+   {online_options.lst set circular 0}
+   {online_options.lst set_data 
+   (
+      os_all_item
+      ;os_splash
+      os_speed_control
+      ;os_score_parts
+      ;os_drum_buttons
+      ;os_guide_pitch
+      os_score_percent
+      os_section
+   )})
+   (SELECT_MSG
+   {set $dx_practice_hud_state_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_all_item
+      {$this show_state kState_RB3E_all_item_Setup})
+   (os_splash
+      {$this show_state kState_RB3E_splash_Setup})
+   (os_speed_control
+      {$this show_state kState_RB3E_Speed_Control_Setup})
+   (os_score_parts
+      {$this show_state kState_RB3E_score_parts_Setup})
+   (os_drum_buttons
+      {$this show_state kState_RB3E_drum_buttons_Setup})
+   (os_guide_pitch
+      {$this show_state kState_RB3E_guide_pitch_Setup})
+   (os_score_percent
+      {$this show_state kState_RB3E_Score_Setup})
+   (os_section
+      {$this show_state kState_RB3E_Section_Setup})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScreenEl}
+      {options_end_game.lst set_selected 1}))
 
 #define MTV_EL_DATA
 (
@@ -647,31 +712,35 @@
       }
    }
    os_pos
+   {if_else $dx_long_mtv_delay
+      os_mtv_delay_disable
+      os_mtv_delay_enable
+   }
    #ifndef HX_WII
    os_currentsong
    #endif
 )
 #define MTV_LST_RESET
 (
-   {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_data (MTV_EL_DATA)}
+   {online_options.lst set_data (MTV_EL_DATA)}
    {if $rb3mtvelval
-      {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_selected $rb3mtvelval}
+      {online_options.lst set_selected $rb3mtvelval}
    }
 )
 (kState_RB3EMTVEl
-   (view #ifdef HX_WII options_end_game #else options #endif)
+   (view online_options)
    (lst_reset
-      {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_data (MTV_EL_DATA)}
+      {online_options.lst set_data (MTV_EL_DATA)}
       {if $rb3mtvelval
-         {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_selected $rb3mtvelval}
+         {online_options.lst set_selected $rb3mtvelval}
       }
    )
    (enter
    MTV_LST_RESET
-   {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_selected $rb3mtvelval}
-   {#ifdef HX_WII options_end_game.lst #else options.lst #endif set circular 0}
+   {online_options.lst set_selected $rb3mtvelval}
+   {online_options.lst set circular 0}
    {set $fromelmenu FALSE}
-   {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_data 
+   {online_options.lst set_data 
    (
       MTV_EL_DATA
    )})
@@ -715,6 +784,12 @@
          }
       }
       MTV_LST_RESET)
+   (os_mtv_delay_enable
+      {set $dx_long_mtv_delay TRUE}
+      MTV_LST_RESET)
+   (os_mtv_delay_disable
+      {set $dx_long_mtv_delay FALSE}
+      MTV_LST_RESET)
    (os_vis_enable
       MTV_LST_RESET)
    (os_pos
@@ -725,7 +800,7 @@
       MTV_LST_RESET)
    })
    (on_cancel
-      {$this show_state kState_RB3EScreenEl}
+      {$this show_state kState_RB3EScreen_In_Game_HUD}
       {options_extras.lst set_selected 0}))
 
 #define CROWD_EL_DATA
@@ -734,6 +809,7 @@
       os_vis_enable
       os_vis_disable
    }
+   ;os_crowd_meter_pos ;doesnt work
    #ifndef HX_WII
    os_eltex
    #endif
@@ -802,9 +878,13 @@
       {set $fromelmenu TRUE}
       {$this show_state kState_RB3ECrowdMeterSelector}
       CROWD_LST_RESET)
+   (os_crowd_meter_pos
+      {set $fromelmenu TRUE}
+      {$this show_state kState_RB3E_Crowd_Meter_Setup}
+      CROWD_LST_RESET)
    })
    (on_cancel
-      {$this show_state kState_RB3EScreenEl}
+      {$this show_state kState_RB3EScreen_In_Game_HUD}
       {options_extras.lst set_selected 1}))
 
 #define SCORE_EL_DATA
@@ -813,31 +893,33 @@
       os_vis_enable
       os_vis_disable
    }
+   os_scoreboard_pos
+   os_star_display_pos
    #ifndef HX_WII
    os_eltex
    #endif
 )
 #define SCORE_LST_RESET
 (
-   {options_end_game.lst set_data (SCORE_EL_DATA)}
+   {options.lst set_data (SCORE_EL_DATA)}
    {if $rb3ecrowdelval
-      {options_end_game.lst set_selected $rb3ecrowdelval}
+      {options.lst set_selected $rb3ecrowdelval}
    }
 )
 (kState_RB3EScoreEl
-   (view options_end_game)
+   (view #ifdef HX_WII online_options #else options #endif)
    (lst_reset
-      {options_end_game.lst set_data (SCORE_EL_DATA)}
+      {#ifdef HX_WII online_options.lst #else options.lst #endif set_data (SCORE_EL_DATA)}
       {if $rb3ecrowdelval
-         {options_end_game.lst set_selected $rb3ecrowdelval}
+         {#ifdef HX_WII online_options.lst #else options.lst #endif  set_selected $rb3ecrowdelval}
       }
    )
    (enter
    SCORE_LST_RESET
-   {options_end_game.lst set_selected $rb3ecrowdelval}
-   {options_end_game.lst set circular 0}
+   {#ifdef HX_WII online_options.lst #else options.lst #endif  set_selected $rb3ecrowdelval}
+   {#ifdef HX_WII online_options.lst #else options.lst #endif  set circular 0}
    {set $fromelmenu FALSE}
-   {options_end_game.lst set_data 
+   {#ifdef HX_WII online_options.lst #else options.lst #endif  set_data 
    (
       SCORE_EL_DATA
    )})
@@ -881,15 +963,24 @@
       {set $fromelmenu TRUE}
       {$this show_state kState_RB3EScoreSelector}
       SCORE_LST_RESET)
+   (os_scoreboard_pos
+      {set $fromelmenu TRUE}
+      {$this show_state kState_RB3E_Scoreboard_Setup}
+      CROWD_LST_RESET)
+   (os_star_display_pos
+      {set $fromelmenu TRUE}
+      {$this show_state kState_RB3E_Star_Display_Setup}
+      CROWD_LST_RESET)
    })
    (on_cancel
-      {$this show_state kState_RB3EScreenEl}
+      {$this show_state kState_RB3EScreen_In_Game_HUD}
       {options_extras.lst set_selected 2}))
 
 (kState_RB3EMTVSetup
    (view #ifdef HX_WII options_audio #else options_extras #endif)
    (enter
    {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui mtv}
    {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $rb3emtvval}
    {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
    (
@@ -913,7 +1004,217 @@
    })
    (on_cancel
       {$this show_state kState_RB3EMTVEl}
+      {online_options.lst set_selected 1}))
+
+(kState_RB3E_Speed_Control_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui speed_control}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_speed_control_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_speed_control_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScreen_Practice_HUD}
+      {online_options.lst set_selected 1}))
+
+(kState_RB3E_Section_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui section}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_section_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_section_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScreen_Practice_HUD}
+      {online_options.lst set_selected 3}))
+
+(kState_RB3E_Score_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui score}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_score_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_score_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScreen_Practice_HUD}
+      {online_options.lst set_selected 2}))
+
+(kState_RB3E_all_item_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui all_item}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_all_item_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_all_item_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScreen_Practice_HUD}
+      {online_options.lst set_selected 0}))
+
+(kState_RB3E_Crowd_Meter_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui crowd_meter}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_all_item_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_all_item_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3ECrowdMeterEl}
       {#ifdef HX_WII options_end_game.lst #else options.lst #endif set_selected 1}))
+
+(kState_RB3E_Scoreboard_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui scoreboard}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_all_item_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_all_item_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScoreEl}
+      {#ifdef HX_WII online_options.lst #else options.lst #endif set_selected 1}))
+
+(kState_RB3E_Star_Display_Setup
+   (view #ifdef HX_WII options_audio #else options_extras #endif)
+   (enter
+   {set $mtvtracked 0}
+   {set $dx_set_ui_pos_tracked_ui star_display}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_selected $dx_all_item_menu_pos_val}
+   {#ifdef HX_WII options_audio.lst #else options_extras.lst #endif set_data 
+   (
+      os_horizontal
+      os_vertical
+      os_zspace
+   )})
+   (SELECT_MSG
+   {set $dx_all_item_menu_pos_val {$component selected_sym}}
+  {switch
+   {$component selected_sym}
+   (os_horizontal
+      {set $mtvtracked 0}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_vertical
+      {set $mtvtracked 2}
+      {$this show_state kState_RB3EMTVXYZ})
+   (os_zspace
+      {set $mtvtracked 1}
+      {$this show_state kState_RB3EMTVXYZ})
+   })
+   (on_cancel
+      {$this show_state kState_RB3EScoreEl}
+      {#ifdef HX_WII online_options.lst #else options.lst #endif set_selected 2}))
 
 #define CURRENT_SONG_DATA
 (
@@ -1048,12 +1349,54 @@
       })
    (on_cancel
       {$this show_state kState_RB3EMTVEl}
-      {options.lst set_selected 2}))
+      {online_options.lst set_selected 3}))
 
 (kState_RB3EMTVXYZ
    (view #ifdef HX_WII options #else options_audio #endif)
    (enter
-   {#ifdef HX_WII options.lst #else options_audio.lst #endif set_selected $rb3emtvval}
+   {switch $dx_set_ui_pos_tracked_ui
+      (mtv
+         {set $dx_set_ui_pos_0 $mtvpos_0}
+         {set $dx_set_ui_pos_1 $mtvpos_1}
+         {set $dx_set_ui_pos_2 $mtvpos_2}
+      )
+      (speed_control
+         {set $dx_set_ui_pos_0 $speed_controlpos_0}
+         {set $dx_set_ui_pos_1 $speed_controlpos_1}
+         {set $dx_set_ui_pos_2 $speed_controlpos_2}
+      )
+      (all_item
+         {set $dx_set_ui_pos_0 $all_itempos_0}
+         {set $dx_set_ui_pos_1 $all_itempos_1}
+         {set $dx_set_ui_pos_2 $all_itempos_2}
+      )
+      (score
+         {set $dx_set_ui_pos_0 $scorepos_0}
+         {set $dx_set_ui_pos_1 $scorepos_1}
+         {set $dx_set_ui_pos_2 $scorepos_2}
+      )
+      (section
+         {set $dx_set_ui_pos_0 $sectionpos_0}
+         {set $dx_set_ui_pos_1 $sectionpos_1}
+         {set $dx_set_ui_pos_2 $sectionpos_2}
+      )
+      (crowd_meter
+         {set $dx_set_ui_pos_0 $crowd_meterpos_0}
+         {set $dx_set_ui_pos_1 $crowd_meterpos_1}
+         {set $dx_set_ui_pos_2 $crowd_meterpos_2}
+      )
+      (scoreboard
+         {set $dx_set_ui_pos_0 $scoreboardpos_0}
+         {set $dx_set_ui_pos_1 $scoreboardpos_1}
+         {set $dx_set_ui_pos_2 $scoreboardpos_2}
+      )
+      (star_display
+         {set $dx_set_ui_pos_0 $star_displaypos_0}
+         {set $dx_set_ui_pos_1 $star_displaypos_1}
+         {set $dx_set_ui_pos_2 $star_displaypos_2}
+      )
+   }
+   {#ifdef HX_WII options.lst #else options_audio.lst #endif set_selected $dx_set_ui_pos_list_pos}
    {#ifdef HX_WII options.lst #else options_audio.lst #endif set_data 
    (
       os_100
@@ -1069,91 +1412,183 @@
       os_minus100
    )})
    (SELECT_MSG
-   {set $rb3emtvval {$component selected_sym}}
-  {switch
-   {$component selected_sym}
-   (os_100
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {+ $mtvpos_0 100}})
-         (1 {set $mtvpos_1 {- $mtvpos_1 100}})
-         (2 {set $mtvpos_2 {+ $mtvpos_2 100}})
-      }
-   )
-   (os_50
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {+ $mtvpos_0 50}})
-         (1 {set $mtvpos_1 {- $mtvpos_1 50}})
-         (2 {set $mtvpos_2 {+ $mtvpos_2 50}})
-      }
-   )
-   (os_25
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {+ $mtvpos_0 25}})
-         (1 {set $mtvpos_1 {- $mtvpos_1 25}})
-         (2 {set $mtvpos_2 {+ $mtvpos_2 25}})
-      }
-   )
-   (os_10
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {+ $mtvpos_0 10}})
-         (1 {set $mtvpos_1 {- $mtvpos_1 10}})
-         (2 {set $mtvpos_2 {+ $mtvpos_2 10}})
-      }
-   )
-   (os_1
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {+ $mtvpos_0 1}})
-         (1 {set $mtvpos_1 {- $mtvpos_1 1}})
-         (2 {set $mtvpos_2 {+ $mtvpos_2 1}})
-      }
-   )
-   (os_reset
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 0})
-         (1 {set $mtvpos_1 0})
-         (2 {set $mtvpos_2 0})
-      }
-   )
-   (os_minus100
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {- $mtvpos_0 100}})
-         (1 {set $mtvpos_1 {+ $mtvpos_1 100}})
-         (2 {set $mtvpos_2 {- $mtvpos_2 100}})
-      }
-   )
-   (os_minus50
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {- $mtvpos_0 50}})
-         (1 {set $mtvpos_1 {+ $mtvpos_1 50}})
-         (2 {set $mtvpos_2 {- $mtvpos_2 50}})
-      }
-   )
-   (os_minus25
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {- $mtvpos_0 25}})
-         (1 {set $mtvpos_1 {+ $mtvpos_1 25}})
-         (2 {set $mtvpos_2 {- $mtvpos_2 25}})
-      }
-   )
-   (os_minus10
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {- $mtvpos_0 10}})
-         (1 {set $mtvpos_1 {+ $mtvpos_1 10}})
-         (2 {set $mtvpos_2 {- $mtvpos_2 10}})
-      }
-   )
-   (os_minus1
-      {switch $mtvtracked
-         (0 {set $mtvpos_0 {- $mtvpos_0 1}})
-         (1 {set $mtvpos_1 {+ $mtvpos_1 1}})
-         (2 {set $mtvpos_2 {- $mtvpos_2 1}})
-      }
-   )
+   {set $dx_set_ui_pos_list_pos {$component selected_sym}}
+   {switch
+      {$component selected_sym}
+      (os_100
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {+ $dx_set_ui_pos_0 100}})
+            (1 {set $dx_set_ui_pos_1 {- $dx_set_ui_pos_1 100}})
+            (2 {set $dx_set_ui_pos_2 {+ $dx_set_ui_pos_2 100}})
+         }
+      )
+      (os_50
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {+ $dx_set_ui_pos_0 50}})
+            (1 {set $dx_set_ui_pos_1 {- $dx_set_ui_pos_1 50}})
+            (2 {set $dx_set_ui_pos_2 {+ $dx_set_ui_pos_2 50}})
+         }
+      )
+      (os_25
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {+ $dx_set_ui_pos_0 25}})
+            (1 {set $dx_set_ui_pos_1 {- $dx_set_ui_pos_1 25}})
+            (2 {set $dx_set_ui_pos_2 {+ $dx_set_ui_pos_2 25}})
+         }
+      )
+      (os_10
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {+ $dx_set_ui_pos_0 10}})
+            (1 {set $dx_set_ui_pos_1 {- $dx_set_ui_pos_1 10}})
+            (2 {set $dx_set_ui_pos_2 {+ $dx_set_ui_pos_2 10}})
+         }
+      )
+      (os_1
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {+ $dx_set_ui_pos_0 1}})
+            (1 {set $dx_set_ui_pos_1 {- $dx_set_ui_pos_1 1}})
+            (2 {set $dx_set_ui_pos_2 {+ $dx_set_ui_pos_2 1}})
+         }
+      )
+      (os_reset
+         {switch $mtvtracked
+            (0
+               {switch $dx_set_ui_pos_tracked_ui
+                  (mtv {set $dx_set_ui_pos_0 0})
+                  (speed_control {set $dx_set_ui_pos_0 46})
+                  (all_item {set $dx_set_ui_pos_0 0})
+                  (score {set $dx_set_ui_pos_0 191})
+                  (section {set $dx_set_ui_pos_0 0})
+                  (scoreboard {set $dx_set_ui_pos_0 8})
+                  (star_display {set $dx_set_ui_pos_0 0})
+               }
+            )
+            (1
+               {switch $dx_set_ui_pos_tracked_ui
+                  (mtv {set $dx_set_ui_pos_1 0})
+                  (speed_control {set $dx_set_ui_pos_1 0})
+                  (all_item {set $dx_set_ui_pos_1 0})
+                  (score {set $dx_set_ui_pos_1 0})
+                  (section {set $dx_set_ui_pos_1 0})
+                  (scoreboard {set $dx_set_ui_pos_1 0})
+                  (star_display {set $dx_set_ui_pos_1 0})
+               }
+            )
+            (2
+               {switch $dx_set_ui_pos_tracked_ui
+                  (mtv {set $dx_set_ui_pos_2 0})
+                  (speed_control {set $dx_set_ui_pos_2 -5})
+                  (all_item {set $dx_set_ui_pos_2 0})
+                  (score {set $dx_set_ui_pos_2 175})
+                  (section {set $dx_set_ui_pos_2 185})
+                  (scoreboard {set $dx_set_ui_pos_2 -16})
+                  (star_display {set $dx_set_ui_pos_2 0})
+               }
+            )
+         }
+      )
+      (os_minus100
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {- $dx_set_ui_pos_0 100}})
+            (1 {set $dx_set_ui_pos_1 {+ $dx_set_ui_pos_1 100}})
+            (2 {set $dx_set_ui_pos_2 {- $dx_set_ui_pos_2 100}})
+         }
+      )
+      (os_minus50
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {- $dx_set_ui_pos_0 50}})
+            (1 {set $dx_set_ui_pos_1 {+ $dx_set_ui_pos_1 50}})
+            (2 {set $dx_set_ui_pos_2 {- $dx_set_ui_pos_2 50}})
+         }
+      )
+      (os_minus25
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {- $dx_set_ui_pos_0 25}})
+            (1 {set $dx_set_ui_pos_1 {+ $dx_set_ui_pos_1 25}})
+            (2 {set $dx_set_ui_pos_2 {- $dx_set_ui_pos_2 25}})
+         }
+      )
+      (os_minus10
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {- $dx_set_ui_pos_0 10}})
+            (1 {set $dx_set_ui_pos_1 {+ $dx_set_ui_pos_1 10}})
+            (2 {set $dx_set_ui_pos_2 {- $dx_set_ui_pos_2 10}})
+         }
+      )
+      (os_minus1
+         {switch $mtvtracked
+            (0 {set $dx_set_ui_pos_0 {- $dx_set_ui_pos_0 1}})
+            (1 {set $dx_set_ui_pos_1 {+ $dx_set_ui_pos_1 1}})
+            (2 {set $dx_set_ui_pos_2 {- $dx_set_ui_pos_2 1}})
+         }
+      )
    }
-   {{{gamemode get track_panel} find mtv_overlay} dx_set_mtv_pos}
+      {switch $dx_set_ui_pos_tracked_ui
+         (mtv
+            {set $mtvpos_0 $dx_set_ui_pos_0}
+            {set $mtvpos_1 $dx_set_ui_pos_1}
+            {set $mtvpos_2 $dx_set_ui_pos_2}
+            {{{gamemode get track_panel} find mtv_overlay} dx_set_mtv_pos}
+         )
+         (speed_control
+            {set $speed_controlpos_0 $dx_set_ui_pos_0}
+            {set $speed_controlpos_1 $dx_set_ui_pos_1}
+            {set $speed_controlpos_2 $dx_set_ui_pos_2}
+            {practice_panel dx_speed_control_set_pos}
+         )
+         (all_item
+            {set $all_itempos_0 $dx_set_ui_pos_0}
+            {set $all_itempos_1 $dx_set_ui_pos_1}
+            {set $all_itempos_2 $dx_set_ui_pos_2}
+            {practice_panel dx_all_item_set_pos}
+         )
+         (score
+            {set $scorepos_0 $dx_set_ui_pos_0}
+            {set $scorepos_1 $dx_set_ui_pos_1}
+            {set $scorepos_2 $dx_set_ui_pos_2}
+            {practice_panel dx_score_set_pos}
+         )
+         (section
+            {set $sectionpos_0 $dx_set_ui_pos_0}
+            {set $sectionpos_1 $dx_set_ui_pos_1}
+            {set $sectionpos_2 $dx_set_ui_pos_2}
+            {practice_panel dx_section_set_pos}
+         )
+         (crowd_meter
+            {set $crowd_meterpos_0 $dx_set_ui_pos_0}
+            {set $crowd_meterpos_1 $dx_set_ui_pos_1}
+            {set $crowd_meterpos_2 $dx_set_ui_pos_2}
+            {coop_track_panel dx_set_crowd_meter_pos}
+         )
+         (scoreboard
+            {set $scoreboardpos_0 $dx_set_ui_pos_0}
+            {set $scoreboardpos_1 $dx_set_ui_pos_1}
+            {set $scoreboardpos_2 $dx_set_ui_pos_2}
+            {coop_track_panel dx_set_scoreboard_pos}
+         )
+         (star_display
+            {set $star_displaypos_0 $dx_set_ui_pos_0}
+            {set $star_displaypos_1 $dx_set_ui_pos_1}
+            {set $star_displaypos_2 $dx_set_ui_pos_2}
+            {coop_track_panel dx_set_star_display_pos}
+         )
+      }
    )
    (on_cancel
-      {$this show_state kState_RB3EMTVSetup}))
+      {$this show_state
+         {switch $dx_set_ui_pos_tracked_ui
+            (mtv kState_RB3EMTVSetup)
+            (speed_control kState_RB3E_Speed_Control_Setup)
+            (all_item kState_RB3E_all_item_Setup)
+            (score kState_RB3E_Score_Setup)
+            (section kState_RB3E_Section_Setup)
+            (crowd_meter kState_RB3E_Crowd_Meter_Setup)
+            (scoreboard kState_RB3E_Scoreboard_Setup)
+            (star_display kState_RB3E_Star_Display_Setup)
+         }
+      }
+   )
+)
 
 (kState_RB3EAngleMenu
    (view #ifdef HX_PS3 options #else options_extras #endif)
