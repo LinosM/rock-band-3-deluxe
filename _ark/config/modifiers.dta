@@ -64,7 +64,6 @@
    ;bots
    (mod_auto_kick delayed_effect) ; auto kick
    (mod_fakejuke) ; jukebox mode recreation
-   (mod_force22gtr) ; forces 22 fret pro guitar chart to be used
-   (mod_force22bass) ; forces 22 fret pro bass chart to be used
    (mod_auto_play) ; bot
+   (mod_dx_audition)
 )

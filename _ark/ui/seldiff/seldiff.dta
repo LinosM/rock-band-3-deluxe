@@ -5,6 +5,7 @@
    (marquee_rotation_ms 3000)
    (enter
       DX_VENUE_SETTER
+      {if {modifier_mgr is_modifier_active mod_dx_audition} {gamemode set_mode audition}}
       {tour.grp set_showing FALSE}
       {career.grp set_showing FALSE}
       {battle.grp set_showing FALSE}
