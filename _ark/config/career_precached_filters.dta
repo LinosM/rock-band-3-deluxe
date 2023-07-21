@@ -131,3 +131,8 @@
       "MC Frontalot")
    (kFilterArtist
       "Hyro da Hero"))
+(careerfilter_ugcmlp
+   (kFilterSource ugc)
+   DX_ADDED_UGC
+   (kFilterArtist
+      "Daniel Ingram"))
