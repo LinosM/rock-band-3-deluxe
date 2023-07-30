@@ -439,6 +439,26 @@
             {elem {find $entry fullcombo_sfx} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_jurgen_sound}}
+         {set $dx_jurgen_sound
+            {elem {find $entry dx_jurgen_sound} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_nice_sound}}
+         {set $dx_nice_sound
+            {elem {find $entry dx_nice_sound} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_song_select_noise}}
+         {set $dx_song_select_noise
+            {elem {find $entry dx_song_select_noise} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_no_instrument_fx}}
+         {set $dx_no_instrument_fx
+            {elem {find $entry dx_no_instrument_fx} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename dx_year_on_mtv}}
          {set $dx_year_on_mtv
             {elem {find $entry dx_year_on_mtv} 1}
@@ -594,6 +614,11 @@
             {elem {find $entry dx_noise_val} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_auto_endgame}}
+         {set $dx_auto_endgame
+            {elem {find $entry dx_auto_endgame} 1}
+         }
+      }
    }
    #endif
 )
@@ -742,6 +767,18 @@
             (fullcombo_sfx
                (fullcombo_sfx $fcsfx)
             )
+            (dx_jurgen_sound
+               (dx_jurgen_sound $dx_jurgen_sound)
+            )
+            (dx_nice_sound
+               (dx_nice_sound $dx_nice_sound)
+            )
+            (dx_song_select_noise
+               (dx_song_select_noise $dx_song_select_noise)
+            )
+            (dx_no_instrument_fx
+               (dx_no_instrument_fx $dx_no_instrument_fx)
+            )
             (dx_long_mtv_delay
                (dx_long_mtv_delay $dx_long_mtv_delay)
             )
@@ -864,6 +901,9 @@
             (dx_noise_val
                (dx_noise_val $dx_noise_val)
             )
+            (dx_auto_endgame
+               (dx_auto_endgame $dx_auto_endgame)
+            )
          )
       }
    }
@@ -878,7 +918,6 @@
    {dx_modifier_reader mod_nohud}
    {dx_modifier_reader mod_miss_sounds}
    {dx_modifier_reader mod_whammyfx}
-   {dx_modifier_reader mod_songselectnoise}
    {dx_modifier_reader mod_practiceoverdrive}
    {dx_modifier_reader mod_nolanes}
    {dx_modifier_reader mod_rb4lanes}
@@ -886,7 +925,6 @@
    {dx_modifier_reader mod_venue_swap}
    {dx_modifier_reader mod_char_swap}
    {dx_modifier_reader mod_nointro}
-   {dx_modifier_reader mod_nosfx}
    {dx_modifier_reader mod_synced_track_speeds}
    {dx_modifier_reader mod_nopause}
    {dx_modifier_reader mod_skipsavemsg}
@@ -923,9 +961,6 @@
             (mod_whammyfx
                (mod_whammyfx {modifier_mgr is_modifier_active mod_whammyfx})
             )
-            (mod_songselectnoise
-               (mod_songselectnoise {modifier_mgr is_modifier_active mod_songselectnoise})
-            )
             (mod_practiceoverdrive
                (mod_practiceoverdrive {modifier_mgr is_modifier_active mod_practiceoverdrive})
             )
@@ -946,9 +981,6 @@
             )
             (mod_nointro
                (mod_nointro {modifier_mgr is_modifier_active mod_nointro})
-            )
-            (mod_nosfx
-               (mod_nosfx {modifier_mgr is_modifier_active mod_nosfx})
             )
             (mod_synced_track_speeds
                (mod_synced_track_speeds {modifier_mgr is_modifier_active mod_synced_track_speeds})
