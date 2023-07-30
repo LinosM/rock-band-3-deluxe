@@ -2,6 +2,7 @@
 (
    {if {file_exists "GD:/dev_hdd0/game/BLES80608/USRDIR/COLOR.INI"} ; used for hw detection, BLES80608 is multiman
       {set $dx_ps3hw TRUE}
+      {set $dx_author_finder_disabled TRUE} ;these two vars do the same thing
    }
 )
 #define DX_FILE_PATH
@@ -433,6 +434,11 @@
             {elem {find $entry dx_artist_mtv_line} 1}
          }
       }
+      {if {== {elem $entry 0} {basename fullcombo_sfx}}
+         {set $fcsfx
+            {elem {find $entry fullcombo_sfx} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename dx_year_on_mtv}}
          {set $dx_year_on_mtv
             {elem {find $entry dx_year_on_mtv} 1}
@@ -451,6 +457,11 @@
       {if {== {elem $entry 0} {basename dx_song_title_mtv_line}}
          {set $dx_song_title_mtv_line
             {elem {find $entry dx_song_title_mtv_line} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_author_finder_disabled}}
+         {set $dx_author_finder_disabled
+            {elem {find $entry dx_author_finder_disabled} 1}
          }
       }
       {if {== {elem $entry 0} {basename dx_genre_mtv_line}}
@@ -573,14 +584,14 @@
             {modifier_mgr toggle_modifier_enabled mod_blackmenu}
          }
       }
-      {if {== {elem $entry 0} {basename blur_restored}}
-         {set $blurisbackon
-            {elem {find $entry blur_restored} 1}
+      {if {== {elem $entry 0} {basename dx_blur_val}}
+         {set $dx_blur_val
+            {elem {find $entry dx_blur_val} 1}
          }
       }
-      {if {== {elem $entry 0} {basename crust_restored}}
-         {set $crustisbackon
-            {elem {find $entry crust_restored} 1}
+      {if {== {elem $entry 0} {basename dx_noise_val}}
+         {set $dx_noise_val
+            {elem {find $entry dx_noise_val} 1}
          }
       }
    }
@@ -755,6 +766,9 @@
             (dx_song_title_mtv_line
                (dx_song_title_mtv_line $dx_song_title_mtv_line)
             )
+            (dx_author_finder_disabled
+               (dx_author_finder_disabled $dx_author_finder_disabled)
+            )
             (dx_genre_mtv_line
                (dx_genre_mtv_line $dx_genre_mtv_line)
             )
@@ -844,11 +858,11 @@
             (mod_blackmenu
                (mod_blackmenu {modifier_mgr is_modifier_active mod_blackmenu})
             )
-            (blur_restored
-               (blur_restored $blurisbackon)
+            (dx_blur_val
+               (dx_blur_val $dx_blur_val)
             )
-            (crust_restored
-               (crust_restored $crustisbackon)
+            (dx_noise_val
+               (dx_noise_val $dx_noise_val)
             )
          )
       }
@@ -1112,7 +1126,7 @@
 #define DX_JSON_WRITER
 (
    #ifndef HX_WII
-   {unless $dx_ps3hw
+   {unless {|| $dx_author_finder_disabled $dx_ps3hw}
       {set $dx_current_song ()}
       {resize $dx_current_song 0}
       {push_back $dx_current_song {sprint "{" "\q" "Playlist" "\q" ":" "\q\q" "\q" "," "\q" "SubPlaylist" "\q" ":" "\q" "\q" "," "\q" "IsModChart" "\q" ":" "false" ","
