@@ -61,7 +61,7 @@
    (check_dx
       {unless {file_exists DX_FILE_PATH}
          {unless $dxwelcomeseen
-            {dx_log_writer {sprint "Cannot find DX.dta"}}
+            {dx_log_writer FALSE {sprint "Cannot find DX.dta"}}
             {ui push_screen hint_dx_welcome_screen}
          }
       }
@@ -70,25 +70,17 @@
       {unless {file_exists DX_FILE_PATH}
          {if $dxwelcomeseen
             {unless $dx_settings_error
-               {dx_log_writer {sprint "Cannot write DX.dta"}}
+               {dx_log_writer FALSE {sprint "Cannot write DX.dta"}}
                {ui push_screen hint_relative_writes_screen}
             }
          }
       }
    )
 )
-#define DX_TOGGLE_POST_FX_FROM_BOOT
-(
-   {if {&& $toggle_postfx {! $bootpostfxtoggled}} ; dx - ensure we are properly keeping track of the state of the post proc toggle
-      {set $bootpostfxtoggled TRUE}
-      {dx_log_writer {sprint "Toggling Post Processing FX. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
-      {rnd toggle_all_postprocs}
-   }
-)
 #define INIT_DX_READER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to read dx.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to read dx.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {foreach $entry {read_file DX_FILE_PATH}
       {if {== {elem $entry 0} {basename mtv_position}}
          {set $mtvpos_0
@@ -541,6 +533,9 @@
             {modifier_mgr toggle_modifier_enabled mod_ps3os}
          }
       }
+      {if {== {elem $entry 0} {basename dx_set_postfx}}
+         {dx_set_postfx {elem {find $entry dx_set_postfx} 1}}
+      }
       {if {== {elem $entry 0} {basename mod_wiios}}
          {if {== {elem {find $entry mod_wiios} 1} 1}
             {modifier_mgr toggle_modifier_enabled mod_wiios}
@@ -594,7 +589,7 @@
 #define INIT_DX_WRITER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to write DX.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to write DX.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {write_file DX_FILE_PATH
       {array
          (
@@ -739,8 +734,8 @@
             (dx_long_mtv_delay
                (dx_long_mtv_delay $dx_long_mtv_delay)
             )
-            (toggle_postfx
-               (toggle_postfx $toggle_postfx)
+            (dx_set_postfx
+               (dx_set_postfx $dx_postfx)
             )
             (dx_currentsong_prefix
                (dx_currentsong_prefix $dx_currentsong_prefix)
@@ -863,7 +858,7 @@
 #define INIT_MOD_READER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to read mod.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to read mod.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {dx_modifier_reader mod_static_fills}
    {dx_modifier_reader mod_chord_numbers}
    {dx_modifier_reader mod_nohud}
@@ -892,7 +887,7 @@
 #define INIT_MOD_WRITER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to write mod.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to write mod.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {write_file MOD_FILE_PATH
       {array
          (
@@ -961,7 +956,7 @@
 #define INIT_VAL_READER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to read val.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to read val.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {foreach $entry {read_file VAL_FILE_PATH}
       {if {== {elem $entry 0} {basename mic_vols}}
          {set $mic_vol_1
@@ -1000,7 +995,7 @@
 #define INIT_VAL_WRITER
 (
    #ifndef HX_WII
-   {dx_log_writer {sprint "Attempting to write val.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
+   {dx_log_writer FALSE {sprint "Attempting to write val.dta. Current Screen: " {ui current_screen} " - Gamemode: " $dx_gamemode}}
    {write_file VAL_FILE_PATH
       {array
          (
@@ -1157,7 +1152,7 @@
          #include ../../songs/missing_song_data.dta
       )
    }
-   ;{dx_log_writer $dx_song_cache_holder}
+   ;{dx_log_writer TRUE $dx_song_cache_holder}
 )
 #define DX_RAW_SONG_CACHE
 (
@@ -1166,5 +1161,5 @@
          #include ../../songs/dta_collection/mega_songs_data.dta
       )
    }
-   ;{dx_log_writer $dx_raw_song_cache_holder}
+   ;{dx_log_writer TRUE $dx_raw_song_cache_holder}
 )
