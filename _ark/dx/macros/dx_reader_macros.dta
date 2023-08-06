@@ -1134,7 +1134,7 @@
 (
    {set $dx_song_cache_holder
       (
-         #ifdef HX_PS3 #include ../../songs/missing_song_data.dta #endif
+         #include ../../songs/missing_song_data.dta
       )
    }
    ;{dx_log_writer TRUE $dx_song_cache_holder}
@@ -1143,7 +1143,7 @@
 (
    {set $dx_raw_song_cache_holder
       (
-         #ifdef HX_PS3 #include ../../songs/dta_collection/mega_songs_data.dta #endif
+         #include ../../songs/dta_collection/mega_songs_data.dta
       )
    }
    ;{dx_log_writer TRUE $dx_raw_song_cache_holder}
