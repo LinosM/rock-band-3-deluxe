@@ -281,6 +281,7 @@
 (settings_save "Successfully saved Deluxe Settings and additional Modifiers to dx.dta, mod.dta, and val.dta")
 (settings_error "There was an error saving your settings, please ensure game relative writes are enabled in Xenia.")
 (os_writesettings "[Save Settings]")
+(os_welcome_msg "Welcome to Deluxe Settings")
 (os_fps "Venue FPS is set to %d\n\n(Going above 30 is not recommended for Console)")
 (os_speed "Song Speed is set to %d%%")
 (os_speed_deny "Song Speed cannot be changed mid-song.")
@@ -376,10 +377,12 @@
 (os_sus4 "Sustain 4")
 (os_sus5 "Sustain 5")
 (os_spds "Set Speeds")
+(os_spds_desc "Customize Song Speed, Track Speed, Venue FPS")
 (os_venuefps "Venue FPS")
 (os_trkspd "Note Speed")
 (os_sngspd "Song Speed")
 (os_venuesel "Select Venue")
+(os_venuesel_desc "Choose where to rock or focus up with no venue")
 (os_fretboard "Highway")
 (os_spotlight "Streak")
 (os_emissive "Overdrive")
@@ -389,7 +392,9 @@
 (os_videoconfirm "Video Backgrounds are not stable. Do not pause while playing a song with video backgrounds. Do not use the in game restart function while viewing a video BG. Consult the RB3DX repo readme to learn more about video backgrounds.")
 (os_trkthm "Track Theme")
 (os_thm "Appearance")
+(os_thm_desc "Customize Deluxe with your own visual style")
 (os_cam "Camera")
+(os_cam_desc "Adjust Post Processing or other aspects of the 3D scene")
 (os_theme "Track Theme")
 (os_flames "Flames")
 (os_voxhw "Vocal Highway")
@@ -464,12 +469,14 @@
 (os_crowdmeter "Crowd Meter")
 (os_fcaudio "FC Sound")
 (os_audiomenu "Audio & SFX")
+(os_audiomenu_desc "Fine tune your sound and the audio you hear")
 (os_cyclefx "Cycle Guitar FX")
 (os_animation "Animated Gems")
 (os_animatedsmasher "Animated Strikeline")
 (os_animatedhighway "Animated Highway")
 (os_animatedgem "Animated Gems")
 (os_ctrlmenu "Controller")
+(os_ctrlmenu_desc "Remap your instrument type or pad controls for ultimate compatibility")
 (os_instswap "Change instrument type")
 (os_instswap_desc "Allow Guitar/Bass/Keys together online by faking Drums/Vocals, swap Pad type, or earn goals of another instrument")
 (os_pad_mapping "Remap pad controls")
@@ -1276,10 +1283,10 @@
    "Prefix's: YES")
 (os_prefix_enable
    "Prefix's: NO")
-(os_author_finder_enable
-   "Author Finder: NO")
-(os_author_finder_disable
-   "Author Finder: YES")
+(os_author_finder_on
+   "Author Finder: ON")
+(os_author_finder_off
+   "Author Finder: OFF")
 (os_song_title_disable
    "Song Title: YES")
 (os_song_title_enable
@@ -1288,6 +1295,8 @@
    "Artist: YES")
 (os_artist_enable
    "Artist: NO")
+(all_instruments
+   "All Instruments")
 (os_yearonline_disable
    "Same Line Year: YES")
 (os_yearonline_enable
@@ -1317,19 +1326,19 @@
 (os_vis_enable
    "Visible: NO")
 (os_mtv_vis_always
-   "Visiblity: DEFAULT")
-(os_mtv_vis_never
    "Visiblity: ALWAYS")
-(os_mtv_vis_default
+(os_mtv_vis_never
    "Visiblity: NEVER")
+(os_mtv_vis_default
+   "Visiblity: DEFAULT")
 (os_stats_disable
    "Extra Info: YES")
 (os_stats_enable
    "Extra Info: NO")
-(os_bpm_disable
-   "Song BPM: YES")
-(os_bpm_enable
-   "Song BPM: NO")
+(os_bpm_on
+   "Song BPM: ON")
+(os_bpm_off
+   "Song BPM: OFF")
 (os_practice
    "Practice HUD")
 (os_all_item
@@ -1346,9 +1355,9 @@
    "Score Position")
 (os_star_display_pos
    "Star Position")
-(os_mtv_delay_disable
+(os_mtv_delay_on
    "Delay: YES")
-(os_mtv_delay_enable
+(os_mtv_delay_off
    "Delay: NO")
 (acc_dx_coverband
    "Cover Band")
@@ -1447,6 +1456,8 @@
 (prechorus_1b "Pre-chorus 1b")
 (prechorus_2a "Pre-chorus 2a")
 (prechorus_2b "Pre-chorus 2b")
+(quiet_part_a "Quiet part a")
+(quiet_part_b "Quiet part b")
 (synth_break_1 "Synth break 1")
 (synth_break_2 "Synth break 2")
 (synth_break_3 "Synth break 3")
@@ -1455,11 +1466,15 @@
 (tension_c "Tension c")
 (vocal_break_a "Vocal break a")
 (vocal_break_b "Vocal break b")
+(you_lost "You lost the game")
 #ifdef RB3E ;rb3enhanced specific modifiers
 (mod_black_background_desc "Disables the in-game venue")
 (mod_force_hopos_desc "Makes every note a HOPO")
 (mod_mirror_mode_desc "Lefty mode without being a lefty!")
 (mod_color_shuffle_desc "Randomizes the colors of gems!")
+(os_reboot "Reboot Game")
+(os_reboot_desc "Completely reboot Rock Band 3 Deluxe.")
+(reboot_warning "Are you sure you want to reboot the game? Requires RB3Enhanced 1779a23 debug or later.")
 #endif
 ;ALWAYS KEEP THIS LAST SO IT LOADS ON TOP OF EVERYTHING ELSE
 ;user added locale strings

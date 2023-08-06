@@ -1,11 +1,3 @@
-#define DX_PS3_HW_DETECTION
-(
-   {if {file_exists "GD:/dev_hdd0/game/BLES80608/USRDIR/COLOR.INI"} ; used for hw detection, BLES80608 is multiman
-      {set $dx_ps3hw TRUE}
-      {set $dx_author_finder FALSE} ;these two vars do the same thing
-   }
-   {set $dx_ps3hw TRUE} ;author finder is broken
-)
 #define DX_FILE_PATH
 (
    #ifdef HX_XBOX "GAME:/dx.dta" #endif
@@ -162,36 +154,36 @@
          }
       }
       {if {== {elem $entry 0} {basename gem_colors}}
-         {set $slot1_color
+         {set $dx_slot1_color
             {elem {find $entry gem_colors} 1}
          }
-         {set $slot2_color
+         {set $dx_slot2_color
             {elem {find $entry gem_colors} 2}
          }
-         {set $slot3_color
+         {set $dx_slot3_color
             {elem {find $entry gem_colors} 3}
          }
-         {set $slot4_color
+         {set $dx_slot4_color
             {elem {find $entry gem_colors} 4}
          }
-         {set $slot5_color
+         {set $dx_slot5_color
             {elem {find $entry gem_colors} 5}
          }
       }
       {if {== {elem $entry 0} {basename sustain_colors}}
-         {set $sus1_color
+         {set $dx_sustain1_color
             {elem {find $entry sustain_colors} 1}
          }
-         {set $sus2_color
+         {set $dx_sustain2_color
             {elem {find $entry sustain_colors} 2}
          }
-         {set $sus3_color
+         {set $dx_sustain3_color
             {elem {find $entry sustain_colors} 3}
          }
-         {set $sus4_color
+         {set $dx_sustain4_color
             {elem {find $entry sustain_colors} 4}
          }
-         {set $sus5_color
+         {set $dx_sustain5_color
             {elem {find $entry sustain_colors} 5}
          }
       }
@@ -227,41 +219,41 @@
          }
       }
       {if {== {elem $entry 0} {basename drum_tom_colors}}
-         {set $drum1_color
+         {set $dx_drum1_color
             {elem {find $entry drum_tom_colors} 1}
          }
-         {set $drum2_color
+         {set $dx_drum2_color
             {elem {find $entry drum_tom_colors} 2}
          }
-         {set $drum3_color
+         {set $dx_drum3_color
             {elem {find $entry drum_tom_colors} 3}
          }
-         {set $drum4_color
+         {set $dx_drum4_color
             {elem {find $entry drum_tom_colors} 4}
          }
       }
       {if {== {elem $entry 0} {basename drum_cymbal_color}}
-         {set $cym1_color
+         {set $dx_cymbal1_color
             {elem {find $entry drum_cymbal_color} 1}
          }
-         {set $cym2_color
+         {set $dx_cymbal2_color
             {elem {find $entry drum_cymbal_color} 2}
          }
-         {set $cym3_color
+         {set $dx_cymbal3_color
             {elem {find $entry drum_cymbal_color} 3}
          }
-         {set $cym4_color
+         {set $dx_cymbal4_color
             {elem {find $entry drum_cymbal_color} 4}
          }
       }
       {if {== {elem $entry 0} {basename kick_color}}
-         {set $kick_color
+         {set $dx_kick_color
             {elem {find $entry kick_color} 1}
          }
       }
-      {if {== {elem $entry 0} {basename main_menu_screen}}
-         {set $svnumber
-            {elem {find $entry main_menu_screen} 1}
+      {if {== {elem $entry 0} {basename dx_main_menu_background}}
+         {set $dx_main_menu_background
+            {elem {find $entry dx_main_menu_background} 1}
          }
       }
       {if {== {elem $entry 0} {basename emulate_fps}}
@@ -287,11 +279,6 @@
       {if {== {elem $entry 0} {basename gem_texture}}
          {set $gem
             {elem {find $entry gem_texture} 1}
-         }
-      }
-      {if {== {elem $entry 0} {basename sustain_texture}}
-         {set $sustain
-            {elem {find $entry sustain_texture} 1}
          }
       }
       {if {== {elem $entry 0} {basename smasher_texture}}
@@ -480,9 +467,9 @@
             {elem {find $entry dx_song_title_mtv_line} 1}
          }
       }
-      {if {== {elem $entry 0} {basename dx_author_finder}}
-         {set $dx_author_finder
-            {elem {find $entry dx_author_finder} 1}
+      {if {== {elem $entry 0} {basename dx_author_finder_active}}
+         {set $dx_author_finder_active
+            {elem {find $entry dx_author_finder_active} 1}
          }
       }
       {if {== {elem $entry 0} {basename dx_genre_mtv_line}}
@@ -530,48 +517,29 @@
             {elem {find $entry dx_joypad_pad_mapping} 1}
          }
       }
-      {if {== {elem $entry 0} {basename mod_nosustain}}
-         {if {== {elem {find $entry mod_nosustain} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_nosustain}
+      {if {== {elem $entry 0} {basename dx_sustain}}
+         {if {== {elem {find $entry dx_sustain} 1} 1}
+            {set $dx_sustain
+               {elem {find $entry dx_sustain} 1}
+            }
          }
       }
-      {if {== {elem $entry 0} {basename mod_rb2sustain}}
-         {if {== {elem {find $entry mod_rb2sustain} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_rb2sustain}
+      {if {== {elem $entry 0} {basename dx_overshell_theme}}
+         {if {== {elem {find $entry dx_overshell_theme} 1} 1}
+            {set $dx_overshell_theme
+               {elem {find $entry dx_overshell_theme} 1}
+            }
          }
       }
-      {if {== {elem $entry 0} {basename mod_rb4sustain}}
-         {if {== {elem {find $entry mod_rb4sustain} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_rb4sustain}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_rb4os}}
-         {if {== {elem {find $entry mod_rb4os} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_rb4os}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_rivalsos}}
-         {if {== {elem {find $entry mod_rivalsos} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_rivalsos}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_xboxos}}
-         {if {== {elem {find $entry mod_xboxos} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_xboxos}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_ps3os}}
-         {if {== {elem {find $entry mod_ps3os} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_ps3os}
+      {if {== {elem $entry 0} {basename dx_overshell_platform}}
+         {if {== {elem {find $entry dx_overshell_platform} 1} 1}
+            {set $dx_overshell_platform
+               {elem {find $entry dx_overshell_platform} 1}
+            }
          }
       }
       {if {== {elem $entry 0} {basename dx_set_postfx}}
          {dx_set_postfx {elem {find $entry dx_set_postfx} 1}}
-      }
-      {if {== {elem $entry 0} {basename mod_wiios}}
-         {if {== {elem {find $entry mod_wiios} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_wiios}
-         }
       }
       {if {== {elem $entry 0} {basename mod_no_crowd_meter}}
          {if {== {elem {find $entry mod_no_crowd_meter} 1} 1}
@@ -583,21 +551,14 @@
             {modifier_mgr toggle_modifier_enabled mod_no_scoreboard}
          }
       }
-      {if {== {elem $entry 0} {basename mod_songtitle}}
-         {if {== {elem {find $entry mod_songtitle} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_songtitle}
+      {if {== {elem $entry 0} {basename dx_song_title}}
+         {set $dx_song_title
+            {elem {find $entry dx_song_title} 1}
          }
       }
-      {if {== {elem $entry 0} {basename mod_no_mtv_overlay}}
-         {if {== {elem {find $entry mod_no_mtv_overlay} 1} 1}
-            {modifier_mgr toggle_modifier_enabled mod_no_mtv_overlay}
-         }
-      }
-      {if {== {elem $entry 0} {basename mod_dx_showbpm}}
-         {if {== {elem {find $entry mod_dx_showbpm} 1} 1}
-            {unless {modifier_mgr is_modifier_active mod_dx_showbpm}
-               {modifier_mgr toggle_modifier_enabled mod_dx_showbpm}
-            }
+      {if {== {elem $entry 0} {basename dx_bpm_report}}
+         {set $dx_bpm_report
+            {elem {find $entry dx_bpm_report} 1}
          }
       }
       {if {== {elem $entry 0} {basename mod_blackmenu}}
@@ -652,10 +613,10 @@
                (star_display_pos $star_displaypos_0 $star_displaypos_1 $star_displaypos_2)
             )
             (gem_colors
-               (gem_colors $slot1_color $slot2_color $slot3_color $slot4_color $slot5_color)
+               (gem_colors $dx_slot1_color $dx_slot2_color $dx_slot3_color $dx_slot4_color $dx_slot5_color)
             )
             (sustain_colors
-               (sustain_colors $sus1_color $sus2_color $sus3_color $sus4_color $sus5_color)
+               (sustain_colors $dx_sustain1_color $dx_sustain2_color $dx_sustain3_color $dx_sustain4_color $dx_sustain5_color)
             )
             (smasher_colors
                (smasher_colors $dx_fret1_color $dx_fret2_color $dx_fret3_color $dx_fret4_color $dx_fret5_color)
@@ -664,16 +625,16 @@
                (drum_smasher_colors $dx_smasher1_color $dx_smasher2_color $dx_smasher3_color $dx_smasher4_color)
             )
             (drum_tom_colors
-               (drum_tom_colors $drum1_color $drum2_color $drum3_color $drum4_color)
+               (drum_tom_colors $dx_drum1_color $dx_drum2_color $dx_drum3_color $dx_drum4_color)
             )
             (drum_cymbal_color
-               (drum_cymbal_color $cym1_color $cym2_color $cym3_color $cym4_color )
+               (drum_cymbal_color $dx_cymbal1_color $dx_cymbal2_color $dx_cymbal3_color $dx_cymbal4_color )
             )
             (kick_color
-               (kick_color $kick_color)
+               (kick_color $dx_kick_color)
             )
-            (main_menu_screen
-               (main_menu_screen $svnumber)
+            (dx_main_menu_background
+               (dx_main_menu_background $dx_main_menu_background)
             )
             (emulate_fps
                (emulate_fps $emulatefps)
@@ -689,9 +650,6 @@
             )
             (gem_texture
                (gem_texture $gem)
-            )
-            (sustain_texture
-               (sustain_texture $sustain)
             )
             (smasher_texture
                (smasher_texture $smasher)
@@ -804,8 +762,8 @@
             (dx_song_title_mtv_line
                (dx_song_title_mtv_line $dx_song_title_mtv_line)
             )
-            (dx_author_finder
-               (dx_author_finder $dx_author_finder)
+            (dx_author_finder_active
+               (dx_author_finder_active $dx_author_finder_active)
             )
             (dx_genre_mtv_line
                (dx_genre_mtv_line $dx_genre_mtv_line)
@@ -854,29 +812,14 @@
             (dx_joypad_pad_mapping
                (dx_joypad_pad_mapping $dx_joypad_pad_mapping)
             )
-            (mod_nosustain
-               (mod_nosustain {modifier_mgr is_modifier_active mod_nosustain})
+            (dx_sustain
+               (dx_sustain $dx_sustain)
             )
-            (mod_rb2sustain
-               (mod_rb2sustain {modifier_mgr is_modifier_active mod_rb2sustain})
+            (dx_overshell_theme
+               (dx_overshell_theme $dx_overshell_theme)
             )
-            (mod_rb4sustain
-               (mod_rb4sustain {modifier_mgr is_modifier_active mod_rb4sustain})
-            )
-            (mod_rb4os
-               (mod_rb4os {modifier_mgr is_modifier_active mod_rb4os})
-            )
-            (mod_rivalsos
-               (mod_rivalsos {modifier_mgr is_modifier_active mod_rivalsos})
-            )
-            (mod_xboxos
-               (mod_xboxos {modifier_mgr is_modifier_active mod_xboxos})
-            )
-            (mod_ps3os
-               (mod_ps3os {modifier_mgr is_modifier_active mod_ps3os})
-            )
-            (mod_wiios
-               (mod_wiios {modifier_mgr is_modifier_active mod_wiios})
+            (dx_overshell_platform
+               (dx_overshell_platform $dx_overshell_platform)
             )
             (mod_no_crowd_meter
                (mod_no_crowd_meter {modifier_mgr is_modifier_active mod_no_crowd_meter})
@@ -884,14 +827,11 @@
             (mod_no_scoreboard
                (mod_no_scoreboard {modifier_mgr is_modifier_active mod_no_scoreboard})
             )
-            (mod_songtitle
-               (mod_songtitle {modifier_mgr is_modifier_active mod_songtitle})
+            (dx_song_title
+               (dx_song_title $dx_song_title)
             )
-            (mod_no_mtv_overlay
-               (mod_no_mtv_overlay {modifier_mgr is_modifier_active mod_no_mtv_overlay})
-            )
-            (mod_dx_showbpm
-               (mod_dx_showbpm {modifier_mgr is_modifier_active mod_dx_showbpm})
+            (dx_bpm_report
+               (dx_bpm_report $dx_bpm_report)
             )
             (mod_blackmenu
                (mod_blackmenu {modifier_mgr is_modifier_active mod_blackmenu})
@@ -1159,58 +1099,52 @@
 #define DX_JSON_WRITER
 (
    #ifndef HX_WII
-   {unless {|| {! $dx_author_finder} $dx_ps3hw}
-      {set $dx_current_song ()}
-      {resize $dx_current_song 0}
-      {push_back $dx_current_song {sprint "{" "\q" "Playlist" "\q" ":" "\q\q" "\q" "," "\q" "SubPlaylist" "\q" ":" "\q" "\q" "," "\q" "IsModChart" "\q" ":" "false" ","
-      "\q" "SelectedInstruments" "\q" ":" "[" 
-      "{" "\q" "active" "\q" ":" $guitarplayeractive "," "\q" "instrument" "\q" ":" "\q" "GUITAR" "\q" "," "\q" "difficulty" "\q" ":" "\q" $guitarrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $real_guitarplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_GUITAR" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_guitarrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $drumplayeractive "," "\q" "instrument" "\q" ":" "\q" "DRUMS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $drumrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $vocalsplayeractive "," "\q" "instrument" "\q" ":" "\q" "VOCALS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $vocalsrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $bassplayeractive "," "\q" "instrument" "\q" ":" "\q" "BASS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $bassrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $real_bassplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_BASS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_bassrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $keysplayeractive "," "\q" "instrument" "\q" ":" "\q" "KEYS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $keysrankvar "\q" "}" ","
-      "{" "\q" "active" "\q" ":" $real_keysplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_KEYS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_keysrankvar "\q" "}" "]" ","
-      "\q" "HasLyrics" "\q" ":" "false" "," "\q" "VideoStartOffset" "\q" ":" 0 "," "\q" "CacheRoot" "\q" ":" "\q" "FakePath" "\q" "," "\q" "DrumType" "\q" ":" "0" ","
-      "\q" "Name" "\q" ":" "\q" $song_title "\q" "," "\q" "NameNoParenthesis" "\q" ":" "\q" $song_title "\q" "," "\q" "Artist" "\q" ":" "\q" $artistvar "\q" ","
-      "\q" "Charter" "\q" ":" "\q" $authorvar "\q" "," "\q" "IsMaster" "\q" ":" $mastervar "," "\q" "Album" "\q" ":" "\q" $albumvar "\q" "," "\q" "AlbumTrack" "\q" ":" 3 ","
-      "\q" "PlaylistTrack" "\q" ":" "0" "," "\q" "Genre" "\q" ":" "\q" $genrevar "\q" "," "\q" "Year" "\q" ":" "\q" $yearvar "\q" "," "\q" "SongLength" "\q" ":" "231271" ","
-      "\q" "SongLengthTimeSpan" "\q" ":" "\q" "00:03:51.2710000" "\q" "," "\q" "PreviewStart" "\q" ":" "53454" "," "\q" "PreviewStartTimeSpan" "\q" ":" "\q" "00:00:53.4540000" "\q" ","
-      "\q" "PreviewEnd" "\q" ":" "-1" "," "\q" "PreviewEndTimeSpan" "\q" ":" "\q" "-00:00:00.0010000" "\q" "," "\q" "Delay" "\q" ":" "0.0" "," "\q" "LoadingPhrase" "\q" ":" "\q" "\q" ","
-      "\q" "HopoThreshold" "\q" ":" "170" "," "\q" "EighthNoteHopo" "\q" ":" "false" "," "\q" "MultiplierNote" "\q" ":" "116" "," "\q" "Source" "\q" ":" "\q" $sourcevar "\q" ","
-      "\q" "PartDifficulties" "\q" ":" "{" "\q" "GUITAR" "\q" ":" $guitarrankvar "," "\q" "GUITAR_COOP" "\q" ":" "-1" "," "\q" "REAL_GUITAR" "\q" ":" $real_guitarrankvar ","
-      "\q" "RHYTHM" "\q" ":" "-1" "," "\q" "BASS" "\q" ":" $bassrankvar "," "\q" "REAL_BASS" "\q" ":" $real_bassrankvar "," "\q" "DRUMS" "\q" ":" $drumrankvar ","
-      "\q" "GH_DRUMS" "\q" ":" "-1" "," "\q" "REAL_DRUMS" "\q" ":" "-1" "," "\q" "KEYS" "\q" ":" $keysrankvar "," "\q" "REAL_KEYS" "\q" ":" $real_keysrankvar ","
-      "\q" "VOCALS" "\q" ":" $vocalsrankvar "," "\q" "HARMONY" "\q" ":" $vocalsrankvar "}" "," "\q" "BandDifficulty" "\q" ":" $bandrankvar "," "\q" "AvailableParts" "\q" ":" "1030793138175" ","
-      "\q" "VocalParts" "\q" ":" "3" "," "\q" "Checksum" "\q" ":" "\q" "C89E28F4C0987A33859ECB9DC06748EDC49B567B" "\q" "," "\q" "NotesFile" "\q" ":" "\q" "notes.mid" "\q" "," "\q" "Location" "\q" ":" "\q" "FakePath" "\q" "}"}}
-      {write_file CURRENT_SONG_JSON_FILE_PATH
-         {array
-            $dx_current_song
-         }
+   {set $dx_current_song ()}
+   {resize $dx_current_song 0}
+   {push_back $dx_current_song {sprint "{" "\q" "Playlist" "\q" ":" "\q\q" "\q" "," "\q" "SubPlaylist" "\q" ":" "\q" "\q" "," "\q" "IsModChart" "\q" ":" "false" ","
+   "\q" "SelectedInstruments" "\q" ":" "[" 
+   "{" "\q" "active" "\q" ":" $guitarplayeractive "," "\q" "instrument" "\q" ":" "\q" "GUITAR" "\q" "," "\q" "difficulty" "\q" ":" "\q" $guitarrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $real_guitarplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_GUITAR" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_guitarrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $drumplayeractive "," "\q" "instrument" "\q" ":" "\q" "DRUMS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $drumrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $vocalsplayeractive "," "\q" "instrument" "\q" ":" "\q" "VOCALS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $vocalsrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $bassplayeractive "," "\q" "instrument" "\q" ":" "\q" "BASS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $bassrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $real_bassplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_BASS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_bassrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $keysplayeractive "," "\q" "instrument" "\q" ":" "\q" "KEYS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $keysrankvar "\q" "}" ","
+   "{" "\q" "active" "\q" ":" $real_keysplayeractive "," "\q" "instrument" "\q" ":" "\q" "REAL_KEYS" "\q" "," "\q" "difficulty" "\q" ":" "\q" $real_keysrankvar "\q" "}" "]" ","
+   "\q" "HasLyrics" "\q" ":" "false" "," "\q" "VideoStartOffset" "\q" ":" 0 "," "\q" "CacheRoot" "\q" ":" "\q" "FakePath" "\q" "," "\q" "DrumType" "\q" ":" "0" ","
+   "\q" "Name" "\q" ":" "\q" $song_title "\q" "," "\q" "NameNoParenthesis" "\q" ":" "\q" $song_title "\q" "," "\q" "Artist" "\q" ":" "\q" $artistvar "\q" ","
+   "\q" "Charter" "\q" ":" "\q" $authorvar "\q" "," "\q" "IsMaster" "\q" ":" $mastervar "," "\q" "Album" "\q" ":" "\q" $albumvar "\q" "," "\q" "AlbumTrack" "\q" ":" 3 ","
+   "\q" "PlaylistTrack" "\q" ":" "0" "," "\q" "Genre" "\q" ":" "\q" $genrevar "\q" "," "\q" "Year" "\q" ":" "\q" $yearvar "\q" "," "\q" "SongLength" "\q" ":" "231271" ","
+   "\q" "SongLengthTimeSpan" "\q" ":" "\q" "00:03:51.2710000" "\q" "," "\q" "PreviewStart" "\q" ":" "53454" "," "\q" "PreviewStartTimeSpan" "\q" ":" "\q" "00:00:53.4540000" "\q" ","
+   "\q" "PreviewEnd" "\q" ":" "-1" "," "\q" "PreviewEndTimeSpan" "\q" ":" "\q" "-00:00:00.0010000" "\q" "," "\q" "Delay" "\q" ":" "0.0" "," "\q" "LoadingPhrase" "\q" ":" "\q" "\q" ","
+   "\q" "HopoThreshold" "\q" ":" "170" "," "\q" "EighthNoteHopo" "\q" ":" "false" "," "\q" "MultiplierNote" "\q" ":" "116" "," "\q" "Source" "\q" ":" "\q" $sourcevar "\q" ","
+   "\q" "PartDifficulties" "\q" ":" "{" "\q" "GUITAR" "\q" ":" $guitarrankvar "," "\q" "GUITAR_COOP" "\q" ":" "-1" "," "\q" "REAL_GUITAR" "\q" ":" $real_guitarrankvar ","
+   "\q" "RHYTHM" "\q" ":" "-1" "," "\q" "BASS" "\q" ":" $bassrankvar "," "\q" "REAL_BASS" "\q" ":" $real_bassrankvar "," "\q" "DRUMS" "\q" ":" $drumrankvar ","
+   "\q" "GH_DRUMS" "\q" ":" "-1" "," "\q" "REAL_DRUMS" "\q" ":" "-1" "," "\q" "KEYS" "\q" ":" $keysrankvar "," "\q" "REAL_KEYS" "\q" ":" $real_keysrankvar ","
+   "\q" "VOCALS" "\q" ":" $vocalsrankvar "," "\q" "HARMONY" "\q" ":" $vocalsrankvar "}" "," "\q" "BandDifficulty" "\q" ":" $bandrankvar "," "\q" "AvailableParts" "\q" ":" "1030793138175" ","
+   "\q" "VocalParts" "\q" ":" "3" "," "\q" "Checksum" "\q" ":" "\q" "C89E28F4C0987A33859ECB9DC06748EDC49B567B" "\q" "," "\q" "NotesFile" "\q" ":" "\q" "notes.mid" "\q" "," "\q" "Location" "\q" ":" "\q" "FakePath" "\q" "}"}}
+   {write_file CURRENT_SONG_JSON_FILE_PATH
+      {array
+         $dx_current_song
       }
    }
    #endif
 )
 #define DX_SONG_CACHE
 (
-   #ifdef FIX_JNACKS_SHIT
    {set $dx_song_cache_holder
       (
          #ifdef HX_PS3 #include ../../songs/missing_song_data.dta #endif
       )
    }
    ;{dx_log_writer TRUE $dx_song_cache_holder}
-   #endif
 )
 #define DX_RAW_SONG_CACHE
 (
-   #ifdef FIX_JNACKS_SHIT
    {set $dx_raw_song_cache_holder
       (
          #ifdef HX_PS3 #include ../../songs/dta_collection/mega_songs_data.dta #endif
       )
    }
    ;{dx_log_writer TRUE $dx_raw_song_cache_holder}
-   #endif
 )

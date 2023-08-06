@@ -338,6 +338,7 @@
    {set $authorvar FALSE}
    {set $stringsauthorvar FALSE}
    {set $keysauthorvar FALSE}
+   {set $namevar FALSE}
    {set $artistvar FALSE}
    {set $yearvar FALSE}
    {set $albumvar FALSE}
@@ -376,8 +377,6 @@
    {if {== $smasher rb3} {set $smasher none}}
 
    {if {== $gem rb3} {set $gem none}}
-
-   {if {== $sustain rb3} {set $sustain none}}
 
    {if {== $crowdmeter rb3} {set $crowdmeter none}}
 
