@@ -147,10 +147,10 @@
 (overshell_postproc "Post Processing")
 (os_postfx_disable "[Disable All]")
 (os_postfx_enable "[Enable All]")
-(os_blur_disable "Motion Blur: ON")
-(os_blur_enable "Motion Blur: OFF")
-(os_crust_disable "Film Grain: ON")
-(os_crust_enable "Film Grain: OFF")
+(os_blur_on "Motion Blur: ON")
+(os_blur_off "Motion Blur: OFF")
+(os_noise_on "Film Grain: ON")
+(os_noise_off "Film Grain: OFF")
 (the20s
    "'20s Hits")
 (the2020s
@@ -459,6 +459,8 @@
 (mod_starlightsmashers "Galaxy")
 (mod_shinysmashers "Shiny")
 (mod_animatedgems "Animated Gems")
+(mod_dx_left_right_jump "Dpad Songlist Shortcuts")
+(mod_dx_left_right_jump_desc "Allows Left and Right on the dpad to jump up and down to the next section respectively.")
 (os_gems "Gems")
 (os_smashers "Strikeline")
 (os_animatedsmashers "Animated Strikeline")
@@ -477,8 +479,8 @@
 (os_animatedgem "Animated Gems")
 (os_ctrlmenu "Controller")
 (os_ctrlmenu_desc "Remap your instrument type or pad controls for ultimate compatibility")
-(os_instswap "Change instrument type")
-(os_instswap_desc "Allow Guitar/Bass/Keys together online by faking Drums/Vocals, swap Pad type, or earn goals of another instrument")
+(os_instrumentswap "Change instrument type")
+(os_instrumentswap_desc "Allow Guitar/Bass/Keys together online by faking Drums/Vocals, swap Pad type, or earn goals of another instrument")
 (os_pad_mapping "Remap pad controls")
 (os_pad_mapping_desc "Useful when using an instrument from a another console")
 (os_pad_mapping_select_desc "Select the controls you would like to remap to")
@@ -490,9 +492,9 @@
 (os_ghdrums "Guitar Hero Drums")
 (os_instreset "[Reset instrument type]")
 (os_instreset_desc "Reverts all controllers back to normal")
-(os_instswap_menu_guitar_desc "Select new Instrument type\nGuitar -> ...")
-(os_instswap_menu_keys_desc "Select new Instrument type\nKeys -> ...")
-(os_instswap_menu_vocals_desc "Select new Instrument type\nVocals -> ...")
+(os_instrumentswap_menu_guitar_desc "Select new Instrument type\nGuitar -> ...")
+(os_instrumentswap_menu_keys_desc "Select new Instrument type\nKeys -> ...")
+(os_instrumentswap_menu_vocals_desc "Select new Instrument type\nVocals -> ...")
 (mod_animatedhighway "Animated Highway")
 (mod_ps3os "PS3")
 (mod_wiios "Wii")
@@ -575,6 +577,8 @@
   "Please disable other breakneck speed modifiers before enabling this one.")
 (autoplay_warning
   "This modifer is intended to be used for authors demonstrating their charts. Saving will be disabled until you restart if you enable this.")
+(postfx_warning
+  "Post Processing will not always completely take effect until loading into a new scene. Return to main menu now?")
 (fakejuke_warning
   "This modifer allows for easy Performance Mode and venue showcases. Saving will be disabled until you restart if you enable this.")
 (screensaver_warning
@@ -1321,10 +1325,10 @@
    "Year: YES")
 (os_year_enable
    "Year: NO")
-(os_vis_disable
-   "Visible: YES")
-(os_vis_enable
+(os_vis_off
    "Visible: NO")
+(os_vis_on
+   "Visible: YES")
 (os_mtv_vis_always
    "Visiblity: ALWAYS")
 (os_mtv_vis_never
