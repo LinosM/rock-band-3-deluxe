@@ -330,6 +330,53 @@
    {set $dx_someone_niced FALSE}
    {set $dx_someone_jurgend FALSE}
 )
+#define GAME_EXIT_RESET_HANDLER
+(
+   {set $current_beat 0}
+   {set $startingbpm FALSE}
+   {set $dx_bpm_counter_for_countdown FALSE}
+   {set $solo_box_up_0 FALSE}
+   {set $solo_box_up_1 FALSE}
+   {set $solo_box_up_2 FALSE}
+   {set $solo_box_up_3 FALSE}
+   {set $delay_tracked_0 FALSE}
+   {set $delay_tracked_1 FALSE}
+   {set $delay_tracked_2 FALSE}
+   {set $delay_tracked_3 FALSE}
+
+   {set $tracked_beat_no_notes_start_guitar 0}
+   {set $tracked_beat_no_notes_end_guitar 0}
+   {set $first_guitar_gem_tracked FALSE}
+
+   {set $tracked_beat_no_notes_start_bass 0}
+   {set $tracked_beat_no_notes_end_bass 0}
+   {set $first_bass_gem_tracked FALSE}
+
+   {set $tracked_beat_no_notes_start_drum 0}
+   {set $tracked_beat_no_notes_end_drum 0}
+   {set $first_drum_gem_tracked FALSE}
+
+   {set $tracked_beat_no_notes_start_keys 0}
+   {set $tracked_beat_no_notes_end_keys 0}
+   {set $first_keys_gem_tracked FALSE}
+
+   {set $guitar_note_tracker ()}
+   {resize $guitar_note_tracker 0} ;resize the array
+   {push_back $guitar_note_tracker (none none)} ;push_back a new state into the array
+
+   {set $drum_note_tracker ()}
+   {resize $drum_note_tracker 0} ;resize the array
+   {push_back $drum_note_tracker (none none)} ;push_back a new state into the array
+
+   {set $bass_note_tracker ()}
+   {resize $bass_note_tracker 0} ;resize the array
+   {push_back $bass_note_tracker (none none)} ;push_back a new state into the array
+
+   {set $keys_note_tracker ()}
+   {resize $keys_note_tracker 0} ;resize the array
+   {push_back $keys_note_tracker (none none)} ;push_back a new state into the array
+
+)
 #define DX_MTV_RESET_HANDLER
 (
    ;{dx_log_writer FALSE {sprint "Clearing MTV Variables - Current Screen: " {ui current_screen}}} ;stutters at song end, dont enable unless you really mean it
@@ -393,6 +440,10 @@
    {if {== $dx_vocal_arrow rb3} {set $dx_vocal_arrow none}}
 
    {if {== $dx_vocal_highway rb3} {set $dx_vocal_highway none}}
+   
+   {if {== $dx_vocal_notes rb3} {set $dx_vocal_notes none}}
+   
+   {if {== $dx_vocal_overdrive rb3} {set $dx_vocal_overdrive none}}
 
    {if {== $dx_keyboard original} {set $dx_keyboard none}}
 

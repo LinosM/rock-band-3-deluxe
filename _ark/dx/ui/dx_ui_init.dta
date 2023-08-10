@@ -4,7 +4,65 @@ DX_JSON_CLEAR
 DX_CURRENT_SONG_CLEAR
 #endif
 
-{set $dx_author_finder FALSE}
+{set $guitar_note_tracker ()}
+{resize $guitar_note_tracker 0} ;resize the array
+{push_back $guitar_note_tracker (none none)} ;push_back a new state into the array
+
+{set $drum_note_tracker ()}
+{resize $drum_note_tracker 0} ;resize the array
+{push_back $drum_note_tracker (none none)} ;push_back a new state into the array
+
+{set $bass_note_tracker ()}
+{resize $bass_note_tracker 0} ;resize the array
+{push_back $bass_note_tracker (none none)} ;push_back a new state into the array
+
+{set $keys_note_tracker ()}
+{resize $keys_note_tracker 0} ;resize the array
+{push_back $keys_note_tracker (none none)} ;push_back a new state into the array
+
+;platform detection
+#ifdef HX_PS3
+DX_PS3_HW_DETECTION
+{if_else $dx_ps3hw
+   {set $dx_detected_platform platform_ps3}
+   {set $dx_detected_platform platform_rpcs3}
+}
+#endif
+
+#ifdef HX_XBOX
+#ifdef RB3E
+{set $dx_detected_platform platform_xbox_rb3e}
+#else
+{set $dx_detected_platform platform_xbox}
+#endif
+#ifdef RB3E_EMULATOR 
+{set $dx_detected_platform platform_xenia_rb3e}
+#endif
+#endif
+
+#ifdef HX_WII
+#ifdef RB3E
+{set $dx_detected_platform platform_wii_rb3e}
+#else
+{set $dx_detected_platform platform_wii}
+#endif
+#ifdef RB3E_EMULATOR
+{set $dx_detected_platform platform_dolphin_rb3e}
+#endif
+#endif
+
+{unless $dx_detected_platform
+   {set $dx_detected_platform platform_unknown}
+}
+
+{dx_log_writer TRUE {localize $dx_detected_platform}}
+
+;author finder setup
+#ifndef HX_WII
+{unless $dx_ps3hw
+   {set $dx_author_finder_is_enabled TRUE}
+}
+#endif
 
 #ifdef HX_WII
 {set $dx_overshell_platform wii}
@@ -16,10 +74,6 @@ DX_CURRENT_SONG_CLEAR
 
 #ifdef HX_XBOX
 {set $dx_overshell_platform xbox}
-#endif
-
-#ifndef HX_WII
-{set $dx_author_finder TRUE}
 #endif
 
 ;overshell setup
@@ -116,6 +170,14 @@ DX_CURRENT_SONG_CLEAR
 ;sets default vocal highway track textures.
 ;list can be found in _ark\ui\track\voxhw\voxhw.dta
 {set $dx_vocal_highway none}
+
+;sets default vocal notes track textures.
+;list can be found in _ark\ui\track\voxnotes\voxnotes.dta
+{set $dx_vocal_notes none}
+
+;sets default vocal overdrive track textures.
+;list can be found in _ark\ui\track\voxod\voxod.dta
+{set $dx_vocal_overdrive none}
 
 ;enable custom track angles
 {set $dx_forcedx_multiangle FALSE}
@@ -292,7 +354,7 @@ DX_CURRENT_SONG_CLEAR
 #endif
 
 #ifndef HX_WII
-{if $dx_author_finder
+{if $dx_author_finder_is_enabled
    DX_SONG_CACHE
    DX_RAW_SONG_CACHE
 }
@@ -374,6 +436,10 @@ DX_CURRENT_SONG_CLEAR
 {unless {== $dx_vocal_arrow none} {set $dx_vocal_arrow_needs_reset TRUE}}
 
 {unless {== $dx_vocal_highway none} {set $dx_vocal_highway_needs_reset TRUE}}
+
+{unless {== $dx_vocal_notes none} {set $dx_vocal_notes_needs_reset TRUE}}
+
+{unless {== $dx_vocal_overdrive none} {set $dx_vocal_overdrive_needs_reset TRUE}}
 
 {unless {== $dx_multiangle 1} {set $dx_forcedx_multiangle TRUE}}
 
