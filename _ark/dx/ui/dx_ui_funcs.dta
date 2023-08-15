@@ -3,6 +3,9 @@
    ($write_file $dx_log_writer)
    #ifdef HX_WII {set $nothing $nothing} #endif
    #ifndef HX_WII
+   #ifdef RB3E
+   {print_debug $dx_log_writer}
+   #endif
    {unless {== $dx_logging never}
       {do
          DX_GAMEMODE_CHECKER
@@ -311,8 +314,8 @@
       {set $options_circular TRUE}
       {set $options_circular FALSE}
    }
-   {if {>= $num_of_slots 7}
-      {set $num_of_slots 7}
+   {if {>= $num_of_slots 6}
+      {set $num_of_slots 6}
    }
    {set $current_slots $num_of_slots}
    {if {== $current_slots $previous_num_slot}
