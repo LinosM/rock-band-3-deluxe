@@ -1,4 +1,5 @@
 #include dta_sections/vanilla_strings.dta
+;#merge dta_sections/misc.dta
 #merge dta_sections/custom_sources_rbn.dta
 #merge dta_sections/custom_sources_unofficial.dta
 #merge dta_sections/harms_and_updates.dta
