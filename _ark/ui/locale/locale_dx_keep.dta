@@ -436,6 +436,8 @@
 (os_thm_chill "Chill")
 (os_thm_outrun "Outrun")
 
+(theme_save_warning "Would you like to save this track theme for future sessions?")
+
 (os_uithm "HUD Theme")
 (os_osthm "Menu Theme")
 (os_resetmsg "This will reset all textures to default. If you've already played a song this session, this will not take effect until you save settings and restart the game. Are you sure?")
@@ -1252,7 +1254,7 @@
 (os_nice_sound_off "69% Nice: Off")
 (os_countdown_on "Countdown: On")
 (os_countdown_off "Countdown: Off")
-(os_countdown_warn "Note: Countdown is not perfectly accurate, it does not handle time signature changes properly. As well, pausing mid run will throw off the countdown. Use at your own discretion.")
+(os_countdown_warn "Note: Pausing mid run will throw off the countdown.")
 (dx_none "[None]")
 (goul-nug_fc "[Default]")
 (overshell_dx_bot_settings "Autoplay Settings")
