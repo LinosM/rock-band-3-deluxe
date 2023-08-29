@@ -398,6 +398,11 @@
             {elem {find $entry dx_genre_mtv_line} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_sub_genre_mtv_line}}
+         {set $dx_sub_genre_mtv_line
+            {elem {find $entry dx_sub_genre_mtv_line} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename dx_game_origin_mtv_line}}
          {set $dx_game_origin_mtv_line
             {elem {find $entry dx_game_origin_mtv_line} 1}
@@ -484,6 +489,16 @@
       {if {== {elem $entry 0} {basename dx_fctype}}
          {set $dx_fctype
             {elem {find $entry dx_fctype} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_streak_counter}}
+         {set $dx_streak_counter
+            {elem {find $entry dx_streak_counter} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename dx_time_remaining}}
+         {set $dx_time_remaining
+            {elem {find $entry dx_time_remaining} 1}
          }
       }
       {if {== {elem $entry 0} {basename dx_bpm_report}}
@@ -639,6 +654,9 @@
             (dx_genre_mtv_line
                (dx_genre_mtv_line $dx_genre_mtv_line)
             )
+            (dx_sub_genre_mtv_line
+               (dx_sub_genre_mtv_line $dx_sub_genre_mtv_line)
+            )
             (dx_game_origin_mtv_line
                (dx_game_origin_mtv_line $dx_game_origin_mtv_line)
             )
@@ -709,6 +727,12 @@
             )
             (dx_fctype
                (dx_fctype $dx_fctype)
+            )
+            (dx_streak_counter
+               (dx_streak_counter $dx_streak_counter)
+            )
+            (dx_time_remaining
+               (dx_time_remaining $dx_time_remaining)
             )
             (dx_bpm_report
                (dx_bpm_report $dx_bpm_report)
@@ -1206,6 +1230,9 @@
          {if $dx_genre_mtv_line
             {push_back $dx_current_song {sprint "Genre: " {localize $genrevar}}}
          }
+         {if $dx_sub_genre_mtv_line
+            {push_back $dx_current_song {sprint "Sub Genre: " {localize $subgenrevar}}}
+         }
          {if {&& $dx_year_on_mtv {! $dx_year_on_one_mtv_line}}
             {push_back $dx_current_song {sprint "Year: " $yearvar}}
          }
@@ -1231,6 +1258,9 @@
          }
          {if $dx_genre_mtv_line
             {push_back $dx_current_song {localize $genrevar}}
+         }
+         {if $dx_sub_genre_mtv_line
+            {push_back $dx_current_song {localize $subgenrevar}}
          }
          {if {&& $dx_year_on_mtv {! $dx_year_on_one_mtv_line}}
             {push_back $dx_current_song $yearvar}
