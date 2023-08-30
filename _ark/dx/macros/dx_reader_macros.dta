@@ -496,6 +496,11 @@
             {elem {find $entry dx_streak_counter} 1}
          }
       }
+      {if {== {elem $entry 0} {basename dx_force_remote_vox}}
+         {set $dx_force_remote_vox
+            {elem {find $entry dx_force_remote_vox} 1}
+         }
+      }
       {if {== {elem $entry 0} {basename dx_time_remaining}}
          {set $dx_time_remaining
             {elem {find $entry dx_time_remaining} 1}
@@ -731,6 +736,9 @@
             (dx_streak_counter
                (dx_streak_counter $dx_streak_counter)
             )
+            (dx_force_remote_vox
+               (dx_force_remote_vox $dx_force_remote_vox)
+            )
             (dx_time_remaining
                (dx_time_remaining $dx_time_remaining)
             )
@@ -871,9 +879,19 @@
             {elem {find $entry lanes} 1}
          }
       }
-      {if {== {elem $entry 0} {basename score}}
-         {set $dx_score
+      {if {== {elem $entry 0} {basename score_box}}
+         {set $dx_score_box
             {elem {find $entry score} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename stars}}
+         {set $dx_stars
+            {elem {find $entry stars} 1}
+         }
+      }
+      {if {== {elem $entry 0} {basename font}}
+         {set $dx_font
+            {elem {find $entry font} 1}
          }
       }
       {if {== {elem $entry 0} {basename crowd_meter}}
@@ -991,8 +1009,14 @@
             (lanes
                (lanes $dx_lanes)
             )
-            (score
-               (score $dx_score)
+            (score_box
+               (score $dx_score_box)
+            )
+            (stars
+               (stars $dx_stars)
+            )
+            (font
+               (font $dx_font)
             )
             (crowd_meter
                (crowd_meter $dx_crowd_meter)

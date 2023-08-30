@@ -439,6 +439,7 @@
 (os_thm_cherrycola "Cherry Cola")
 (os_thm_chill "Chill")
 (os_thm_outrun "Outrun")
+(os_thm_sakura "Sakura")
 
 (theme_save_warning "Would you like to save this track theme for future sessions?")
 
@@ -503,7 +504,9 @@
 (os_animatedsmashers "Animated Strikeline")
 (os_rails "Track Rails")
 (os_lanes "Lanes/BRE")
-(os_score "Score")
+(os_score_box "Score Box")
+(os_stars "Stars")
+(os_font "Font")
 (os_odbar "Overdrive Bar")
 (os_multiring "Multiplier Ring")
 (os_crowdmeter "Crowd Meter")
@@ -623,6 +626,8 @@
   "This will hide everything and display the menu background. All unsaved progress will be lost and you won't be able to interact with the game until you restart. Are you sure?")
 (author_warning
   "This modifer is intended to be used for chart authors. Combine this with RPCS3 controller mapping to use all instruments mode.")
+(himem_warning
+   "This option does not work on retail hardware and WILL crash on boot if you try anyway. Continue?")
 (saving_disabled
    "Saving is disabled for the remainder of this session")
 (modifier_song_load
@@ -1270,6 +1275,8 @@
 (os_streak_counter_off "Note Streak: Off")
 (os_countdown_on "Countdown: On")
 (os_countdown_off "Countdown: Off")
+(os_force_remote_vox_on "Vocal Pitch: Off") ;reversed because remote turns off pitch visibility
+(os_force_remote_vox_off "Vocal Pitch: On")
 (os_time_remaining_on "Time Remaining: On")
 (os_time_remaining_off "Time Remaining: Off")
 (os_end_song_feedback_on "End Feedback: On")
@@ -1484,6 +1491,10 @@
    "Delay: YES")
 (os_mtv_delay_off
    "Delay: NO")
+(os_dx_himem
+   "Enable Large Heap")
+(os_dx_himem_enabled
+   "Large Heap Enabled")
 (acc_dx_coverband
    "Cover Band")
 (acc_dx_coverband_desc
@@ -1601,11 +1612,6 @@
 (os_reboot_desc "Completely reboot Rock Band 3 Deluxe.")
 (reboot_warning "Are you sure you want to reboot the game? Requires RB3Enhanced 1779a23 debug or later.")
 #endif
-;ALWAYS KEEP THIS LAST SO IT LOADS ON TOP OF EVERYTHING ELSE
-;user added locale strings
-#include locale_sources.dta
-#include locale_sources_user.dta
-#include locale_extras.dta
 
 (get_ready
    "Get\nReady!")
@@ -1617,3 +1623,9 @@
    "%s%")
 (esprit_stop_desc
    "This traffic-stopping guitar is sure to catch attention from the audience. Thanks for playing Rock Band 3 Deluxe!")
+
+;ALWAYS KEEP THIS LAST SO IT LOADS ON TOP OF EVERYTHING ELSE
+;user added locale strings
+#include locale_sources.dta
+#include locale_sources_user.dta
+#include locale_extras.dta
