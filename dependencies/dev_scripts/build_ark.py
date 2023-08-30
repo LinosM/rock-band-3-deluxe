@@ -88,9 +88,9 @@ def build_patch_ark(wii: bool, xbox: bool, rpcs3_directory: str = None, rpcs3_mo
     patch_hdr_version = "patch_xbox" if xbox else "patch_ps3"
 
     # pull the latest changes from the Rock Band 3 Deluxe repo if necessary
-    if not check_git_updated(repo_url="https://github.com/hmxmilohax/rock-band-3-deluxe", repo_root_path=root_dir):
-        cmd_pull = "git pull https://github.com/hmxmilohax/rock-band-3-deluxe main".split()
-        subprocess.run(cmd_pull, shell=(platform == "win32"), cwd="..")
+    #if not check_git_updated(repo_url="https://github.com/hmxmilohax/rock-band-3-deluxe", repo_root_path=root_dir):
+    #    cmd_pull = "git pull https://github.com/hmxmilohax/rock-band-3-deluxe main".split()
+    #    subprocess.run(cmd_pull, shell=(platform == "win32"), cwd="..")
 
     # temporarily move other console's files out of the ark to reduce overall size
     for f in ark_dir.rglob(files_to_remove):
@@ -112,7 +112,10 @@ def build_patch_ark(wii: bool, xbox: bool, rpcs3_directory: str = None, rpcs3_mo
             f.rename(the_new_filename2)
 
     # build the ark
-    print("Building Rock Band 3 Deluxe ARK...")
+    if wii:
+        print("Building Rock Band 3 Deluxe ARK... the 'Unhandled exception' below is expected.")
+    else:
+        print("Building Rock Band 3 Deluxe ARK...")
     failed = False
     if wii:
         try:

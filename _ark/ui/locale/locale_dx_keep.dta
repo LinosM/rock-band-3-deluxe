@@ -459,6 +459,11 @@
 (gdrb "Green Day: Rock Band")
 (tbrb "The Beatles: Rock Band")
 (yarg "YARG")
+(25_percent "25%")
+(50_percent "50%")
+(75_percent "75%")
+(acidrain "Acid Rain")
+(metallicpurple "Metallic Purple")
 (rb2dx "Rock Band 2 DX")
 (rb3legacy "RB3 (Legacy)")
 (rb4legacy "RB4 (Legacy)")
@@ -1238,6 +1243,7 @@
 (os_score "Score")
 (os_pos "Position")
 (os_eltex "Texture")
+(os_eltexs "Textures")
 (os_audio_ambience_on "Menu Ambience: ON")
 (os_audio_ambience_off "Menu Ambience: OFF")
 (os_audio_instsfx_on "Instrument SFX: ON")
@@ -1275,6 +1281,8 @@
 (os_streak_counter_off "Note Streak: Off")
 (os_countdown_on "Countdown: On")
 (os_countdown_off "Countdown: Off")
+(os_intro_on "Intro Movie: On")
+(os_intro_off "Intro Movie: Off")
 (os_force_remote_vox_on "Vocal Pitch: Off") ;reversed because remote turns off pitch visibility
 (os_force_remote_vox_off "Vocal Pitch: On")
 (os_time_remaining_on "Time Remaining: On")
@@ -1383,6 +1391,10 @@
 (mod_auto_play_desc "Ruin the leaderboards and your credibility all at once!")
 (mod_venue_swap_desc "Get a new venue after every song mid-setlist")
 (mod_char_swap_desc "Get a new band after every song mid-setlist")
+(os_time_remain_dbg_on
+   "Time Remain Dbg: ON")
+(os_time_remain_dbg_off
+   "Time Remain Dbg: OFF")
 (print_objects
    "Print Screen Objects")
 (os_debug
@@ -1491,10 +1503,10 @@
    "Delay: YES")
 (os_mtv_delay_off
    "Delay: NO")
-(os_dx_himem
-   "Enable Large Heap")
-(os_dx_himem_enabled
-   "Large Heap Enabled")
+(os_dx_himem_off
+   "Large Heap: OFF")
+(os_dx_himem_on
+   "Large Heap: ON")
 (acc_dx_coverband
    "Cover Band")
 (acc_dx_coverband_desc
