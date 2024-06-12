@@ -1,36 +1,29 @@
+;welcome to jnacks hell
 ;inside the ark
-#define SONGPATH
+#define SONGPATH_DISC
 (
    {song_mgr song_file_path {meta_performer song} "/../../gen/songs.dtb"} ;if we loaded a song from on disc, this is the location of the loaded songs.dta
 )
 ;a dlc dta
-#define SONGPATH2
+#define SONGPATH_DLC
 (
    {song_mgr song_file_path {meta_performer song} "/../../songs.dta"} ;if we loaded a dlc song, this is the location of the loaded songs.dta
 )
 ;on disc update
-#define SONGPATH3
+#define SONGPATH_UPDATE
 (
-   {song_mgr song_file_path {meta_performer song} {sprint "/../../../dta_collection/gen/" {meta_performer song} ".dtb"}} ;if we loaded a dlc song that has an on disc update, we have to probe our lookup table
+   {song_mgr song_file_path {meta_performer song} "/../../../gen/missing_song_data_updates.dtb"} ;if we loaded a dlc song that has an on disc update
 )
-#define SONGPATH4
+#define SONGPATH_RAW_DTB
 (
-   {song_mgr song_file_path {meta_performer song} {sprint "/../../../dta_collection/dta_updates_collection/gen/" {meta_performer song} ".dtb"}} ;if we loaded a dlc song that has an on disc update, we have to probe our lookup table
-)
-#define SONGPATH5
-(
-   {sprint "songs/dta_collection/gen/" {meta_performer song} ".dtb"}
-)
-#define DX_MTV_SETUP_TEXT
-(
-   {{{gamemode get track_panel} find mtv_overlay} setup_text} ;refresh the mtv overlay
+   {sprint "dx/song_dta_collection/gen/" {meta_performer song} ".dtb"}
 )
 #define DX_MTV_BPM_HANDLER
 (
-   {if {&& {modifier_mgr is_modifier_active mod_dx_showbpm} $dx_mtvup}
+   {if {&& $dx_bpm_report $dx_mtvup}
       {set $dx_tmp {int {+ 0.5 {seconds_to_beat {/ {beatmatch get_song_ms} 1000}}}}}
       {set $dx_bpm_counter {* {* 60 {/ 1 {- {beat_to_seconds {+ $dx_tmp 1}} {beat_to_seconds $dx_tmp}}}} $speedmod}}
-      DX_MTV_SETUP_TEXT
+      {dx_mtv_setup_text}
    }
 )
 #define DX_MTV_SET_POS_HANDLER
@@ -42,363 +35,206 @@
       }
    )
 )
-#define DX_RANK_VAR_HANDLER
-(
-   {foreach $entry $rankvar
-      {if {== {elem $entry 0} {basename rank}}
-         {if {elem {find $entry guitar} 1}
-            {set $guitarrankvar {elem {find $entry guitar} 1}}
-         }
-      }
-      {if_else {>= $guitarrankvar 409}
-         {set $guitarrankvar 6}
-         {if_else {&& {>= $guitarrankvar 333} {< $guitarrankvar 409}}
-            {set $guitarrankvar 5}
-            {if_else {&& {>= $guitarrankvar 267} {< $guitarrankvar 333}}
-               {set $guitarrankvar 4}
-               {if_else {&& {>= $guitarrankvar 221} {< $guitarrankvar 267}}
-                  {set $guitarrankvar 3}
-                  {if_else {&& {>= $guitarrankvar 176} {< $guitarrankvar 221}}
-                     {set $guitarrankvar 2}
-                     {if_else {&& {>= $guitarrankvar 139} {< $guitarrankvar 176}}
-                        {set $guitarrankvar 1}
-                        {if {< $guitarrankvar 139}
-                           {set $guitarrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {foreach $entry $rankvar
-      {if {== {elem $entry 0} {basename rank}}
-         {if {elem {find $entry drum} 1}
-            {set $drumrankvar {elem {find $entry drum} 1}}
-         }
-      }
-      {if_else {>= $drumrankvar 448}
-         {set $drumrankvar 6}
-         {if_else {&& {>= $drumrankvar 345} {< $drumrankvar 448}}
-            {set $drumrankvar 5}
-            {if_else {&& {>= $drumrankvar 242} {< $drumrankvar 345}}
-               {set $drumrankvar 4}
-               {if_else {&& {>= $drumrankvar 178} {< $drumrankvar 242}}
-                  {set $drumrankvar 3}
-                  {if_else {&& {>= $drumrankvar 151} {< $drumrankvar 178}}
-                     {set $drumrankvar 2}
-                     {if_else {&& {>= $drumrankvar 124} {< $drumrankvar 151}}
-                        {set $drumrankvar 1}
-                        {if {< $drumrankvar 124}
-                           {set $drumrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {foreach $entry $rankvar
-      {if {== {elem $entry 0} {basename rank}}
-         {if {elem {find $entry bass} 1}
-            {set $bassrankvar {elem {find $entry bass} 1}}
-         }
-      }
-      {if_else {>= $bassrankvar 436}
-         {set $bassrankvar 6}
-         {if_else {&& {>= $bassrankvar 364} {< $bassrankvar 436}}
-            {set $bassrankvar 5}
-            {if_else {&& {>= $bassrankvar 293} {< $bassrankvar 364}}
-               {set $bassrankvar 4}
-               {if_else {&& {>= $bassrankvar 228} {< $bassrankvar 293}}
-                  {set $bassrankvar 3}
-                  {if_else {&& {>= $bassrankvar 181} {< $bassrankvar 228}}
-                     {set $bassrankvar 2}
-                     {if_else {&& {>= $bassrankvar 135} {< $bassrankvar 181}}
-                        {set $bassrankvar 1}
-                        {if {< $bassrankvar 135}
-                           {set $bassrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {foreach $entry $rankvar
-      {if {== {elem $entry 0} {basename rank}}
-         {if {elem {find $entry vocals} 1}
-            {set $vocalsrankvar {elem {find $entry vocals} 1}}
-         }
-      }
-      {if_else {>= $vocalsrankvar 427}
-         {set $vocalsrankvar 6}
-         {if_else {&& {>= $vocalsrankvar 353} {< $vocalsrankvar 427}}
-            {set $vocalsrankvar 5}
-            {if_else {&& {>= $vocalsrankvar 279} {< $vocalsrankvar 353}}
-               {set $vocalsrankvar 4}
-               {if_else {&& {>= $vocalsrankvar 218} {< $vocalsrankvar 279}}
-                  {set $vocalsrankvar 3}
-                  {if_else {&& {>= $vocalsrankvar 175} {< $vocalsrankvar 218}}
-                     {set $vocalsrankvar 2}
-                     {if_else {&& {>= $vocalsrankvar 132} {< $vocalsrankvar 175}}
-                        {set $vocalsrankvar 1}
-                        {if {< $vocalsrankvar 132}
-                           {set $vocalsrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {foreach $entry $rankvar
-      {if {== {elem $entry 0} {basename rank}}
-         {if {elem {find $entry band} 1}
-            {set $bandrankvar {elem {find $entry band} 1}}
-         }
-      }
-      {if_else {>= $bandrankvar 345}
-         {set $bandrankvar 6}
-         {if_else {&& {>= $bandrankvar 292} {< $bandrankvar 345}}
-            {set $bandrankvar 5}
-            {if_else {&& {>= $bandrankvar 267} {< $bandrankvar 292}}
-               {set $bandrankvar 4}
-               {if_else {&& {>= $bandrankvar 243} {< $bandrankvar 267}}
-                  {set $bandrankvar 3}
-                  {if_else {&& {>= $bandrankvar 215} {< $bandrankvar 243}}
-                     {set $bandrankvar 2}
-                     {if_else {&& {>= $bandrankvar 163} {< $bandrankvar 215}}
-                        {set $bandrankvar 1}
-                        {if {< $bandrankvar 163}
-                           {set $bandrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {if {== $keysplayeractive true}
-      {foreach $entry $rankvar
-         {if {== {elem $entry 0} {basename rank}}
-            {if {elem {find $entry keys} 1}
-               {set $keysrankvar {elem {find $entry keys} 1}}
-            }
-         }
-      }
-      {if_else {>= $keysrankvar 443}
-         {set $keysrankvar 6}
-         {if_else {&& {>= $keysrankvar 385} {< $keysrankvar 443}}
-            {set $keysrankvar 5}
-            {if_else {&& {>= $keysrankvar 327} {< $keysrankvar 385}}
-               {set $keysrankvar 4}
-               {if_else {&& {>= $keysrankvar 269} {< $keysrankvar 327}}
-                  {set $keysrankvar 3}
-                  {if_else {&& {>= $keysrankvar 211} {< $keysrankvar 269}}
-                     {set $keysrankvar 2}
-                     {if_else {&& {>= $keysrankvar 153} {< $keysrankvar 211}}
-                        {set $keysrankvar 1}
-                        {if {< $keysrankvar 153}
-                           {set $keysrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {if {== $real_keysplayeractive true}
-      {foreach $entry $rankvar
-         {if {== {elem $entry 0} {basename rank}}
-            {if {elem {find $entry real_keys} 1}
-               {set $real_keysrankvar {elem {find $entry real_keys} 1}}
-            }
-         }
-      }
-      {if_else {>= $real_keysrankvar 443}
-         {set $real_keysrankvar 6}
-         {if_else {&& {>= $real_keysrankvar 385} {< $real_keysrankvar 443}}
-            {set $real_keysrankvar 5}
-            {if_else {&& {>= $real_keysrankvar 327} {< $real_keysrankvar 385}}
-               {set $real_keysrankvar 4}
-               {if_else {&& {>= $real_keysrankvar 269} {< $real_keysrankvar 327}}
-                  {set $real_keysrankvar 3}
-                  {if_else {&& {>= $real_keysrankvar 211} {< $real_keysrankvar 269}}
-                     {set $real_keysrankvar 2}
-                     {if_else {&& {>= $real_keysrankvar 153} {< $real_keysrankvar 211}}
-                        {set $real_keysrankvar 1}
-                        {if {< $real_keysrankvar 153}
-                           {set $real_keysrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {if {== $real_guitarplayeractive true}
-      {foreach $entry $rankvar
-         {if {== {elem $entry 0} {basename rank}}
-            {if {elem {find $entry real_guitar} 1}
-               {set $real_guitarrankvar {elem {find $entry real_guitar} 1}}
-            }
-         }
-      }
-      {if_else {>= $real_guitarrankvar 442}
-         {set $real_guitarrankvar 6}
-         {if_else {&& {>= $real_guitarrankvar 382} {< $real_guitarrankvar 442}}
-            {set $real_guitarrankvar 5}
-            {if_else {&& {>= $real_guitarrankvar 323} {< $real_guitarrankvar 382}}
-               {set $real_guitarrankvar 4}
-               {if_else {&& {>= $real_guitarrankvar 264} {< $real_guitarrankvar 323}}
-                  {set $real_guitarrankvar 3}
-                  {if_else {&& {>= $real_guitarrankvar 205} {< $real_guitarrankvar 264}}
-                     {set $real_guitarrankvar 2}
-                     {if_else {&& {>= $real_guitarrankvar 150} {< $real_guitarrankvar 205}}
-                        {set $real_guitarrankvar 1}
-                        {if {< $real_guitarrankvar 150}
-                           {set $real_guitarrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   {if {== $real_bassplayeractive true}
-      {foreach $entry $rankvar
-         {if {== {elem $entry 0} {basename rank}}
-            {if {elem {find $entry real_bass} 1}
-               {set $real_bassrankvar {elem {find $entry real_bass} 1}}
-            }
-         }
-      }
-      {if_else {>= $real_bassrankvar 442}
-         {set $real_bassrankvar 6}
-         {if_else {&& {>= $real_bassrankvar 384} {< $real_bassrankvar 442}}
-            {set $real_bassrankvar 5}
-            {if_else {&& {>= $real_bassrankvar 325} {< $real_bassrankvar 384}}
-               {set $real_bassrankvar 4}
-               {if_else {&& {>= $real_bassrankvar 267} {< $real_bassrankvar 325}}
-                  {set $real_bassrankvar 3}
-                  {if_else {&& {>= $real_bassrankvar 208} {< $real_bassrankvar 267}}
-                     {set $real_bassrankvar 2}
-                     {if_else {&& {>= $real_bassrankvar 150} {< $real_bassrankvar 208}}
-                        {set $real_bassrankvar 1}
-                        {if {< $real_bassrankvar 150}
-                           {set $real_bassrankvar 0}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-)
-
-#define DX_ENTRY_SWITCH
-(
-   {switch $dx_entry_finder
-      (author {set $authorvar {elem {find $entry $dx_entry_finder} 1}})
-      (artist {set $artistvar {elem {find $entry $dx_entry_finder} 1}})
-      (year_released {set $yearvar {elem {find $entry $dx_entry_finder} 1}})
-      (album_name {set $albumvar {elem {find $entry $dx_entry_finder} 1}})
-      (game_origin {set $sourcevar {elem {find $entry $dx_entry_finder} 1}})
-      (genre {set $genrevar {elem {find $entry $dx_entry_finder} 1}})
-      (master {set $mastervar {elem {find $entry $dx_entry_finder} 1}})
-      (rank {set $rankvar ({find $entry $dx_entry_finder})} {if $rankvar DX_RANK_VAR_HANDLER})
-   }
-)
 #define MTV_DTA_PREPPER
 (
-   {dx_log_writer {sprint "Attempting to read loaded song DTA. - Gamemode: " $dx_gamemode}}
+   {dx_log_writer default {sprint "Attempting to read loaded song DTA."}}
    {unless $dx_readdtaonce
       {set $dx_readdtaonce TRUE}
       {set $dx_readadditionaldtaonce FALSE}
       {set $theactualpath FALSE}
-      {if_else {file_exists SONGPATH2}
-         {set $theactualpath SONGPATH2} ;a dlc dta
-         {if_else {file_exists SONGPATH3}
-            {set $theactualpath SONGPATH3} ;on disc update
-            {if {file_exists SONGPATH}
-               {set $theactualpath SONGPATH} ;inside the ark
+      {if_else {file_exists SONGPATH_DLC}
+         {set $theactualpath SONGPATH_DLC} ;a dlc dta
+          {if_else {&& {file_exists SONGPATH_UPDATE} {file_exists SONGPATH_RAW_DTB}}
+            {set $theactualpath SONGPATH_UPDATE} ;on disc update
+            {if_else {file_exists SONGPATH_DISC}
+               {set $theactualpath SONGPATH_DISC} ;inside the ark
+               {set $dx_path_failed TRUE}
             }
          }
       }
       {if_else $theactualpath
          {do
-            {set $songdtareader {read_file $theactualpath}} ;load the dta into memory
-            {dx_log_writer {sprint "Found DTA path: " $theactualpath}}
+            {if_else {== $theactualpath SONGPATH_UPDATE} ;check if this is an on disc update 
+               {if_else {file_exists SONGPATH_RAW_DTB} ;check for the raw dtb, should always be there
+                  {do
+                     {set $songdtareader {read_file SONGPATH_RAW_DTB}} ; read the raw dtb
+                  }
+                  {do
+                     {set $dx_path_failed TRUE} ;failure (shouldnt happen)
+                     {dx_log_writer default {sprint "Found DTA update path, but couldn't find raw dtb"}}
+                  }
+               }
+               {set $songdtareader {read_file $theactualpath}} ;load the dta into memory
+            }
+            {dx_log_writer info {sprint "Found DTA path: " $theactualpath}}
          }
-         {set $dx_path_failed}
+         {do
+            {set $dx_path_failed TRUE}
+            {dx_log_writer default {sprint "Unmapped DTA path: " {song_mgr song_file_path {meta_performer song} "/"}}}
+         }
       }
    }
 )
 #define MTV_DTA_READER
 (
-   {foreach $entry $songdtareader
-      {if {== {elem $entry 0} {basename {meta_performer song}}}
-         {if_else {find $entry $dx_entry_finder}
-            DX_ENTRY_SWITCH
-            {if {file_exists SONGPATH4}
-               {do
-                  ;{dx_log_writer {sprint "Didnt find " $dx_entry_finder " in base dta, reading - " SONGPATH4}}
-                  {unless $dx_readadditionaldtaonce
-                     {set $dx_readadditionaldtaonce TRUE}
-                     {set $additionalreader {read_file SONGPATH4}}
-                  }
-                  {foreach $entry $additionalreader ;if we didnt find album_name there, we need to scan our updates dta
-                     {if {== {elem $entry 0} {basename {meta_performer song}}} ;find the current song's shortname
-                        {if {find $entry $dx_entry_finder} ;check for album_name again
-                           {do
-                              ;{dx_log_writer {sprint "Read updated DTA entry: " $dx_entry_finder}}
-                              DX_ENTRY_SWITCH
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+   {if {&& $dx_author_finder_is_enabled {! $dx_path_failed}}
+      {if {find_exists $songdtareader {meta_performer song}}
+         {set $songdtareader
+            {find $songdtareader {meta_performer song}}
          }
+      }
+      {dx_mtv_array_reader}
+      {set $songdtareader FALSE}
+      {if {find_exists $syscfg missing_song_data {meta_performer song}}
+         {set $songdtareader
+            {find $syscfg missing_song_data {meta_performer song}}
+         }
+      }
+      {if $songdtareader
+         {dx_mtv_array_reader}
       }
    }
 )
-#define MTV_MOD_WRITER
+#define DX_MTV_FORMATTER_HANDLER
 (
-   {set $dx_tmp ""}
-   {set $dx_tmp2 ""}
-   {if {modifier_mgr is_modifier_active mod_fastermode}
-      {set $dx_tmp2 {sprint $dx_tmp2 {localize mod_fastermode} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%) " }}
-   }
-   {if {modifier_mgr is_modifier_active mod_chmode}
-      {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "DRUNK MODE"}}
-   }
-   {if {&& {modifier_mgr is_modifier_active mod_auto_play} {! {modifier_mgr is_modifier_active mod_fakejuke}}}
-      {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "AUTOPLAY"}}
-   }
-   {if {modifier_mgr is_modifier_active mod_dx_showbpm}
-      {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "BPM: " $dx_bpm_counter}}
-   }
-   {if {&& {!= $speedmod 1.0} {! {modifier_mgr is_modifier_active mod_fastermode}}}
-      {set $dx_tmp {sprint $dx_tmp " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)" }}
-   }
-   {if {!= $dx_tmp2 ""}
-      {set $dx_tmp {sprint $dx_tmp "\n" $dx_tmp2}}
-   }
-   {if_else {!= $dx_tmp ""}
-      {song.lbl set_token_fmt {sprint $song_title $dx_tmp}}
-      {song.lbl set_song_name $short_name} ;if nothing else needs to be reported at all. just print the shortname
-   }
+   (mtv_formatter
+      {dx_mtv_formatter reset} ; reset the formatted label to nothing first to prep for new data
+      ;TODO this is awful
+      {if $dx_artist_mtv_line
+         {if_else $mastervar ;check if this song is labelled as a cover or not
+            {dx_mtv_formatter $artistvar}
+            {dx_mtv_formatter {sprint {localize store_famous_by} ": " $artistvar}}
+         }
+      }
+      {if $dx_year_on_mtv
+         {if_else $dx_year_on_one_mtv_line ;check if we should seperate the year to its own line or not
+            {if_else {== $dx_mtv_elements 0} ;this check throughout checks to see if this is the only line we are writing, if its the only line, we dont want to print a new line
+               {dx_mtv_formatter $yearvar}
+               {dx_mtv_formatter {sprint ", " $yearvar}}
+            }
+            {if_else {== $dx_mtv_elements 0}
+               {dx_mtv_formatter $yearvar}
+               {dx_mtv_formatter {sprint "\n" $yearvar}}
+            }
+         }
+      }
+      {if $dx_section_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint {localize section} ": " $dx_current_section}}
+            {dx_mtv_formatter {sprint "\n" {localize section} ": " $dx_current_section}}
+         }
+      }
+      ;{dx_mtv_formatter {sprint "\n" {localize time_remaining} ": " $dx_timer_minutes ":" $dx_timer_seconds}}
+      {if $dx_album_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint $albumvar}}
+            {dx_mtv_formatter {sprint "\n" $albumvar}}
+         }
+      }
+      {if $dx_genre_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint {localize $genrevar}}}
+            {dx_mtv_formatter {sprint "\n" {localize $genrevar}}}
+         }
+      }
+      {if $dx_sub_genre_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint {localize $subgenrevar}}}
+            {dx_mtv_formatter {sprint "\n" {localize $subgenrevar}}}
+         }
+      }
+      {if $dx_game_origin_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint {localize $sourcevar}}}
+            {dx_mtv_formatter {sprint "\n" {localize $sourcevar}}}
+         }
+      }
+      {if $dx_author_mtv_line
+         {if $authorvar
+            {if_else {== $dx_mtv_elements 0}
+               {dx_mtv_formatter {sprint {localize author} ": " $authorvar}}
+               {dx_mtv_formatter {sprint "\n" {localize author} ": " $authorvar}}
+            }
+         }
+      }
+      {if {|| {== $real_bassplayeractive true} {== $real_guitarplayeractive true}}
+         {if $dx_author_mtv_line
+            {if $stringsauthorvar
+               {dx_mtv_formatter {sprint ", " {localize strings_author} ": " $stringsauthorvar}}
+            }
+         }
+      }
+      {if {|| {== $real_keysplayeractive true} {== $keysplayeractive true}}
+         {if $dx_author_mtv_line
+            {if $keysauthorvar
+               {dx_mtv_formatter {sprint ", " {localize keys_author} ": " $keysauthorvar}}
+            }
+         }
+      }
+      {if $dx_song_key_mtv_line
+         {if_else {== $dx_mtv_elements 0}
+            {dx_mtv_formatter {sprint {localize key_of} ": " {localize $dx_song_key_var}}}
+            {dx_mtv_formatter {sprint "\n" {localize key_of} ": " {localize $dx_song_key_var}}}
+         }
+      }
+      {artist.lbl set fixed_length 1000}
+      {artist.lbl set leading 0.9}
+      {switch $dx_mtv_elements
+         (0 {artist.lbl set height 100} {artist.lbl set_token_fmt {sprint " "}}) ;I dont know a better way to do this but we check how many elements are chosen by the user and fetch each of the elements from the created array manually depending on how many
+         (1 {artist.lbl set height 200} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0}}})
+         (2 {artist.lbl set height 300} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1}}})
+         (3 {artist.lbl set height 400} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2}}})
+         (4 {artist.lbl set height 500} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3}}})
+         (5 {artist.lbl set height 600} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4}}})
+         (6 {artist.lbl set height 700} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5}}})
+         (7 {artist.lbl set height 800} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5} {elem $dx_mtv_holder 6}}})
+         (8 {artist.lbl set height 900} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5} {elem $dx_mtv_holder 6} {elem $dx_mtv_holder 7}}})
+         (9 {artist.lbl set height 1000} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5} {elem $dx_mtv_holder 6} {elem $dx_mtv_holder 8} {elem $dx_mtv_holder 9}}})
+      }
+   )
+)
+#define MTV_MOD_WRITER_HANDLER
+(
+   (mtv_song_title_writer
+      {set $dx_tmp ""}
+      {set $dx_tmp2 ""}
+      {if {modifier_mgr is_modifier_active mod_fastermode}
+         {set $dx_tmp2 {sprint $dx_tmp2 {localize mod_fastermode} " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%) " }}
+      }
+      {if {modifier_mgr is_modifier_active mod_chmode}
+         {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "DRUNK MODE"}}
+      }
+      {if {modifier_mgr is_modifier_active mod_precision}
+         {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "PRECISION MODE"}}
+      }
+      {if {&& {modifier_mgr is_modifier_active mod_auto_play} {! {modifier_mgr is_modifier_active mod_fakejuke}}}
+         {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "AUTOPLAY"}}
+      }
+      {if $dx_bpm_report
+         {set $dx_tmp2 {sprint $dx_tmp2 {if_else {!= $dx_tmp2 ""} " | " ""} "BPM: " $dx_bpm_counter}}
+      }
+      {if {&& {!= $speedmod 1.0} {! {modifier_mgr is_modifier_active mod_fastermode}}}
+         {set $dx_tmp {sprint $dx_tmp " (" {int {'+' 0.5 {'*' $speedmod 100}}} "%)" }}
+      }
+      {if_else $dx_song_title_mtv_line
+         {if {!= $dx_tmp2 ""}
+            {set $dx_tmp {sprint $dx_tmp "\n" $dx_tmp2}}
+         }
+         {if {!= $dx_tmp2 ""}
+            {set $dx_tmp {sprint $dx_tmp $dx_tmp2}}
+         }
+      }
+      {if_else $dx_song_title_mtv_line
+         {if_else {!= $dx_tmp ""}
+            {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title} $dx_tmp}}
+            {song.lbl set_token_fmt {sprint {{song_mgr get_meta_data {meta_performer song}} title}}}
+         }
+         {if_else {!= $dx_tmp ""}
+            {song.lbl set_token_fmt {sprint $dx_tmp}}
+            {song.lbl set_token_fmt {sprint " "}}
+         }
+      }
+   )
 )
 #define MTV_SONG_WRITER
 (
@@ -407,125 +243,73 @@
    }
    {unless $dx_hmxcheckedonce
       {set $dx_hmxcheckedonce TRUE}
-      {if {file_exists {sprint "songs/dta_collection/gen/" {meta_performer song} ".dtb"}}
-         {set $authorvar "Harmonix"}
+      {if {file_exists SONGPATH_RAW_DTB} ;check for the raw dtb, should always be there
+         {set $authorvar "Harmonix"} ;good a time as any
       }
-      DX_CURRENT_SONG_WRITER
-      DX_JSON_WRITER
+      #ifndef HX_XBOX
+      DX_CURRENT_SONG_TXT_WRITER
+      DX_CURRENT_SONG_JSON_WRITER
+      #endif
+      ;TODO this is lousy
       {if_else $yearvar
-         {dx_song_writer {sprint "Song Loaded: " $song_title " - " $artistvar ", " $yearvar " - Album: " $albumvar " - Genre: " $genrevar " - Source: " {localize $sourcevar} " - Authored By: " $authorvar} " - Gamemode: " $dx_gamemode}
+         {dx_log_writer default {sprint "Song Loaded: " $song_title " - " $artistvar ", " $yearvar " - Album: " $albumvar " - Genre: " $genrevar " - Source: " {localize $sourcevar} " - Authored By: " $authorvar " - Gamemode: " $dx_gamemode}}
          {if_else $authorvar
-            {dx_log_writer {sprint "Song Loaded: " $song_title " - " $artistvar " - Authored By: " $authorvar} " - Gamemode: " $dx_gamemode}
+            {dx_log_writer default {sprint "Song Loaded: " $song_title " - " $artistvar " - Authored By: " $authorvar " - Gamemode: " $dx_gamemode}}
             {if_else $artistvar
-               {dx_log_writer {sprint "Song Loaded: " $song_title " - " $artistvar} " - Gamemode: " $dx_gamemode}
-               {dx_log_writer {sprint "Song Loaded: " $song_title} " - Gamemode: " $dx_gamemode}
+               {dx_log_writer default {sprint "Song Loaded: " $song_title " - " $artistvar " - Gamemode: " $dx_gamemode}}
+               {dx_log_writer default {sprint "Song Loaded: " $song_title " - Gamemode: " $dx_gamemode}}
             }
          }
       }
    }
-   {dx_mtv_formatter reset} ; reset the formatted label to nothing first to prep for new data
-   {if $dx_artist_mtv_line
-      {if_else $mastervar ;check if this song is labelled as a cover or not
-         {dx_mtv_formatter $artistvar}
-         {dx_mtv_formatter {sprint {localize store_famous_by} ": " $artistvar}}
-      }
-   }
-   {if $dx_year_on_mtv
-      {if_else $dx_year_on_one_mtv_line ;check if we should seperate the year to its own line or not
-         {if_else {== $dx_mtv_elements 0} ;this check throughout checks to see if this is the only line we are writing, if its the only line, we dont want to print a new line
-            {dx_mtv_formatter $yearvar}
-            {dx_mtv_formatter {sprint ", " $yearvar}}
-         }
-         {if_else {== $dx_mtv_elements 0}
-            {dx_mtv_formatter $yearvar}
-            {dx_mtv_formatter {sprint "\n" $yearvar}}
-         }
-      }
-   }
-   {if $dx_album_mtv_line
-      {if_else {== $dx_mtv_elements 0}
-         {dx_mtv_formatter {sprint $albumvar}}
-         {dx_mtv_formatter {sprint "\n" $albumvar}}
-      }
-   }
-   {if $dx_genre_mtv_line
-      {if_else {== $dx_mtv_elements 0}
-         {dx_mtv_formatter {sprint {localize $genrevar}}}
-         {dx_mtv_formatter {sprint "\n" {localize $genrevar}}}
-      }
-   }
-   {if $dx_game_origin_mtv_line
-      {if_else {== $dx_mtv_elements 0}
-         {dx_mtv_formatter {sprint {localize $sourcevar}}}
-         {dx_mtv_formatter {sprint "\n" {localize $sourcevar}}}
-      }
-   }
-   {if $authorvar
-      {if_else {== $dx_mtv_elements 0}
-         {dx_mtv_formatter {sprint {localize author} ": " $authorvar}}
-         {dx_mtv_formatter {sprint "\n" {localize author} ": " $authorvar}}
-      }
-   }
-   {switch $dx_mtv_elements
-      (0 {artist.lbl set height 100} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint " "}}) ;I dont know a better way to do this but we check how many elements are chosen by the user and fetch each of the elements from the created array manually depending on how many
-      (1 {artist.lbl set height 200} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0}}})
-      (2 {artist.lbl set height 300} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1}}})
-      (3 {artist.lbl set height 400} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2}}})
-      (4 {artist.lbl set height 500} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3}}})
-      (5 {artist.lbl set height 600} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4}}})
-      (6 {artist.lbl set height 700} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5}}})
-      (7 {artist.lbl set height 800} {artist.lbl set leading 0.9} {artist.lbl set_token_fmt {sprint {elem $dx_mtv_holder 0} {elem $dx_mtv_holder 1} {elem $dx_mtv_holder 2} {elem $dx_mtv_holder 3} {elem $dx_mtv_holder 4} {elem $dx_mtv_holder 5} {elem $dx_mtv_holder 6}}})
+   {unless {&& $dx_bpm_report $dx_mtv_formatted_once} ;show bpm formats way too often to be formatted multiple times
+      {set $dx_mtv_formatted_once TRUE}
+      {$this mtv_formatter}
    }
 )
 #define MTV_WRITER_CHOOSER
 (
-   #ifndef HX_WII
-   {if
-      {||
-         {gamemode in_mode defaults} {gamemode in_mode qp_party_shuffle}
-         {gamemode in_mode qp_coop} {gamemode in_mode campaign}
-         {gamemode in_mode party_shuffle} {gamemode in_mode tour}
-         {gamemode in_mode practice} {gamemode in_mode qp_practice}
-      }
-      {unless
-         {||
-            $dx_ps3hw ; don't run on ps3 hardware
-            $dx_path_failed
+   {if {! {gamemode in_mode trainer}}
+      {if {&& $dx_author_finder_is_enabled {! $dx_path_failed}}
+         {unless $dx_path_failed
+            {do
+               {unless $dx_mtv_dta_reader_once
+                  {set $dx_mtv_dta_reader_once TRUE} ;no matter how many times this function gets called, we only need to read these dtas once because its very heavy
+                  MTV_DTA_READER
+               }
+               {if
+                  {&&
+                     {! $artistvar}
+                     {! $namevar}
+                  }
+                  {set $dx_path_failed TRUE}
+               }
+               {if {! $artistvar} {set $artistvar "No Artist Found"}}
+               {if {! $yearvar} {set $yearvar "No Year Found"}}
+               {if {! $albumvar} {set $albumvar "No Album Found"}}
+               {if {! $genrevar} {set $genrevar "No Genre Found"}}
+               {if {! $subgenrevar} {set $subgenrevar "No Sub Genre Found"}}
+               {if {! $sourcevar} {set $sourcevar "No Source Found"}}
+               {if {! $dx_song_key_var} {set $dx_song_key_var "No Song Key Found"}}
+               {if {exists song.lbl}
+                  {song.lbl set fixed_length 1000}
+                  {$this mtv_song_title_writer}
+               }
+               {if {exists artist.lbl}
+                  MTV_SONG_WRITER
+               }
+            }
          }
-         {do
-            {unless $dx_mtv_dta_reader_once
-               {set $dx_mtv_dta_reader_once TRUE}
-               {set $dx_entry_finder artist} MTV_DTA_READER
-               {set $dx_entry_finder author} MTV_DTA_READER
-               {set $dx_entry_finder year_released} MTV_DTA_READER
-               {set $dx_entry_finder album_name} MTV_DTA_READER
-               {set $dx_entry_finder genre} MTV_DTA_READER
-               {set $dx_entry_finder game_origin} MTV_DTA_READER
-               {set $dx_entry_finder master} MTV_DTA_READER
-               {set $dx_entry_finder rank} MTV_DTA_READER
-            }
-            {if {exists song.lbl}
-               MTV_MOD_WRITER
-            }
-            {if {exists artist.lbl}
-               MTV_SONG_WRITER
-            }
-         }
       }
-   }
-   {if
-      {||
-         $dx_ps3hw ; don't run on ps3 hardware
-         $dx_path_failed
-      }
-      {do
+      {if $dx_path_failed
          {unless $dx_author_finder_failed
             {set $dx_author_finder_failed TRUE}
-            {dx_log_writer {sprint "Author Finder Failed - Song Loaded: " $song_title} " - Gamemode: " $dx_gamemode}
+            {dx_log_writer default {sprint "Author Finder Failed - Song Loaded: " $song_title}}
          }
          {if
             {exists song.lbl}
-            MTV_MOD_WRITER
+            {song.lbl set fixed_length 1000}
+            {$this mtv_song_title_writer}
          }
          {if
             {exists artist.lbl}
@@ -533,16 +317,18 @@
          }
       }
    }
-   #else
+)
+#define MTV_WRITER_NO_AUTHOR_FINDER
+(
    {do
       {if
          {exists song.lbl}
-         MTV_MOD_WRITER
+         {song.lbl set fixed_length 1000}
+         {$this mtv_song_title_writer}
       }
       {if
          {exists artist.lbl}
          {artist.lbl set_artist_name_from_shortname $short_name}
       }
    }
-   #endif
 )

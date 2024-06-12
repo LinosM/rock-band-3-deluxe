@@ -60,6 +60,8 @@
 (char
    ("char/shared/viseme_male_all.milo")
    ("char/shared/viseme_female_all.milo")
+   ("char/main/shared/head_male_clips.milo")
+   ("char/main/shared/head_female_clips.milo")
    ("char/main/skeleton.milo"
       CHAR_HEAP))
 (band
@@ -100,7 +102,6 @@
    ("ui/resource/fonts/icons_tour_z.milo")
    ("ui/resource/score_display_center.milo")
    ("ui/resource/fonts/instrument_icons_small.milo")
-   ;("ui/resource/fonts/game_origins.milo") ; for rb3e
    ("ui/resource/inline_help.milo")
    ("ui/resource/fonts/buttons.milo")
    ("ui/resource/fonts/pentatonic_bold.milo")
@@ -139,11 +140,9 @@
    ("ui/resource/list/list_overshell_menubig_ingame.milo")
    ("ui/resource/list/list_overshell_menu_keep_highlight_ingame.milo")
    ("ui/resource/list/list_overshell_modifiers_ingame.milo")
-   #ifndef HX_WII
    ("ui/resource/list/list_overshell_friends_ingame.milo")
    ("ui/resource/list/list_overshell_users_ingame.milo")
    ("ui/resource/list/list_overshell_part_select_ingame.milo")
-   #endif
    ("ui/resource/fonts/gangly.milo")
    ("ui/resource/fonts/hamilton.milo")
    ("ui/resource/list/list_widespinner.milo")

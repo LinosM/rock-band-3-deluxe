@@ -1,3 +1,4 @@
+#include ../dx/game/dx_game_handles.dta
 #include track_panel.dta
 #include pause_mics_helper.dta
 #define LOSE_MUSIC_SLOW_SEC
@@ -15,8 +16,20 @@
       (0 15 30 45 60))
    (audition_cam_toggle
       {audition_cycle_free_camera})
+   DX_GAME_PANEL_HANDLES
+   #ifdef HX_WII
+   (enter
+      {dx_trainer_checker}
+      {unless $dx_skip_game_setup
+         {$this dx_on_game_enter}
+      }
+   )
+   (exit
+      {$this dx_on_game_exit}
+   )
+   #endif
    (reset
-      DX_GAME_RESET_HANDLER
+      {$this dx_on_game_reset}
       {active_events_parser
          add_sink
          $this
@@ -50,7 +63,6 @@
          {{gamemode get game_panel}
             setup}})
    (intro_start
-      ;DX_GAME_RESET_HANDLER
       {{gamemode get game_screen}
          set_showing
          TRUE}
@@ -64,7 +76,6 @@
                ($this intro_end)})}
       kDataUnhandled)
    (intro_skip
-      ;DX_GAME_RESET_HANDLER
       {{gamemode get game_screen}
          set_showing
          TRUE}
@@ -95,9 +106,7 @@
       #ifndef HX_WII
       {stagekit_reset}
       #endif
-      DX_GAME_RESET_HANDLER
-      {set $dx_mtvup FALSE}
-      {{{{gamemode get track_panel} find mtv_overlay} find fade.anim} set_frame 0} ; dx - hide the mtv overlay on lose in case it's visible
+      {$this dx_on_game_over}
       {beatmatch
          foreach_active_player
          $p
@@ -119,12 +128,14 @@
          track_end.cue})
    (game_won
       {$this game_won_common}
+      {$this dx_on_game_won}
       kDataUnhandled)
    (game_won_finale
       {$this game_won_common}
+      {$this dx_on_game_won}
       kDataUnhandled)
    (game_lost
-      DX_GAME_RESET_HANDLER
+      {$this dx_on_game_over}
       {beatmatch set_realtime TRUE}
       {beatmatch
          foreach_active_player
@@ -148,27 +159,32 @@
       {handle
          ($this game_outro)})
    (game_outro
-      DX_GAME_RESET_HANDLER
-      {if
-         {&&
-            {==
-               {ui current_screen}
-               {gamemode get game_screen}}
-            {!
-               {ui in_transition}}}
-         {beatmatch set_ready_for_exit TRUE}}
-      {beatmatch
-         foreach_active_player
-         $p
-         {$p disable_controller}}
-      {ui
-         sync_screen
-         {if_else
-            {$this lost}
-            {gamemode get lose_screen}
-            {gamemode get win_screen}}
-         1}
-      kDataUnhandled)
+      {if $dx_customizer
+         {game_restart}
+      }
+      {if {! $dx_customizer}
+         {if
+            {&&
+               {==
+                  {ui current_screen}
+                  {gamemode get game_screen}}
+               {!
+                  {ui in_transition}}}
+            {beatmatch set_ready_for_exit TRUE}}
+         {beatmatch
+            foreach_active_player
+            $p
+            {$p disable_controller}}
+         {$this dx_on_game_over}
+         {ui sync_screen
+            {if_else
+               {$this lost}
+               {gamemode get lose_screen}
+               {gamemode get win_screen}}
+          1}
+      }
+      kDataUnhandled
+   )
    (disable_all_controllers
       {beatmatch
          foreach_active_player
@@ -192,6 +208,9 @@
    (file
       "../world/world.milo")
    (unload_async TRUE)
+   (enter
+      {world_panel set_showing {! {== $dx_venue none}}}
+   )
    (unload
       {if
          $bandwardrobe
@@ -200,22 +219,13 @@
 #define GAME_SCREEN_HANDLERS
 ((disable_screen_saver TRUE)
    PAUSE_ON_MIC_DISCONNECT
-   (enter DX_PRESENCE_MANGER
-      {set $dx_game_enter_count
-         {+ $dx_game_enter_count 1}
+   (enter
+      #ifndef HX_WII
+      {dx_trainer_checker}
+      {unless $dx_skip_game_setup
+         {$this dx_on_game_enter}
       }
-      {set $dx_log_counter
-         {+ $dx_log_counter 1}
-      }
-      {dx_log_writer {sprint "Game has been entered. Game enter count: " $dx_game_enter_count} " - Gamemode: " $dx_gamemode " - Local: " {session_mgr is_local}}
-      DX_AUTOPLAYER_HANDLER
-      DX_GAME_RESET_HANDLER
-      ;DX_MTV_RESET_HANDLER
-      {dx_log_writer {sprint "Current User Info - Song Speed: " $speedmod " - Trackspeed: " $trackspeed " - Venue FPS: " $emulatefps " - Venue: " $venue " - Venue Forced: " $force}}
-      {dx_log_writer {sprint "Current User Textures - Emissive: " $emissive " - Highway: " $highway " - Spotlight: " $spotlight " - Keyboard: " $keyboard " - Smasher: " $smasher " - Gem: " $gem " - Sustain: " $sustain " - Crowd Meter Tex: " $crowdmeter}}
-      {dx_log_writer {sprint "Current User Textures cont. - OD Bar: " $odbar  " - Multiplier Ring: " $multiring " - Track Rails: " $rails " - Score Tex: " $scoretex " - Flames: " $flames " - Vox Arrow: " $voxarrow " - Vox Highway: " $voxhw " - DX Multi Angle: " $dx_multiangle}}
-      {game set_kick_autoplay {modifier_mgr is_modifier_active mod_auto_kick}} ; dx - auto kick
-      {gamemode set allow_drum_fills {! {modifier_mgr is_modifier_active mod_static_fills}}} ; dx - static fills
+      #endif
       {$this set_showing TRUE}
       {set
          [delayed_mic_check]
@@ -242,11 +252,9 @@
       {handle
          ($this my_enter)})
    (exit
-      {set $dx_already_restarted FALSE} ; dx - track resets for no BRE modifier
-      DX_LEADER_SPEED_SETTER
-      DX_CURRENT_SONG_CLEAR
-      DX_JSON_CLEAR
-      DX_MTV_RESET_HANDLER
+      #ifndef HX_WII
+      {$this dx_on_game_exit}
+      #endif
       {platform_mgr remove_sink $this ui_changed}
       {platform_mgr remove_sink $this microphones_changed}
       {synth stop_playback_all_mics}
@@ -274,12 +282,13 @@
       {set
          [chosen_vignette]
          ''}
-      {if
-         {meta_performer is_set_complete}
-         {meta_performer upload_debug_stats}
-         {set
-            [chosen_vignette]
-            {interstitial_mgr pick_interstitial_between_screens meta_loading_outro song_select_screen}}
+      {if {!= $dx_forced_song_load_bg none} ;if we turned off song transitions, we cant run outro_vignette_loader or it will crash
+         {if
+            {meta_performer is_set_complete}
+            {meta_performer upload_debug_stats}
+            {set
+               [chosen_vignette]
+               {interstitial_mgr pick_interstitial_between_screens meta_loading_outro song_select_screen}}
          #ifndef _SHIP
          {if
             {ui get_vignettes_showing}
@@ -292,7 +301,7 @@
          #else
          {[chosen_vignette]
             load}
-         #endif})
+         #endif}})
    (unload
       {if
          {!=
@@ -300,8 +309,13 @@
             ''}
          {[chosen_vignette]
             unload}})}
+#ifdef HX_WII
+#define GAME_SCREEN_PANELS
+(world_panel coop_track_panel game sync_audio_net_panel)
+#else
 #define GAME_SCREEN_PANELS
 (game world_panel coop_track_panel sync_audio_net_panel)
+#endif
 #define GAME_SCREEN_PANELS_NO_TRACK
 (world_panel game sync_audio_net_panel)
 {new
@@ -348,7 +362,7 @@
    restart_sync_audio_net_screen
    (panels)
    (enter
-      DX_LEADER_SPEED_SETTER
+      {dx_send_leader_song_speed}
       {overshell set_active_status kOvershellInactive}
       {{gamemode get game_screen}
          set_showing
@@ -562,11 +576,11 @@
    BandScreen
    mydta_start_in_game_screen
    (panels mydta_start_in_game_panel)
-   (#ifdef HX_WII TRANSITION_COMPLETE_MSG #else ready_for_game #endif
+   (ready_for_game
       {ui goto_screen preloading_screen})}
 {new
    BandScreen
    mydta_start_practice_in_game_screen
    (panels mydta_start_in_game_panel)
-   (#ifdef HX_WII TRANSITION_COMPLETE_MSG #else ready_for_game #endif
+   (ready_for_game
       {ui goto_screen practice_game_screen})}

@@ -1581,7 +1581,16 @@
                   {set $in_vignette_outro FALSE}
                   {if
                      {== $this $world}
-                     {$this kick_scene}}}
+                     {$this kick_scene}}
+                  {unless {session is_in_game}
+                     ;remove post fx when entering a shot not in game
+                     {dx_noise_setter $this}
+                     {dx_emulatefps_setter $this}
+                     {dx_motion_blur_setter $this}
+                     {dx_camera_shake_setter $this}
+                     {dx_camera_blur_setter $this}
+                     {dx_force_lod_setter $this}
+                  }}
                {do
                   {if
                      [scene0]
@@ -1589,7 +1598,7 @@
                         set
                         showing
                         FALSE}}}}
-            {if {|| {&& {game is_up} {== $venue none}} {modifier_mgr is_modifier_active mod_blackmenu}} ; dx - hide background vignettes for menu speedups or for black venue
+            {if {|| $dx_customizer $dx_black_menu} ; dx - hide background vignettes for menu speedups or for black venue ;{&& {game is_up} {== $dx_venue none}}
                {if [scene0]
                   {[scene0] set showing FALSE}
                }
@@ -2068,7 +2077,16 @@
                      {$wrld force_shot $cam}}
                   {notify
                      {path_name $this}
-                     " scene could not find camshot!\n"}}})
+                     " scene could not find camshot!\n"}}}
+                  {unless {session is_in_game}
+                     ;remove post fx when entering a shot not in game
+                     {dx_noise_setter $this}
+                     {dx_emulatefps_setter $this}
+                     {dx_motion_blur_setter $this}
+                     {dx_camera_shake_setter $this}
+                     {dx_camera_blur_setter $this}
+                     {dx_force_lod_setter $this}
+                  })
          (enter
             {unless
                {$this is_proxy}
@@ -2084,7 +2102,17 @@
                      {handle
                         ($this vignette_start)}
                      {handle_type
-                        ($this force_camera $this)}}
+                        ($this force_camera $this)}
+                     {unless {session is_in_game}
+                        ;remove post fx when entering a shot not in game
+                        {dx_noise_setter $this}
+                        {dx_emulatefps_setter $this}
+                        {dx_motion_blur_setter $this}
+                        {dx_camera_shake_setter $this}
+                        {dx_camera_blur_setter $this}
+                        {dx_force_lod_setter $this}
+                     }
+                  }
                   {handle
                      ($this vignette_end)}}})
          (exit)
@@ -3643,6 +3671,19 @@
                {$this test_delta $shot_ok.delta_30fps}
                TRUE})
          (start_shot
+            ;you cannot do this in game here. this stutters the game during gameplay
+            ;bad
+            {if {&& $dx_apply_postproc {exists game} {session is_in_game}}
+               {if $world
+                  {dx_noise_setter $world}
+                  {dx_emulatefps_setter $world}
+                  {dx_motion_blur_setter $world}
+                  {dx_camera_shake_setter $world}
+                  {dx_camera_blur_setter $world}
+                  {dx_force_lod_setter $world}
+                  {set $dx_apply_postproc FALSE}
+               }
+            }
             {if
                $banddirector
                {$banddirector
@@ -4230,30 +4271,18 @@
          (enter
             {if
                $world
+               ;when entering in to the game world, remove posties
+               {dx_noise_setter $world}
+               {dx_emulatefps_setter $world}
+               {dx_motion_blur_setter $world}
+               {dx_camera_shake_setter $world}
+               {dx_camera_blur_setter $world}
+               {dx_force_lod_setter $world}
                {$world
                   add_sink
                   $this
                   (excitement game_won game_won_finale game_lost game_over game_outro playing_final_cam)
                   kSinkModeType}}
-            {dx_log_writer {sprint "Setting venue fps and trimming the crust - Current Screen: " {ui current_screen}}}
-            {if {!= $emulatefps 30} ; dx - custom venue fps enabler
-               {if $world
-                  {$world iterate PostProc $p {$p set emulate_fps $emulatefps}}
-               }
-            }
-            {if {modifier_mgr is_modifier_active mod_nocrust} ; dx - remove noise in venues
-               {if $world
-                  {$world iterate PostProc $p {$p set noise_intensity 0}}
-               }
-            }
-            {if {modifier_mgr is_modifier_active mod_noblur} ; dx - remove motion blur in venues
-               {if $world
-                  {$world iterate PostProc $p {$p set motion_blur_velocity 0}}
-                  {$world iterate PostProc $p {$p set motion_blur_blend 0}}
-                  {$world iterate PostProc $p {$p set motion_blur_weight 0}}
-                  {$world iterate PostProc $p {$p set motion_blur_exposure 0}}
-               }
-            }
             {set $crowd.game_excitement kExcitementOkay}
             {set $crowd.authored_excitement kExcitementIdle}
             {set $crowd.authored_action ''}
@@ -4356,7 +4385,7 @@
                {$this set_dircut $cat}
                {handle
                   (game game_outro)}}
-            #endif)
+               #endif)
          (append_shot
             ($first_cam $cat $notify)
             {do
@@ -4538,8 +4567,8 @@
                   set_intro_real_time
                   {if_else
                      $shot
-					 {if_else {&& {modifier_mgr is_modifier_active mod_nointro} {session_mgr is_local}} ; dx - skip intro
-					    0
+                {if_else {&& {! $dx_venue_intro} {session_mgr is_local}} ; dx - skip intro
+                   0
                         {-
                            {$shot total_duration_seconds}}
                      }

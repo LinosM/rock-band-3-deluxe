@@ -81,8 +81,8 @@
    (choose_char_flow TRUE)
    (remote_status remote_status_choose_char)
    (enter
-      {if $chartexset
-         {choose_character.tex set_bitmap {sprint "ui/track/custom_track_textures/choose_character.png"}}} ; dx - restore original character icon if it was changed
+      {if $dx_track_to_reset_choose_character_texture
+         {choose_character.tex set_bitmap {sprint "dx/custom_textures/_additional_textures/choose_character.png"}}} ; dx - restore original character icon if it was changed
       {prefab_mgr load_portraits $this}
       {if
          {{$this get_user}
@@ -165,7 +165,6 @@
    (view choose_profile_wii)
    (prevents_override TRUE)
    (enter
-      {choose_profile.lbl set text_token dx_choose_profile}
       {$this set_wiiprofile_list_mode kWiiProfileListMode_Entry})
    (on_cancel
       {$this attempt_remove_user})
@@ -673,6 +672,12 @@
             {gamemode in_mode drum_freestyle}}
          options_in_game
          options})
+   (enter
+      {game_options.lst set circular FALSE}
+      {if $dx_customizer
+         {$this show_state dxState_TextureMenu}
+      }
+   )
    (update_view
       {handle
          ($this
@@ -729,7 +734,7 @@
                      {gamemode get show_change_difficulty}
                      $showing_metronome
                      {gamemode get show_pause_practice_new}
-                     #ifdef HX_WII {gamemode get show_pause_trainer} #endif
+					 #ifdef HX_WII {gamemode get show_pause_trainer} #endif
                      $can_quit)}
                {handle
                   ($this update_restart_allowed $restart_allowed)}}
@@ -776,11 +781,13 @@
             (overshell_restart
                {if_else
                   {gamemode get skip_restart_prompt}
-                  {if_else
-                     {gamemode in_mode trainer}
-                     {{gamemode get game_panel}
-                        restart_section}
-                     {session end_game kRestart}}
+                  {if_else {gamemode in_mode trainer}
+                     {{gamemode get game_panel} restart_section}
+                     {do
+                        {dx_countdown_var_reset}
+                        {session end_game kRestart}
+                     }
+                  }
                   {$this show_state kState_RestartConfirm}})
             (os_pause
                {do
@@ -823,16 +830,44 @@
             (overshell_return
                {$this leave_options})
             (overshell_online_options
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (go_overshell_online_options ; dx - allow entering the online options state when ashcentral is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (ash_overshell_online_options ; dx - allow entering the online options state when ashcentral is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (live_overshell_online_options ; dx - allow entering the online options state when live is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (liveless_overshell_online_options ; dx - allow entering the online options state when liveless is connected
+               {set $dx_is_in_chat FALSE}
                {$this show_online_options})
             (overshell_register_online
                {$this attempt_register_online})
+            (go_overshell_register_online ; dx - allow entering the online options state when gocentral is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (ash_overshell_register_online ; dx - allow entering the online options state when ashcentral is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (live_overshell_register_online ; dx - allow entering the online options state when live is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (liveless_overshell_register_online ; dx - allow entering the online options state when liveless is connected
+               {set $dx_is_in_chat FALSE}
+               {$this show_online_options})
+            (overshell_dx_quick_chat ; dx - show quick chat instead of online options
+               {set $dx_is_in_chat quick}
+               {$this show_online_options})
             (overshell_game_options
                {$this show_game_options})
             (overshell_leave
                {$this attempt_remove_user})
             (overshell_dx_bot_settings
                {$this show_state dxState_BotSettings})
-                        #ifdef HX_WII
+            #ifdef HX_WII
             (overshell_wiiprofile_options
                {do
                   {$this
@@ -853,6 +888,12 @@
    (SCROLL_MSG
       {$this on_slider_change $component $user})
    (BUTTON_DOWN_MSG
+      {if {== $action kAction_Right} ; dx - shows every quick chat option when pressing Right Dpad
+         {if {== {options.lst selected_sym} overshell_dx_quick_chat}
+            {set $dx_is_in_chat all}
+            {$this show_online_options}
+         }
+      }
       {cond
          ({==
                {$this focus_name}
@@ -876,6 +917,7 @@
                kDataUnhandled})
          kDataUnhandled})
    (on_cancel
+      DX_OS_CLOSE_MSG
       {$this leave_options})
    (on_start
       ($user)
@@ -914,8 +956,24 @@
       {switch
          {$component selected_sym}
          (overshell_confirm_yes
-            {ui_event_mgr trigger_event quit_early}
-            {$this leave_options})
+            {if_else {{$this get_session_mgr} is_local}
+               {set $dx_online_temp FALSE}
+               {set $dx_online_temp TRUE}
+            }
+            {if_else {&& $dx_online_temp {is_leader_local}}
+               {if_else $dx_playing_a_show
+                  {ui goto_screen meta_loading_main_screen}
+                  {ui sync_screen meta_loading_continue_screen 0}
+               }
+               {if_else $dx_playing_a_show
+                  {ui goto_screen meta_loading_main_screen}
+                  {do
+                     {ui_event_mgr trigger_event quit_early}
+                     {$this leave_options}
+                  }
+               }
+            }
+         )
          (overshell_confirm_no
             {$this show_options})})
    (on_cancel
@@ -932,11 +990,14 @@
       {switch
          {$component selected_sym}
          (overshell_confirm_yes
-            {if_else
-               {gamemode in_mode trainer}
-               {{gamemode get game_panel}
-                  restart_section}
-               {session end_game kRestart}})
+            {if_else {gamemode in_mode trainer}
+               {{gamemode get game_panel} restart_section}
+               {do
+                  {dx_countdown_var_reset}
+                  {session end_game kRestart}
+               }
+            }
+         )
          (overshell_confirm_no
             {$this show_options})})
    (on_cancel
@@ -961,7 +1022,9 @@
       {$this show_options}))
 (kState_OnlineOptions
    (enter
-      {online_options.lst set circular 0})
+      {online_options.lst set circular {if_else $dx_is_in_chat 1 0}}
+      DX_SET_QUICK_CHAT_OPTIONS ; dx - set the list of online options on either quick chat or the vanilla online options
+   )
    (view online_options)
    (update_view
       {do
@@ -983,53 +1046,62 @@
          {handle
             ($this update_in_xbox_party $is_partying)}
          #endif
-         #ifdef HX_WII
-         {$this setup_online_options_list wii}
-         #endif
          {handle
             ($this
                update_kick_allowed
                {&&
                   {! $is_local}
                   $is_leader_local})}
-         #ifdef HX_WII
-         {handle
-            ($this
-               update_wiispeak_toggle_allowed
-               {true})}
-         #else
          {handle
             ($this update_mute_allowed $has_remote_users)}
-         #endif
          {handle
             ($this update_invites_allowed $are_invites_allowed)}})
    (requires_online_session TRUE)
    (SELECT_MSG
       {switch
-         {$component selected_sym}
-         (overshell_invite
-            #ifdef HX_XBOX
-            {platform_mgr show_user_friends $user}
-            #else
-            #ifdef HX_WII
-            {if_else
-               {$user is_signed_in_online}
-               {if
-                  {&&
-                     {==
-                        {ui current_screen}
-                        main_hub_screen}
-                     {!
-                        {ui_event_mgr has_transition_event friends_screen_event}}}
-                  {do
-                     {main_hub_panel set_state kMainHubState_Main}
-                     {input_mgr set_user $user}
-                     {wiifriends_screen go_to_friends_screen $user}}}
-               {ui_event_mgr trigger_event sign_in}}
-            #else
-            {$this show_invite_friends}
-            #endif
-            #endif)
+         $dx_is_in_chat
+         (all ; dx - sends a chat message that is currently hovered over from the "all" list
+            {dx_quick_chat {online_options.lst selected_sym}}
+         )
+         (quick ; dx - sends a chat message from the preset quick chat list
+            {switch
+               {online_options.lst selected_data}
+               (0 {dx_quick_chat $dx_chat_preset_0})
+               (1 {dx_quick_chat $dx_chat_preset_1})
+               (2 {dx_quick_chat $dx_chat_preset_2})
+               (3 {dx_quick_chat $dx_chat_preset_3})
+               (4 {dx_quick_chat $dx_chat_preset_4})
+               (5 {dx_quick_chat $dx_chat_preset_5})
+               (6 {dx_quick_chat $dx_chat_preset_6})
+               (7 {dx_quick_chat $dx_chat_preset_7})
+            }
+         )
+         (FALSE ; dx - use vanilla behavior if not in chat mode
+            {switch
+               {$component selected_sym}
+               (overshell_invite
+                  #ifdef HX_XBOX
+                  {platform_mgr show_user_friends $user}
+                  #else
+                  #ifdef HX_WII
+                  {if_else
+                     {$user is_signed_in_online}
+                     {if
+                        {&&
+                           {==
+                              {ui current_screen}
+                              main_hub_screen}
+                           {!
+                              {ui_event_mgr has_transition_event friends_screen_event}}}
+                        {do
+                           {main_hub_panel set_state kMainHubState_Main}
+                           {input_mgr set_user $user}
+                           {wiifriends_screen go_to_friends_screen $user}}}
+                     {ui_event_mgr trigger_event sign_in}}
+                  #else
+                  {$this show_invite_friends}
+                  #endif
+                  #endif)
          #ifdef HX_WII
          (overshell_import_wii_friends
             {if
@@ -1051,23 +1123,29 @@
          #endif
          (overshell_wiispeak_toggle
             {$this toggle_wii_speak})
-         (overshell_kick
-            {$this show_kick_users})
-         (overshell_mute
-            {$this show_mute_users})
-         (overshell_gamercard
-            {$this show_gamercard_users})
-         (overshell_disconnect
-            {$this attempt_disconnect})
-         (overshell_invite_xbox_party
-            {platform_mgr invite_user_party $user})
-         (overshell_check_invites
-            {join_invite_panel set_joining_user $user}
-            {platform_mgr check_mailbox})})
+               (overshell_kick
+                  {$this show_kick_users})
+               (overshell_mute
+                  {$this show_mute_users})
+               (overshell_gamercard
+                  {$this show_gamercard_users})
+               (overshell_disconnect
+                  {$this attempt_disconnect})
+               (overshell_invite_xbox_party
+                  {platform_mgr invite_user_party $user})
+               (overshell_check_invites
+                  {join_invite_panel set_joining_user $user}
+                  {platform_mgr check_mailbox})}
+         )
+      }
+   )
    (on_cancel
       {if_else
          {$this in_game}
-         {$this show_game_options}
+         {if_else $dx_is_in_chat ; dx - returns to root level options menu if this state was entered via quick chat
+            {$this show_options}
+            {$this show_game_options}
+         }
          {$this show_options}}))
 (kState_DisconnectConfirm
    (view confirm_action)
@@ -1182,6 +1260,18 @@
       {$this show_options}))
 (kState_GameOptions
    (view game_options)
+   (enter
+      {set $actually_show_checks TRUE}
+      {handle
+         ($this
+            update_auto_vocals_enabled
+            {modifier_mgr is_modifier_active mod_auto_vocals})}
+      {do
+         ($no_fail_enabled
+            {modifier_mgr is_modifier_active mod_no_fail_band})
+         {handle
+            ($this update_no_fail_enabled $no_fail_enabled)}}
+   )
    (update_view
       {do
          ($controller
@@ -1241,7 +1331,8 @@
                   {!
                      {meta_performer is_band_no_fail_set}}}
                {$this show_toggle_no_fail_denial}}
-            {overshell update_all})
+            {overshell update_all}
+            {dx_toggle_fail_feedback})
          (overshell_lefty_flip
             {do
                ($options
@@ -1259,7 +1350,32 @@
                      update_lefty_flip}}})
          (overshell_register_online
             {$this attempt_register_online})
+         (go_overshell_register_online ; dx - allow entering the online options state when gocentral is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (ash_overshell_register_online ; dx - allow entering the online options state when ashcentral is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (live_overshell_register_online ; dx - allow entering the online options state when live is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (liveless_overshell_register_online ; dx - allow entering the online options state when liveless is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
          (overshell_online_options
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (go_overshell_online_options ; dx - allow entering the online options state when gocentral is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (ash_overshell_online_options ; dx - allow entering the online options state when ashcentral is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (live_overshell_online_options ; dx - allow entering the online options state when live is connected
+            {set $dx_is_in_chat FALSE}
+            {$this show_online_options})
+         (liveless_overshell_online_options ; dx - allow entering the online options state when liveless is connected
+            {set $dx_is_in_chat FALSE}
             {$this show_online_options})
          (overshell_drum_options
             {$this show_options_drum})
@@ -1272,12 +1388,13 @@
          (overshell_wiispeak_options
             {$this show_options_wiispeak})
          (overshell_rb3esettings
-            {$this show_state kState_RB3ESettings})
+            {$this show_state dxState_DeluxeSettings})
          (overshell_modifiers
             {$this show_modifiers})})
    (on_cancel
+      DX_OS_CLOSE_MSG
       {$this show_options}
-      {options.lst set_selected #ifdef HX_WII 4 #else 3 #endif}))
+      {options.lst set_selected 3}))
 (kState_ToggleNoFailDenial
    (view confirm_action)
    (update_view
@@ -1291,6 +1408,11 @@
    (view options_av_settings)
    (on_cancel
       {$this show_game_options})
+   (enter
+      {if $dx_customizer
+         {$this show_state dxState_AppearanceMenu}
+      }
+   )
    (update_view
       {handle
          ($this update_dolby_check)}
@@ -1298,10 +1420,8 @@
          ($this update_bass_boost_check)}
       {handle
          ($this update_overscan_check)}
-      #ifdef HX_WII
       {handle
          ($this update_sdmode_check)}
-      #endif
       {do
          ($user
             {$this get_user})
@@ -1395,14 +1515,24 @@
                            "* Switching from kNANDMode to kSDMode\n"}
                         {push_enable_sdmode_dialog}}}}}
             {$this update_sdmode_check})}))
+#define AUDIO_DATA
+(
+   overshell_audio_instruments
+   overshell_audio_bg_music
+   overshell_audio_crowd
+   overshell_audio_sfx
+   #ifdef HX_PS3
+   overshell_audio_voice_chat
+   #endif
+)
 (kState_OptionsAudio
    (view #ifdef HX_WII options #else options_audio #endif)
    (on_cancel
       {unless $dx_dont_save_mod
-         INIT_MOD_WRITER
+         {dx_modifier_dta_writer}
       }
       {if_else $dx_settings_error
-         {$this show_state kState_RB3ESaveWarnErrorAV}
+         {$this show_state dxState_SaveWarnErrorAV}
          {$this show_options_av_settings}
       }
    )
@@ -1413,6 +1543,9 @@
       }
    )
    (enter
+      {if $dx_customizer
+         {$this show_state dxState_AppearanceMenu}
+      }
       {$this lst_reset}
       {#ifdef HX_WII options.lst #else options_audio.lst #endif set_selected $audiomenuval}
       {instruments.sld set_num_steps 12}
@@ -1459,8 +1592,6 @@
          {== $component #ifdef HX_WII options.lst #else options_audio.lst #endif}
          {switch
             {$component selected_sym}
-            DX_NO_AMBIENCE_HANDLER
-            DX_NO_SFX_HANDLER
             (overshell_audio_instruments
                {instruments.sld store}
                {instruments.sld set_showing TRUE}
@@ -1513,9 +1644,9 @@
 (kState_OptionsVocal
    (view options_vocal)
    (on_cancel
-      INIT_VAL_WRITER
+      {dx_values_dta_writer}
       {if_else $dx_settings_error
-         {$this show_state kState_RB3ESaveWarnError}
+         {$this show_state dxState_SaveWarnError}
          {$this show_game_options}
       }
    )
@@ -1737,16 +1868,53 @@
       {$this on_slider_change $component $user})
    (SCROLL_MSG
       {$this on_slider_change $component $user}))
+#define DX_OPTIONS_SET_DATA
+(
+   {options_audio.lst set_data 
+      (
+         refresh_library
+         overshell_credits
+         overshell_linking_code
+         #ifdef HX_XBOX overshell_audition #endif
+         {if_else {modifier_mgr is_modifier_active mod_auto_play}
+            $dx_current_free_cam
+            os_screensaver
+         }
+      )
+   }
+)
 (kState_OptionsExtras
-   (view options_extras)
+   (view options_audio)
    (enter
-      {options_extras.lst set_data (overshell_credits overshell_linking_code #ifdef HX_XBOX overshell_audition #endif)}
+      DX_OPTIONS_SET_DATA
+      {if {&& {! {session is_in_game}} {session_mgr is_local}}
+         {set $dx_choose_char_scale_x 0.4}
+         {set $dx_choose_char_scale_y 0.4}
+         {game_options.grp add_object choose_character.mesh}
+         {store_choose_char_size_pos}
+         {choose_character.mesh set_local_pos_index 2 175}
+         {choose_character.mesh set_local_scale_index 0 $dx_choose_char_scale_x} ;X
+         {choose_character.mesh set_local_scale_index 2 $dx_choose_char_scale_y} ;Y
+         {choose_character.mat set diffuse_tex choose_character.tex}
+         {choose_character.tex set_bitmap "dx/custom_textures/_additional_textures/qr_code.png"}
+      }
    )
    (SELECT_MSG
+      ;this is so fucking funny
+      {if {has_substr {$component selected_sym} "camera"}
+         {cycle_free_camera}
+         DX_OPTIONS_SET_DATA
+      }
       {switch
          {$component selected_sym}
          (overshell_credits
             {$this show_enter_credits})
+         (refresh_library
+            {if {! {session is_in_game}}
+               {content_mgr remove_content kDataUnhandled}
+               {content_mgr start_refresh}
+            }
+         )
          (overshell_linking_code
             {if_else
                {&&
@@ -1786,9 +1954,29 @@
                {$this leave_options}}
             #else
             {$this leave_options}
-            #endif)})
+            #endif)
+         (os_screensaver
+            {set $dx_screensaver {! $dx_screensaver}}
+            {set $overshell_showing {! $overshell_showing}}
+            {overshell set_showing $overshell_showing}
+            {unless {$this in_game} {ui goto_screen meta_loading_main_screen}}
+            ;{set $previous_state kState_OptionsExtras}
+         )
+      }
+   )
+   (exit
+      {if {&& {! {session is_in_game}} {session_mgr is_local}}
+         {restore_choose_char_size_pos}
+      }
+      {game_options.grp remove_object choose_character.mesh}
+   )
    (on_cancel
-      {$this show_game_options}))
+      {if_else $dx_screensaver
+         kDataUnhandled
+         {$this show_game_options}
+      }
+   )
+)
 (kState_AuditionNoHardDriveConfirm
    (view confirm_action)
    (enter
@@ -1933,8 +2121,8 @@
    (update_view
       {$this update_modifiers_list})
    (enter
-      DX_OS_OPEN_MSG ;opens overshell_player_message
-   ) 
+      {modifiers.lst set_selected 0}
+      {dx_overshell_msg mod_drum_surface_navigation_desc})
    (exit
       DX_OS_CLOSE_MSG ;closes overshell_player_message
       {unless
@@ -1967,10 +2155,10 @@
             {overshell update_all}}})
    (on_cancel
       {unless $dx_dont_save_mod
-         INIT_MOD_WRITER
+         {dx_modifier_dta_writer}
       }
       {if_else $dx_settings_error
-         {$this show_state kState_RB3ESaveWarnError}
+         {$this show_state dxState_SaveWarnError}
          {$this show_game_options}
       }
    )
@@ -1984,7 +2172,7 @@
       {if_else $ingameset
          {do
             {set $ingameset FALSE}
-            {$this show_state kState_RB3ESettings}
+            {$this show_state dxState_DeluxeSettings}
          }
          {$this show_modifiers}
       }
@@ -2040,99 +2228,345 @@
       {$this toggle_vocal_style})
    (kControllerKeys TRUE)
    {$this toggle_lefty_flip})
+#define DX_UPDATE_ICON
+(
+   {if {|| $dx_prep_show_flow {! $dx_in_show_flow}}
+      {$this
+         update_controller_type
+         {{$this get_user} get_controller_type}
+         {switch {choose_part.lst selected_sym}
+            (overshell_guitar $dx_icon_guitar)
+            (overshell_bass $dx_icon_bass)
+            (overshell_vocal_solo $dx_icon_vocals)
+            (overshell_vocal_harmony $dx_icon_harmony_2)
+            (overshell_keys $dx_icon_keys)
+            (overshell_real_keys $dx_icon_real_keys)
+            (overshell_drums $dx_icon_drum)
+            (overshell_drums_pro $dx_icon_drum_pro)
+            (overshell_real_guitar $dx_icon_real_guitar)
+            (overshell_real_bass $dx_icon_real_bass)
+            (overshell_real_guitar_22 $dx_icon_real_guitar)
+            (overshell_real_bass_22 $dx_icon_real_bass)
+            "G"
+         }
+      ""}
+   }
+   {if $dx_in_show_flow
+      {switch {$this get_slot_num}
+         (0 {set $thisicon $slot0_icon})
+         (1 {set $thisicon $slot1_icon})
+         (2 {set $thisicon $slot2_icon})
+         (3 {set $thisicon $slot3_icon})
+      }
+      {$this
+         update_controller_type
+         {{$this get_user} get_controller_type}
+         $thisicon
+      ""}
+   }
+)
 (kState_ChoosePart
    (view
-      {switch
-         {{$this get_user}
-            get_controller_type}
-         (kControllerGuitar choose_part_guitar)
-         (kControllerRealGuitar choose_part_real_guitar)
-         (kControllerVocals choose_part_vocals)
-         (kControllerKeys choose_part_keys)
-         (kControllerDrum choose_part_drum)
-         {fail
-            "No choose part view for this controller type"}})
+      {if_else $dx_in_show_flow
+         options_audio
+         {switch
+            {{$this get_user}
+               get_controller_type}
+            (kControllerGuitar choose_part_guitar)
+            (kControllerRealGuitar choose_part_real_guitar)
+            (kControllerVocals choose_part_vocals)
+            (kControllerKeys choose_part_keys)
+            (kControllerDrum choose_part_drum)
+            {fail
+               "No choose part view for this controller type"}}})
    (song_settings_flow TRUE)
    (part_unresolved TRUE)
    (shows_extended_mic_arrows TRUE)
    (update_remote_feedback
       ($focus_item)
-      {choose_part.lst set_selected $focus_item})
-   (enter
-      {$this update_part_select_list}
-      DX_PART_SELECT_HANDLERS
-   )
-   (exit
-      {if {! {modifier_mgr is_modifier_active mod_auto_play}} ;only write default instruments if autoplay is off
-         INIT_VAL_WRITER
+      {choose_part.lst set_selected $focus_item}
+      DX_UPDATE_ICON)
+   (update_view
+      {if_else {$this in_game}
+         {choose_part.lst set_type overshell_part_select_ingame}
+         {choose_part.lst set_type overshell_part_select}
       }
+      {if $dx_in_show_flow
+         {options_audio.lst set_type overshell_menu}
+         {options_audio.lst restart_highlight_matanim}
+         {options_audio.lst refresh}
+      }
+      {choose_part.lst restart_highlight_matanim}
+      {choose_part.lst refresh}
+      DX_UPDATE_ICON
+   )
+   (enter
+      {if $dx_in_show_flow
+         {options_audio.lst set_data (play_one play_two play_three play_four play_five play_show)}
+         {set $dx_play_a_show_required_votes {+ $dx_play_a_show_required_votes 1}}
+      }
+      {if {! $dx_in_show_flow}
+         {$this update_part_select_list}
+         DX_PART_SELECT_HANDLERS
+         {dx_auto_endurance_handler}
+         {if_else {$this in_game}
+            {choose_part.lst set_type overshell_part_select_ingame}
+            {choose_part.lst set_type overshell_part_select}
+         }
+         {choose_part.lst restart_highlight_matanim}
+         {choose_part.lst refresh}
+      }
+      DX_UPDATE_ICON
+   )
+   (poll
+      DX_UPDATE_ICON
    )
    (SELECT_MSG
-      ;Saves default instrument by slot number
-      {switch
-         {$this get_slot_num}
-         (0 {set $default_slot0 {$component selected_sym}})
-         (1 {set $default_slot1 {$component selected_sym}})
-         (2 {set $default_slot2 {$component selected_sym}})
-         (3 {set $default_slot3 {$component selected_sym}})
-         {fail {set $default_slot0 {$component selected_sym}}}
+      {if $dx_in_show_flow
+         {if $votingallowed
+            {switch {options_audio.lst selected_sym}
+               (play_one
+                  {set $dx_play_a_show_vote 1}
+                  {play_instr_sfx $user button_select}
+               )
+               (play_two
+                  {set $dx_play_a_show_vote 2}
+                  {play_instr_sfx $user button_select}
+               )
+               (play_three
+                  {set $dx_play_a_show_vote 3}
+                  {play_instr_sfx $user button_select}
+               )
+               (play_four
+                  {set $dx_play_a_show_vote 4}
+                  {play_instr_sfx $user button_select}
+               )
+               (play_five
+                  {set $dx_play_a_show_vote 5}
+                  {play_instr_sfx $user button_select}
+               )
+               (play_show
+                  {dx_play_a_show_panel dx_play_a_show_recieve_song}
+               )
+            }
+            {switch {$this get_slot_num}
+               (0 {set $dx_voted_icon $slot0_icon})
+               (1 {set $dx_voted_icon $slot1_icon})
+               (2 {set $dx_voted_icon $slot2_icon})
+               (3 {set $dx_voted_icon $slot3_icon})
+            }
+            {switch {$this get_slot_num}
+               (0
+                  {if {! $slot1_voted} {set $dx_play_a_show_num_votes {+ $dx_play_a_show_num_votes 1}}}
+                  {set $slot1_voted TRUE}
+                  {set $slot1_voted_icon $dx_voted_icon}
+                  {switch $dx_play_a_show_vote
+                     (1 {set $slot1_vote 1})
+                     (2 {set $slot1_vote 2})
+                     (3 {set $slot1_vote 3})
+                     (4 {set $slot1_vote 4})
+                     (5 {set $slot1_vote 5})
+                  }
+               )
+               (1
+                  {if {! $slot2_voted} {set $dx_play_a_show_num_votes {+ $dx_play_a_show_num_votes 1}}}
+                  {set $slot2_voted TRUE}
+                  {set $slot2_voted_icon $dx_voted_icon}
+                  {switch $dx_play_a_show_vote
+                     (1 {set $slot2_vote 1})
+                     (2 {set $slot2_vote 2})
+                     (3 {set $slot2_vote 3})
+                     (4 {set $slot2_vote 4})
+                     (5 {set $slot2_vote 5})
+                  }
+               )
+               (2
+                  {if {! $slot3_voted} {set $dx_play_a_show_num_votes {+ $dx_play_a_show_num_votes 1}}}
+                  {set $slot3_voted TRUE}
+                  {set $slot3_voted_icon $dx_voted_icon}
+                  {switch $dx_play_a_show_vote
+                     (1 {set $slot3_vote 1})
+                     (2 {set $slot3_vote 2})
+                     (3 {set $slot3_vote 3})
+                     (4 {set $slot3_vote 4})
+                     (5 {set $slot3_vote 5})
+                  }
+               )
+               (3
+                  {if {! $slot4_voted} {set $dx_play_a_show_num_votes {+ $dx_play_a_show_num_votes 1}}}
+                  {set $slot4_voted TRUE}
+                  {set $slot4_voted_icon $dx_voted_icon}
+                  {switch $dx_play_a_show_vote
+                     (1 {set $slot4_vote 1})
+                     (2 {set $slot4_vote 2})
+                     (3 {set $slot4_vote 3})
+                     (4 {set $slot4_vote 4})
+                     (5 {set $slot4_vote 5})
+                  }
+               )
+            }
+            {dx_play_a_show_panel dx_slot_voted}
+         }
       }
-      {switch
-         {$component selected_sym}
+      {resize $dx_play_a_show_active_instruments 0}
+      {switch {$component selected_sym}
+         (overshell_guitar {push_back $dx_play_a_show_active_instruments guitar})
+         (overshell_bass {push_back $dx_play_a_show_active_instruments bass})
+         (overshell_keys {push_back $dx_play_a_show_active_instruments keys})
+         (overshell_real_keys {push_back $dx_play_a_show_active_instruments real_keys})
+         ((overshell_real_guitar overshell_real_guitar_22) {push_back $dx_play_a_show_active_instruments real_guitar})
+         ((overshell_real_bass overshell_real_bass_22) {push_back $dx_play_a_show_active_instruments real_bass})
+         ((overshell_drums overshell_drums_pro) {push_back $dx_play_a_show_active_instruments drum})
+         ((overshell_vocal_harmony overshell_vocal_solo) {push_back $dx_play_a_show_active_instruments vocals})
+      }
+      {switch {$component selected_sym}
          (overshell_guitar
-            {$this select_part kTrackGuitar})
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_guitar})
+               (1 {set $slot1_icon $dx_icon_guitar})
+               (2 {set $slot2_icon $dx_icon_guitar})
+               (3 {set $slot3_icon $dx_icon_guitar})
+            }
+         )
          (overshell_bass
-            {$this select_part kTrackBass})
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_bass})
+               (1 {set $slot1_icon $dx_icon_bass})
+               (2 {set $slot2_icon $dx_icon_bass})
+               (3 {set $slot3_icon $dx_icon_bass})
+            }
+         )
          (overshell_keys
-            {$this select_part kTrackKeys})
-         (overshell_real_guitar
-            {$this select_part kTrackRealGuitar}
-            {if
-               {gamemode in_mode trainer}
-               {gamemode set_mode pro_song_lessons_real_guitar}}
-            {if
-               {modifier_mgr is_modifier_active mod_auto_play}
-               {{$this get_user} set_has_22_fret_guitar FALSE}}) ; dx - forces 17 fret part in autoplay for chart demos
-         (overshell_real_bass
-            {$this select_part kTrackRealBass}
-            {if
-               {gamemode in_mode trainer}
-               {gamemode set_mode pro_song_lessons_real_bass}}
-            {if
-               {modifier_mgr is_modifier_active mod_auto_play}
-               {{$this get_user} set_has_22_fret_guitar FALSE}}) ; dx - forces 17 fret part in autoplay for chart demos
-         (overshell_real_guitar_22
-            {$this select_part kTrackRealGuitar}
-            {if
-               {gamemode in_mode trainer}
-               {gamemode set_mode pro_song_lessons_real_guitar}}
-            {if
-               {modifier_mgr is_modifier_active mod_auto_play}
-               {{$this get_user} set_has_22_fret_guitar TRUE}}) ; dx - forces 22 fret part in autoplay for chart demos
-         (overshell_real_bass_22
-            {$this select_part kTrackRealBass}
-            {if
-               {gamemode in_mode trainer}
-               {gamemode set_mode pro_song_lessons_real_bass}}
-            {if
-               {modifier_mgr is_modifier_active mod_auto_play}
-               {{$this get_user} set_has_22_fret_guitar TRUE}}) ; dx - forces 22 fret part in autoplay for chart demos
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_keys})
+               (1 {set $slot1_icon $dx_icon_keys})
+               (2 {set $slot2_icon $dx_icon_keys})
+               (3 {set $slot3_icon $dx_icon_keys})
+            }
+         )
          (overshell_real_keys
-            {$this select_part kTrackRealKeys})
-         (overshell_vocal_solo
-            {$this select_vocal_part FALSE}
-            {if
-               {gamemode in_mode practice}
-               {practice_panel set uses_harmony FALSE}})
-         (overshell_vocal_harmony
-            {$this select_vocal_part TRUE}
-            {if
-               {gamemode in_mode practice}
-               {practice_panel set uses_harmony TRUE}})
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_real_keys})
+               (1 {set $slot1_icon $dx_icon_real_keys})
+               (2 {set $slot2_icon $dx_icon_real_keys})
+               (3 {set $slot3_icon $dx_icon_real_keys})
+            }
+         )
+         ((overshell_real_guitar overshell_real_guitar_22)
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_real_guitar})
+               (1 {set $slot1_icon $dx_icon_real_guitar})
+               (2 {set $slot2_icon $dx_icon_real_guitar})
+               (3 {set $slot3_icon $dx_icon_real_guitar})
+            }
+         )
+         ((overshell_real_bass overshell_real_bass_22)
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_real_bass})
+               (1 {set $slot1_icon $dx_icon_real_bass})
+               (2 {set $slot2_icon $dx_icon_real_bass})
+               (3 {set $slot3_icon $dx_icon_real_bass})
+            }
+         )
          (overshell_drums
-            {$this select_drum_part FALSE})
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_drum})
+               (1 {set $slot1_icon $dx_icon_drum})
+               (2 {set $slot2_icon $dx_icon_drum})
+               (3 {set $slot3_icon $dx_icon_drum})
+            }
+         )
          (overshell_drums_pro
-            {$this select_drum_part TRUE})})
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_drum_pro})
+               (1 {set $slot1_icon $dx_icon_drum_pro})
+               (2 {set $slot2_icon $dx_icon_drum_pro})
+               (3 {set $slot3_icon $dx_icon_drum_pro})
+            }
+         )
+         ((overshell_vocal_harmony overshell_vocal_solo)
+            {switch {$this get_slot_num}
+               (0 {set $slot0_icon $dx_icon_vocals})
+               (1 {set $slot1_icon $dx_icon_vocals})
+               (2 {set $slot2_icon $dx_icon_vocals})
+               (3 {set $slot3_icon $dx_icon_vocals})
+            }
+         )
+      }
+      {if $dx_in_show_flow {$this show_state kState_ReadyToPlayaShowWait}}
+      {if {! $dx_in_show_flow}
+         {unless {|| $dx_customizer $dx_auto_endurance}
+            ;Saves default instrument by slot number
+            {switch
+               {$this get_slot_num}
+               (0 {set $default_slot0 {$component selected_sym}})
+               (1 {set $default_slot1 {$component selected_sym}})
+               (2 {set $default_slot2 {$component selected_sym}})
+               (3 {set $default_slot3 {$component selected_sym}})
+               {fail {set $default_slot0 {$component selected_sym}}}
+            }
+            {switch
+               {$component selected_sym}
+               (overshell_guitar
+                  {$this select_part kTrackGuitar})
+               (overshell_bass
+                  {$this select_part kTrackBass})
+               (overshell_keys
+                  {$this select_part kTrackKeys})
+               (overshell_real_guitar
+                  {$this select_part kTrackRealGuitar}
+                  {if
+                     {gamemode in_mode trainer}
+                     {gamemode set_mode pro_song_lessons_real_guitar}}
+                  {if
+                     {modifier_mgr is_modifier_active mod_auto_play}
+                     {{$this get_user} set_has_22_fret_guitar FALSE}}) ; dx - forces 17 fret part in autoplay for chart demos
+               (overshell_real_bass
+                  {$this select_part kTrackRealBass}
+                  {if
+                     {gamemode in_mode trainer}
+                     {gamemode set_mode pro_song_lessons_real_bass}}
+                  {if
+                     {modifier_mgr is_modifier_active mod_auto_play}
+                     {{$this get_user} set_has_22_fret_guitar FALSE}}) ; dx - forces 17 fret part in autoplay for chart demos
+               (overshell_real_guitar_22
+                  {$this select_part kTrackRealGuitar}
+                  {if
+                     {gamemode in_mode trainer}
+                     {gamemode set_mode pro_song_lessons_real_guitar}}
+                  {if
+                     {modifier_mgr is_modifier_active mod_auto_play}
+                     {{$this get_user} set_has_22_fret_guitar TRUE}}) ; dx - forces 22 fret part in autoplay for chart demos
+               (overshell_real_bass_22
+                  {$this select_part kTrackRealBass}
+                  {if
+                     {gamemode in_mode trainer}
+                     {gamemode set_mode pro_song_lessons_real_bass}}
+                  {if
+                     {modifier_mgr is_modifier_active mod_auto_play}
+                     {{$this get_user} set_has_22_fret_guitar TRUE}}) ; dx - forces 22 fret part in autoplay for chart demos
+               (overshell_real_keys
+                  {$this select_part kTrackRealKeys})
+               (overshell_vocal_solo
+                  {$this select_vocal_part FALSE}
+                  {if
+                     {gamemode in_mode practice}
+                     {practice_panel set uses_harmony FALSE}}
+                  {set $dx_vocal_type solo})
+               (overshell_vocal_harmony
+                  {$this select_vocal_part TRUE}
+                  {if
+                     {gamemode in_mode practice}
+                     {practice_panel set uses_harmony TRUE}}
+                  {set $dx_vocal_type harmony})
+               (overshell_drums
+                  {$this select_drum_part FALSE})
+               (overshell_drums_pro
+                  {$this select_drum_part TRUE})
+            }
+         }
+      }
+   )
    (SCROLL_MSG
       {$this update})
    (get_focus_is_harmony
@@ -2168,6 +2602,8 @@
             (overshell_keys kTrackKeys)
             (overshell_real_guitar kTrackRealGuitar)
             (overshell_real_bass kTrackRealBass)
+            (overshell_real_guitar_22 kTrackRealGuitar) ; dx - shows real_guitar diff on 22 part
+            (overshell_real_bass_22 kTrackRealBass) ; dx - shows real_bass diff on 22 part
             (overshell_real_keys kTrackRealKeys)
             (overshell_vocal_solo kTrackVocals)
             (overshell_vocal_harmony kTrackVocals)
@@ -2176,9 +2612,47 @@
             kTrackNone}
          kTrackNone})
    (on_view_modify
+      {if_else {$this in_game}
+         {choose_part.lst set_type overshell_part_select_ingame}
+         {choose_part.lst set_type overshell_part_select}
+      }
+      {choose_part.lst restart_highlight_matanim}
+      {choose_part.lst refresh}
       {TOGGLE_LEFTY_FLIP_AND_STATIC_VOCALS})
    (on_cancel
-      {$this leave_choose_part}))
+      {set $dx_play_a_show_active_instruments ()}
+      {resize $dx_play_a_show_active_instruments 0}
+      {if_else $dx_in_show_flow
+         {do
+            {$this show_state kState_ConfirmPlayaShowExit}
+         }
+         {$this leave_choose_part}
+      }
+   )
+)
+(kState_ConfirmPlayaShowExit
+   (view confirm_action)
+   (prevents_override TRUE)
+   (on_cancel
+      {$this show_state kState_ChoosePart})
+   (update_view
+      {handle
+         ($this
+            set_confirm_actions
+            overshell_confirm_leaveashow
+            (overshell_confirm_yes overshell_confirm_no))})
+   (SELECT_MSG
+      {switch
+         {$component selected_sym}
+         (overshell_confirm_yes
+            {set $dx_in_show_flow FALSE}
+            {set $dx_prep_show_flow FALSE}
+            {set $dx_playing_a_show FALSE}
+            {overshell end_override_flow kOverrideFlow_SongSettings TRUE}
+            {$this leave_options}
+            {ui sync_screen meta_loading_main_screen 0})
+         (overshell_confirm_no
+            {$this show_state kState_ChoosePart})}))
 (kState_ChoosePartDenial
    (view confirm_action)
    (song_settings_flow TRUE)
@@ -2216,7 +2690,12 @@
       {switch
          {$component selected_sym}
          (overshell_confirm_yes
-            {$this show_choose_part_wait})
+            {if_else {dx_check_for_dupe {$this get_slot_num}}
+               {$this show_state kState_ChooseDiff} ; dx - force enter ChooseDiff state if Pro player exists but not 5L and vice-versa
+               {$this show_state kState_ChoosePart} ; dx - returns to ChoosePart if another player already has the part
+               ;{$this show_choose_part_wait} ; dx - deprecated vanilla behavior
+            }
+         )
          (overshell_confirm_no
             {$this leave_choose_part_wait})})
    (on_cancel
@@ -2238,7 +2717,12 @@
       {switch
          {$component selected_sym}
          (overshell_confirm_yes
-            {$this show_choose_part_wait})
+            {if_else {dx_check_for_dupe {$this get_slot_num}}
+               {$this show_state kState_ChooseDiff} ; dx - force enter ChooseDiff state if Pro player exists but not 5L and vice-versa
+               {$this show_state kState_ChoosePart} ; dx - returns to ChoosePart if another player already has the part
+               ;{$this show_choose_part_wait} ; dx - deprecated vanilla behavior
+            }
+         )
          (overshell_confirm_no
             {$this leave_choose_part_wait})})
    (on_cancel
@@ -2258,6 +2742,13 @@
    (song_settings_flow TRUE)
    (part_unresolved TRUE)
    (shows_extended_mic_arrows TRUE)
+   (enter
+      {if_else {dx_check_for_dupe {$this get_slot_num}}
+         {$this show_state kState_ChooseDiff} ; dx - force enter ChooseDiff state if Pro player exists but not 5L and vice-versa
+         {$this show_state kState_ChoosePart} ; dx - returns to ChoosePart if another player already has the part
+         ;{$this show_choose_part_wait} ; dx - deprecated vanilla behavior
+      }
+   )
    (update_remote_feedback
       ($focus_item)
       {choose_part.lst set_selected $focus_item})
@@ -2373,29 +2864,65 @@
    (song_settings_flow TRUE)
    (shows_extended_mic_arrows TRUE)
    (enter
-      {if {! $dx_first_diff} ; dx - hacky way to default to expert on first boot
-         {set $dx_first_diff TRUE}
-         {choose_diff.lst set_selected 3}
+      {if {|| $dx_customizer $dx_auto_endurance}
+         {script_task kTaskSeconds
+            (delay {if_else $dx_auto_endurance 0.2 0})
+            (script
+               {$this select_difficulty kDifficultyExpert}
+            )
+         }
+      }
+      {switch {$this get_slot_num}
+         (0 {if_else $default_diff0 {choose_diff.lst set_selected $default_diff0} {choose_diff.lst set_selected 3}})
+         (1 {if_else $default_diff1 {choose_diff.lst set_selected $default_diff1} {choose_diff.lst set_selected 3}})
+         (2 {if_else $default_diff2 {choose_diff.lst set_selected $default_diff2} {choose_diff.lst set_selected 3}})
+         (3 {if_else $default_diff3 {choose_diff.lst set_selected $default_diff3} {choose_diff.lst set_selected 3}})
+         {fail {if_else $default_diff0 {choose_diff.lst set_selected $default_slot0} {choose_diff.lst set_selected 3}}}
+      }
+      ; dx - sends what texture(s) the current user is using to remote players
+      {if {{$this get_user} is_local} {dx_sync_remote_textures {{$this get_user} get_track_type}}}
+   )
+   (exit
+      {if {! {modifier_mgr is_modifier_active mod_auto_play}} ;only write default instruments if autoplay is off
+         {dx_values_dta_writer}
       }
    )
    (SELECT_MSG
-      {switch
-         {choose_diff.lst selected_sym}
-         (overshell_easy
-            {$this select_difficulty kDifficultyEasy})
-         (overshell_medium
-            {$this select_difficulty kDifficultyMedium})
-         (overshell_hard
-            {$this select_difficulty kDifficultyHard})
-         (overshell_expert
-            {if_else {modifier_mgr is_modifier_active mod_nobre}
-               {do
-                  {$this select_difficulty kDifficultyEasy}
-                  {set $imabigboy TRUE}
+      {unless {|| $dx_customizer $dx_auto_endurance}
+         ;Saves default instrument by slot number
+         {switch
+            {$this get_slot_num}
+            (0 {set $default_diff0 {$component selected_sym}})
+            (1 {set $default_diff1 {$component selected_sym}})
+            (2 {set $default_diff2 {$component selected_sym}})
+            (3 {set $default_diff3 {$component selected_sym}})
+            {fail {set $default_diff0 {$component selected_sym}}}
+         }
+         ;also write these to dx_values.dta
+         {dx_values_dta_writer}
+         {switch
+            {choose_diff.lst selected_sym}
+            (overshell_easy
+               {$this select_difficulty kDifficultyEasy})
+            (overshell_medium
+               {$this select_difficulty kDifficultyMedium})
+            (overshell_hard
+               {$this select_difficulty kDifficultyHard})
+            (overshell_expert
+               {if_else {modifier_mgr is_modifier_active mod_nobre}
+                  {do
+                     {$this select_difficulty kDifficultyEasy}
+                     {set $imabigboy TRUE}
+                  }
+                  {$this select_difficulty kDifficultyExpert}
                }
-               {$this select_difficulty kDifficultyExpert}
-            }
-         )
+            )
+         }
+         ; dx - block restarting on endgame if swapping to a different instrument
+         {if {== {ui current_screen} coop_endgame_screen}
+            {set $dx_restart_allowed FALSE}
+            {session send_msg_to_all {'`' ({set $dx_restart_allowed FALSE}) kNetReliable}}
+         }
       }
    )
    (update_remote_feedback
@@ -2445,6 +2972,14 @@
    (view ready_to_play)
    (song_settings_flow TRUE)
    (ready_to_play TRUE))
+(kState_ReadyToPlayaShowWait
+   (view ready_to_play)
+   (song_settings_flow TRUE)
+   ;(ready_to_play TRUE)
+   (on_cancel
+      {if $votingallowed
+         {set $dx_play_a_show_required_votes {- $dx_play_a_show_required_votes 1}}
+         {$this show_state kState_ChoosePart}}))
 (kState_SongOptionsCancel
    (view cancel_song)
    (song_settings_flow TRUE)
@@ -2507,9 +3042,6 @@
 (kState_AutoSignInRockCentral
    (view auto_sign_in_rock_central)
    (register_online_flow TRUE)
-   #ifdef HX_WII
-   (register_online_flow TRUE)
-   #endif
    (SELECT_MSG
       {switch
          {$component selected_sym}
@@ -2705,6 +3237,8 @@
                #else
                TRUE
                #endif
+               #ifdef HX_WII
+               {$this set_paused 1}
                {virtual_keyboard
                   show_keyboard
                   $user
@@ -2712,7 +3246,18 @@
                   {localize create_char_vk_title}
                   {localize create_char_vk_desc}
                   {$this character_name}
-                  $this}})
+                  $this
+                  kVkNormalEntry}
+               #else
+               {virtual_keyboard
+                  show_keyboard
+                  $user
+                  kCharNameLength
+                  {localize create_char_vk_title}
+                  {localize create_char_vk_desc}
+                  {$this character_name}
+                  $this}
+               #endif})
          (overshell_delete_character
             {$this attempt_show_char_delete})})
    (VIRTUAL_KEYBOARD_RESULT_MSG
@@ -2726,7 +3271,8 @@
                   ""}}}
          {$this rename_character $text}
          {$this show_chars}
-         DX_AUTOSAVE})
+         DX_AUTOSAVE}
+      #ifdef HX_WII {$this set_paused 0} #endif)
    (on_cancel
       {$this show_chars}))
 (kState_ChooseCharDelete
@@ -2829,7 +3375,15 @@
       {switch
          {$component selected_sym}
          (overshell_sign_in
-            {platform_mgr signin 1})
+            #ifdef HX_WII
+            {platform_mgr
+               signin
+               1
+               FALSE
+               {$this get_user}}
+            #else
+            {platform_mgr signin 1}
+            #endif)
          (overshell_sign_in_cancel
             {$this show_chars})})
    (on_cancel

@@ -82,23 +82,11 @@
    (types
       (overshell_slot
          (get_native_platform
-            #ifdef HX_PS3 
-            {if_else {modifier_mgr is_modifier_active mod_xboxos}
-               xbox 
-               {if_else {modifier_mgr is_modifier_active mod_wiios}
-                  wii
-                  ps3
-               }
+            {do
+               {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
+               $dx_overshell_platform
             }
-            #else
-            {if_else {modifier_mgr is_modifier_active mod_wiios}
-               wii 
-               {if_else {modifier_mgr is_modifier_active mod_ps3os}
-                  ps3
-                  xbox
-               }
-            }
-            #endif)
+         )
          (init
             {$this setup_static_lists}
             {$this setup_game_options_list kControllerNone TRUE TRUE FALSE FALSE}
@@ -107,22 +95,25 @@
             {$this cache_lists}
             {$this
                set_platform
-               {$this get_native_platform}})
+               {$this get_native_platform}}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (enter
             {$this init}
-            {modifiers.lst set circular 1}) ;circular modifiers menu
+            {modifiers.lst set circular 1}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}) ;circular modifiers menu
          (setup_providers
-            ($char_provider $profiles_provider $invite_provider $part_select_provider $cymbal_provider $modifier_provider)
+            ($char_provider $profiles_provider #ifdef HX_WII $friends_provider #else $invite_provider #endif $part_select_provider $cymbal_provider $modifier_provider)
             {chars.lst set_provider $char_provider}
             #ifdef HX_WII
             {profiles_wii.lst set_provider $profiles_provider}
             #else
             {profiles.lst set_provider $profiles_provider}
-            {invite_friends.lst set_provider $invite_provider}
+            {invite_friends.lst set_provider #ifdef HX_WII $friends_provider #else $invite_provider #endif}
             #endif
             {choose_part.lst set_provider $part_select_provider}
             {options_drum.lst set_provider $cymbal_provider}
-            {modifiers.lst set_provider $modifier_provider})
+            {modifiers.lst set_provider $modifier_provider}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (setup_static_lists
             {choose_diff.lst
                set_data
@@ -133,9 +124,11 @@
             {cancel_song.lst
                set_data
                (overshell_confirm_yes overshell_confirm_no overshell_leave)}
+            #ifndef HX_WII
             {profile_options.lst
                set_data
                (overshell_continue_without_profile overshell_sign_in)}
+            #endif
             {auto_sign_in_rock_central.lst
                set_data
                (overshell_sign_in_cancel)}
@@ -167,9 +160,11 @@
                set_data
                (overshell_vocals_mode_static overshell_synapse overshell_vocal_track_vol mic_1_gain mic_2_gain mic_3_gain)}
             #endif
+            #ifdef HX_WII
             {options_wiispeak.lst
                set_data
                (wiispeak_button_toggle_wiispeak wiispeak_button_friends_volume wiispeak_button_microphone_sensitivity wiispeak_button_headphone_mode)}
+            #endif
             {options_extras.lst
                set_data
                (overshell_freecam
@@ -181,7 +176,17 @@
                   #endif)}
             {choose_char_edit.lst
                set_data
-               (overshell_rename_character overshell_delete_character)})
+               (overshell_rename_character overshell_delete_character)}
+            #ifdef HX_WII
+            {accept_invitation.lst
+               set_data
+               (wii_friends_accept_invitation_yes wii_friends_accept_invitation_no wii_friends_accept_invitation_cancel)}
+            {invitations.lst set_provider wii_invitations_provider}
+            {no_invitations.lst
+               set_data
+               (wii_friends_no_invitations_ok)}
+            #endif
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (setup_online_options_list
             ($platform)
             {do
@@ -211,7 +216,8 @@
                      {push_back $options overshell_invite}}}
                #else
                {push_back $options overshell_invite}
-               #endif               {if
+               #endif
+               {if
                   {== $platform xbox}
                   {push_back $options overshell_invite_xbox_party}}
                {if
@@ -254,20 +260,44 @@
                            {!
                               {meta_performer are_credits_pending}}}
                         {if $gotcha
-                           {if_else
-                              $online_enabled
-                              {push_back $options overshell_online_options}
-                              {push_back $options overshell_register_online}}
+                           {if_else $online_enabled
+                              {switch $dx_connected_server
+                                 (none {push_back $options overshell_online_options})
+                                 (gocentral {push_back $options go_overshell_online_options})
+                                 (ashcentral {push_back $options ash_overshell_online_options})
+                                 (live {push_back $options live_overshell_online_options})
+                                 (liveless {push_back $options liveless_overshell_online_options})
+                              }
+                              {switch $dx_connected_server
+                                 (none {push_back $options overshell_register_online})
+                                 (gocentral {push_back $options go_overshell_register_online})
+                                 (ashcentral {push_back $options ash_overshell_register_online})
+                                 (live {push_back $options live_overshell_register_online})
+                                 (liveless {push_back $options liveless_overshell_register_online})
+                              }
+                           }
                         }
                         {if {modifier_mgr is_modifier_active mod_auto_play}
                            {push_back $options overshell_dx_bot_settings} ; dx - show autoplay settings when active
                         }
                      }
                      #else
-                     {if_else
-                        $online_enabled
-                        {push_back $options overshell_online_options}
-                        {push_back $options overshell_register_online}}
+                     {if_else $online_enabled
+                        {switch $dx_connected_server
+                           (none {push_back $options overshell_online_options})
+                           (gocentral {push_back $options go_overshell_online_options})
+                           (ashcentral {push_back $options ash_overshell_online_options})
+                           (live {push_back $options live_overshell_online_options})
+                           (liveless {push_back $options liveless_overshell_online_options})
+                        }
+                        {switch $dx_connected_server
+                           (none {push_back $options overshell_register_online})
+                           (gocentral {push_back $options go_overshell_register_online})
+                           (ashcentral {push_back $options ash_overshell_register_online})
+                           (live {push_back $options live_overshell_register_online})
+                           (liveless {push_back $options liveless_overshell_register_online})
+                        }
+                     }
                      #endif
                      #ifdef HX_WII
                      {if
@@ -286,12 +316,31 @@
                #else
                {if $gotcha
                   {if_else $online_enabled
-                     {push_back $options overshell_online_options}
-                     {push_back $options overshell_register_online}
+                     {switch $dx_connected_server
+                        (none {push_back $options overshell_online_options})
+                        (gocentral {push_back $options go_overshell_online_options})
+                        (ashcentral {push_back $options ash_overshell_online_options})
+                        (live {push_back $options live_overshell_online_options})
+                        (liveless {push_back $options liveless_overshell_online_options})
+                     }
+                     {switch $dx_connected_server
+                        (none {push_back $options overshell_register_online})
+                        (gocentral {push_back $options go_overshell_register_online})
+                        (ashcentral {push_back $options ash_overshell_register_online})
+                        (live {push_back $options live_overshell_register_online})
+                        (liveless {push_back $options liveless_overshell_register_online})
+                     }
                   }
                }
                {if {modifier_mgr is_modifier_active mod_auto_play}
                   {push_back $options overshell_dx_bot_settings} ; dx - show autoplay settings when active
+               }
+               {set $dx_users 0}
+               {user_mgr foreach_user $user
+                  {set $dx_users {+ $dx_users 1}}
+               }
+               {if {&& {! {session_mgr is_local}} {> $dx_users 1}}
+                  {push_back $options overshell_dx_quick_chat} ; dx - show quick chat menu when online
                }
                {push_back $options overshell_change_character}
                {push_back $options overshell_game_options}
@@ -308,7 +357,8 @@
                   {push_back $options overshell_sign_in_continue}}
                {push_back $options overshell_sign_in}
                {push_back $options overshell_sign_in_cancel}
-               {sign_in_to_register.lst set_data $options}})
+               {sign_in_to_register.lst set_data $options}}
+               {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (setup_game_options_list
             ($controller_type $online_options $online_enabled $in_game $solo)
             {do
@@ -330,7 +380,13 @@
                      {push_back $options milo_lefty_static}}}
                {if
                   {&& $online_options $online_enabled}
-                  {push_back $options overshell_online_options}}
+                     {switch $dx_connected_server
+                        (none {push_back $options overshell_online_options})
+                        (gocentral {push_back $options go_overshell_online_options})
+                        (ashcentral {push_back $options ash_overshell_online_options})
+                        (live {push_back $options live_overshell_online_options})
+                        (liveless {push_back $options liveless_overshell_online_options})
+                     }}
                {if 
                   {modifier_mgr is_modifier_active mod_auto_vocals}
                   {push_back $options overshell_vocal_options}
@@ -347,7 +403,7 @@
                #endif
                #endif
                {if {! $online_enabled}
-                  {push_back $options overshell_rb3esettings} ; dx - only show the delux settings icon if not online. it crashes online players
+                  {push_back $options overshell_rb3esettings} ; dx - only show the deluxe settings icon if not online. it crashes online players
                }
                {game_options.lst set_data $options}})
          #ifdef HX_WII
@@ -398,9 +454,11 @@
                (ps3
                   {ps3.trg trigger})
                (wii
-                  {wii.trg trigger})})
+                  {wii.trg trigger})}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (show_view
             ($view $in_track_mode $default_option $default_option_index)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {do
                ($trigger
                   {sprint
@@ -437,9 +495,11 @@
                {if
                   $in_track_mode
                   {track_mode.trg trigger}
-                  {$this refresh_list_types_in_nav_chain $initial_focus $in_track_mode}}})
+                  {$this refresh_list_types_in_nav_chain $initial_focus $in_track_mode}}}
+               {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (refresh_list_types_in_nav_chain
             ($list $in_track_mode)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {if
                $list
                {do
@@ -511,22 +571,26 @@
                   {$list get nav_down}}})
          (update_controller_type
             ($controller_type $controller_font_char)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {slot_instrument_icon.lbl set icon $controller_font_char}
             {mic_arrows.grp
                set_showing
                {== $controller_type kControllerVocals}}
+            {if {! $dx_in_show_flow}
             {if_else
                {== $controller_type kControllerVocals}
                {difficulty_pos_vocals.trg trigger}
-               {difficulty_pos_non_vocals.trg trigger}})
+               {difficulty_pos_non_vocals.trg trigger}}})
          (update_sign_in_continue
             ($can_continue)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {if_else
                $can_continue
                {sign_in_to_register.lst enable_data overshell_sign_in_continue}
                {sign_in_to_register.lst disable_data overshell_sign_in_continue}})
          (update_kick_allowed
             ($can_kick)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {if_else
                $can_kick
                {online_options.lst enable_data overshell_kick}
@@ -552,10 +616,26 @@
                $allowed
                {do
                   {options.lst enable_data overshell_online_options}
-                  {options.lst enable_data overshell_register_online}}
+                  {options.lst enable_data overshell_register_online}
+                  {options.lst enable_data go_overshell_online_options}
+                  {options.lst enable_data ash_overshell_online_options}
+                  {options.lst enable_data go_overshell_register_online}
+                  {options.lst enable_data ash_overshell_register_online}
+                  {options.lst enable_data live_overshell_online_options}
+                  {options.lst enable_data live_overshell_register_online}
+                  {options.lst enable_data liveless_overshell_online_options}
+                  {options.lst enable_data liveless_overshell_register_online}}
                {do
-                  {options.lst disable_data overshell_online_options}
-                  {options.lst disable_data overshell_register_online}}})
+               	{options.lst disable_data overshell_online_options}
+                  {options.lst disable_data overshell_register_online}
+                  {options.lst disable_data go_overshell_online_options}
+                  {options.lst disable_data ash_overshell_online_options}
+                  {options.lst disable_data go_overshell_register_online}
+                  {options.lst disable_data ash_overshell_register_online}
+                  {options.lst disable_data live_overshell_online_options}
+                  {options.lst disable_data live_overshell_register_online}
+                  {options.lst disable_data liveless_overshell_online_options}
+                  {options.lst disable_data liveless_overshell_register_online}}})
          (update_restart_allowed
             ($can_restart)
             {if_else
@@ -588,23 +668,45 @@
          #endif
          (update_local_status
             ($is_local)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {pad_num.lbl set_showing $is_local})
          (update_pad_num
             ($pad_num)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {pad_num.lbl set_int $pad_num})
          (button_pulse_joined
-            {button_pulse_joined.trig trigger})
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
+            {button_pulse_joined.trig trigger}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (button_pulse_unjoined
-            {button_pulse_unjoined.trig trigger})
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
+            {button_pulse_unjoined.trig trigger}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (update_user_name
             ($user)
-            {user_name.lbl set_user_name $user})
+            #ifdef HX_PS3
+            {set $dx_current_player_name {$user get_user_name}}
+            {search_replace $dx_current_player_name " (1)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (2)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (3)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (4)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (5)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (6)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name " (7)" "" $dx_current_player_name}
+            {search_replace $dx_current_player_name "*" "" $dx_current_player_name}
+            {set $dx_current_player_name_sanitized $dx_current_player_name}
+            {user_name.lbl set_token_fmt {sprint $dx_current_player_name_sanitized}}
+            #else
+            {user_name.lbl set_user_name $user}
+            #endif
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (update_char_provider
             ($provider)
             {chars.lst refresh})
          (update_users_provider
             ($provider)
-            {users.lst set_provider $provider})
+            {users.lst set_provider $provider}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (update_remote_status
             ($status_token_fmt)
             {remote_status.lbl set_token_fmt $status_token_fmt})
@@ -640,9 +742,9 @@
             {choose_part.lst set_provider $provider})
          (update_song_difficulty_ranking
             ($has_random_setlist $has_part $has_multiple_songs $difficulty $num_vocal_parts $track_sym)
-            {song_difficulty_ranking.idd set_showing TRUE}
+            {song_difficulty_ranking.idd set_showing {! $dx_in_show_flow}}
             {song_difficulty_ranking.idd set_values $track_sym $difficulty $num_vocal_parts $has_part}
-            {song_difficulty.lbl set_showing TRUE}
+            {song_difficulty.lbl set_showing {! $dx_in_show_flow}}
             {if_else
                $has_multiple_songs
                {song_difficulty.lbl set text_token overshell_setlist_difficulty}
@@ -671,10 +773,32 @@
                   {lefty_and_static_toggle.lbl set text_token overshell_righty_flip}}})
          (update_auto_vocals_enabled
             ($enabled)
-            {auto_vocals.chk set checked $enabled})
+            {if {! $got_check_1_pos}
+               {set $got_check_1_pos TRUE}
+               {set $check_1_pos_stored {auto_vocals.chk get_local_pos_index 0}}
+            }
+            {if_else $actually_show_checks
+               {do
+                  {auto_vocals.chk set_local_pos_index 0 $check_1_pos_stored}
+                  {auto_vocals.chk set checked $enabled}
+               }
+               {auto_vocals.chk set_local_pos_index 0 {+ $check_1_pos_stored 1500}}
+            }
+         )
          (update_no_fail_enabled
             ($enabled)
-            {no_fail.chk set checked $enabled})
+            {if {! $got_check_2_pos}
+               {set $got_check_2_pos TRUE}
+               {set $check_2_pos_stored {no_fail.chk get_local_pos_index 0}}
+            }
+            {if_else $actually_show_checks
+               {do
+                  {no_fail.chk set_local_pos_index 0 $check_2_pos_stored}
+                  {no_fail.chk set checked $enabled}
+               }
+               {no_fail.chk set_local_pos_index 0 {+ $check_2_pos_stored 1500}}
+            }
+         )
          (update_in_game_options
             ($quit_token $can_skip $restart $change_diff $metronome $practice #ifdef HX_WII $trainer #endif $can_quit)
             {do
@@ -698,6 +822,13 @@
                {if
                   $restart
                   {push_back $options overshell_restart}}
+               {set $dx_users 0}
+               {user_mgr foreach_user $user
+                  {set $dx_users {+ $dx_users 1}}
+               }
+               {if {&& {! {session_mgr is_local}} {> $dx_users 1}}
+                  {push_back $options overshell_dx_quick_chat} ; dx - show quick chat menu when online
+               }
                {if_else
                   $metronome
                   {do
@@ -717,16 +848,16 @@
                   {push_back $options overshell_choose_part}
                }
                {push_back $options overshell_game_options}
-               {if_else
-                  $can_skip
+               {if_else $can_skip
                   {do
-                     ($quit_options
-                        {array 0})
+                     ($quit_options {array 0})
                      {push_back $quit_options overshell_skip_song}
                      {push_back $quit_options $quit_token}
                      {options_end_game.lst set_data $quit_options}
-                     {push_back $options overshell_end_game}}
-                  {push_back $options $quit_token}}
+                     {push_back $options overshell_end_game}
+                  }
+                  {push_back $options $quit_token}
+               }
                {unless
                   $practice
                   {push_back $options overshell_leave}}
@@ -743,6 +874,7 @@
                {options.lst disable_data overshell_song_options_in_game}})
          (update_character_portrait
             ($tex)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {choose_character.mat
                set
                diffuse_tex
@@ -828,6 +960,7 @@
          #ifndef HX_WII
          (set_can_change_synapse
             ($can_change)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {if_else
                $can_change
                {if_else {modifier_mgr is_modifier_active mod_auto_vocals} ;Disables while in AIM, option only works when Vocals is tied to an active player
@@ -841,6 +974,7 @@
             {static_vocals.chk set checked $static_enabled})
          (update_linking_code
             ($waiting $success $code $profile)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {linking_code_wait.grp set_showing $waiting}
             {linking_code_success.grp
                set_showing
@@ -852,15 +986,18 @@
                {&&
                   {! $waiting}
                   {! $success}}}
-            {if
-               $success
-               {linking_code_success.lbl
-                  set_token_fmt
-                  linking_code_success
-                  {$profile get_name}}
+            {if $success
+               {switch $dx_connected_server ; dx - changes the message when linking account based on the connected server
+                  (none {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
+                  (gocentral {linking_code_success.lbl set_token_fmt go_linking_code_success {$profile get_name}})
+                  (ashcentral {linking_code_success.lbl set_token_fmt ash_linking_code_success {$profile get_name}})
+                  (live {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
+                  (liveless {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
+               }
                {linking_code.lbl set_linking_code $code}})
          (set_options_signed_in
             ($val)
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}}
             {if_else {modifier_mgr is_modifier_active mod_auto_play}
 			      {options_av_settings.lst disable_data overshell_autosave_enabled}
 			      {if_else
@@ -902,13 +1039,8 @@
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
                         (dx_bot_skill $dx_bot_skill)
-                        (dx_rgbcolormenu {int {* $emissive_r 100}})
-                        (dx_drumsmashercolor $dx_smasher1_color)
-                        (dx_cymcolor $cym2_color)
-                        (dx_tomcolor $drum1_color)
-                        (dx_suscolor $sus1_color)
-                        (dx_fretcolor $dx_fret1_color)
-                        (dx_gemcolor $slot1_color)
+                        (dx_rgbcolormenu {int {* $dx_overdrive_r 100}})
+                        (dx_trackangle {int {/ {- $dx_multiangle 1} {/ 3 15}}})
                         (dx_speedmenu {int {- $emulatefps 1}})
                         kDataUnhandled
                      }
@@ -917,14 +1049,7 @@
                   {$component
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
-                        (dx_rgbcolormenu {int {* $emissive_g 100}})
-                        (dx_trackangle {int {/ {- $dx_multiangle 1} {/ 3 15}}})
-                        (dx_drumsmashercolor $dx_smasher2_color)
-                        (dx_cymcolor $cym3_color)
-                        (dx_tomcolor $drum2_color)
-                        (dx_suscolor $sus2_color)
-                        (dx_fretcolor $dx_fret2_color)
-                        (dx_gemcolor $slot2_color)
+                        (dx_rgbcolormenu {int {* $dx_overdrive_g 100}})
                         (dx_fastermode {int {+ 0.5 {/ {- $speedmod_cap 1} 0.05}}})
                         (dx_speedmenu {int {+ 0.5 {/ {+ {- $trackspeed 1} 0.5} 0.05}}})
                         kDataUnhandled
@@ -934,13 +1059,7 @@
                   {$component
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
-                        (dx_rgbcolormenu {int {* $emissive_b 100}})
-                        (dx_drumsmashercolor $dx_smasher3_color)
-                        (dx_cymcolor $cym4_color)
-                        (dx_tomcolor $drum3_color)
-                        (dx_suscolor $sus3_color)
-                        (dx_fretcolor $dx_fret3_color)
-                        (dx_gemcolor $slot3_color)
+                        (dx_rgbcolormenu {int {* $dx_overdrive_b 100}})
                         (dx_speedmenu {int {+ 0.5 {/ {- $speedmod 1} 0.05}}})
                         kDataUnhandled
                      }
@@ -948,27 +1067,11 @@
                (sfx.sld
                   {$component
                      set_current
-                     {if_else $dx_slider {switch $dx_slider_id
-                        (dx_drumsmashercolor $dx_smasher4_color)
-                        (dx_cymcolor $cym1_color)
-                        (dx_tomcolor $drum4_color)
-                        (dx_suscolor $sus4_color)
-                        (dx_fretcolor $dx_fret4_color)
-                        (dx_gemcolor $slot4_color)
-                        kDataUnhandled
-                     }
-                     {profile_mgr get_fx_volume}}})
+                     {profile_mgr get_fx_volume}})
                (voice_chat.sld
                   {$component
                      set_current
-                     {if_else $dx_slider {switch $dx_slider_id
-                        (dx_tomcolor $kick_color) ; not a tom lawl
-                        (dx_suscolor $sus5_color)
-                        (dx_fretcolor $dx_fret5_color)
-                        (dx_gemcolor $slot5_color)
-                        kDataUnhandled
-                     }
-                     {profile_mgr get_voice_chat_volume}}})
+                     {profile_mgr get_voice_chat_volume}})
                (vocal_track.sld
                   {$component
                      set_current
@@ -1012,13 +1115,8 @@
                         {set $component current}
                         {switch $dx_slider_id
                            (dx_bot_skill {set $dx_bot_skill {$this current}})
-                           (dx_rgbcolormenu {set $emissive_r {* 0.01 {$this current}}})
-                           (dx_drumsmashercolor {set $dx_smasher1_color {$this current}})
-                           (dx_cymcolor {set $cym2_color {$this current}})
-                           (dx_tomcolor {set $drum1_color {$this current}})
-                           (dx_suscolor {set $sus1_color {$this current}})
-                           (dx_fretcolor {set $dx_fret1_color {$this current}})
-                           (dx_gemcolor {set $slot1_color {$this current}})
+                           (dx_rgbcolormenu {set $dx_overdrive_r {* 0.01 {$this current}}})
+                           (dx_trackangle {set $dx_multiangle {+ {* {/ {$this current} 15} 3} 1}})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
                         }
@@ -1034,14 +1132,7 @@
                      {do 
                         {set $component current}
                         {switch $dx_slider_id
-                           (dx_rgbcolormenu {set $emissive_g {* 0.01 {$this current}}})
-                           (dx_trackangle {set $dx_multiangle {+ {* {/ {$this current} 15} 3} 1}})
-                           (dx_drumsmashercolor {set $dx_smasher2_color {$this current}})
-                           (dx_cymcolor {set $cym3_color {$this current}})
-                           (dx_tomcolor {set $drum2_color {$this current}})
-                           (dx_suscolor {set $sus2_color {$this current}})
-                           (dx_fretcolor {set $dx_fret2_color {$this current}})
-                           (dx_gemcolor {set $slot2_color {$this current}})
+                           (dx_rgbcolormenu {set $dx_overdrive_g {* 0.01 {$this current}}})
                            (dx_fastermode {$this set_speeds})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
@@ -1057,13 +1148,7 @@
                      {do
                         {set $component current}
                         {switch $dx_slider_id
-                           (dx_rgbcolormenu {set $emissive_b {* 0.01 {$this current}}})
-                           (dx_drumsmashercolor {set $dx_smasher3_color {$this current}})
-                           (dx_cymcolor {set $cym4_color {$this current}})
-                           (dx_tomcolor {set $drum3_color {$this current}})
-                           (dx_suscolor {set $sus3_color {$this current}})
-                           (dx_fretcolor {set $dx_fret3_color {$this current}})
-                           (dx_gemcolor {set $slot3_color {$this current}})
+                           (dx_rgbcolormenu {set $dx_overdrive_b {* 0.01 {$this current}}})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
                         }
@@ -1074,40 +1159,14 @@
                   }
                )
                (sfx.sld
-                  {if_else $dx_slider 
-                     {do
-                        {set $component current}
-                        {switch $dx_slider_id
-                           (dx_drumsmashercolor {set $dx_smasher4_color {$this current}})
-                           (dx_cymcolor {set $cym1_color {$this current}})
-                           (dx_tomcolor {set $drum4_color {$this current}})
-                           (dx_suscolor {set $sus4_color {$this current}})
-                           (dx_fretcolor {set $dx_fret4_color {$this current}})
-                           (dx_gemcolor {set $slot4_color {$this current}})
-                           kDataUnhandled
-                        }
-                     }
-                     {profile_mgr
-                        set_fx_volume
-                        {$component current}}
-                  }
+                  {profile_mgr
+                     set_fx_volume
+                     {$component current}}
                )
                (voice_chat.sld
-                  {if_else $dx_slider 
-                     {do
-                        {set component $current}
-                        {switch $dx_slider_id
-                           (dx_tomcolor {set $kick_color {$this current}})
-                           (dx_suscolor {set $sus5_color {$this current}})
-                           (dx_fretcolor {set $dx_fret5_color {$this current}})
-                           (dx_gemcolor {set $slot5_color {$this current}})
-                           kDataUnhandled
-                        }
-                     }
-                     {profile_mgr
-                        set_voice_chat_volume
-                        {$component current}}
-                  }
+                  {profile_mgr
+                     set_voice_chat_volume
+                     {$component current}}
                )
                (vocal_track.sld
                   {profile_mgr
@@ -1150,19 +1209,22 @@
          (set_confirm_actions
             ($msg $options)
             {confirm_question.lbl set text_token $msg}
-            {confirm_action.lst set_data $options})
+            {confirm_action.lst set_data $options}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (set_confirm_message
             ($token)
             {confirm_question.lbl set text_token $token}
             {confirm_action.lst
                set_data
-               (overshell_confirm_ok)})
+               (overshell_confirm_ok)}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (set_confirm_message_fmt
             ($arg)
             {confirm_question.lbl set_token_fmt $arg}
             {confirm_action.lst
                set_data
-               (overshell_confirm_ok)})
+               (overshell_confirm_ok)}
+            {{$this find platform_color.mat} set color {pack_color $dx_menu_color_r $dx_menu_color_g $dx_menu_color_b}})
          (set_difficulty_restriction
             ($difficulty)
             {cond

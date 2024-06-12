@@ -152,7 +152,7 @@
                   $showing_this_vignette
                   {$vignette_panel set_showing TRUE}
                   {$this set_focus_panel $vignette_panel}}}}})
-   (enter DX_PRESENCE_MANGER
+   (enter
       #ifdef HX_WII
       {if
          {'||'
@@ -551,48 +551,6 @@
             check_is_loaded}}))
 #ifdef HX_WII
 {new
-   UIPanel
-   outro_vignette_loader
-   (chosen_vignette '')
-   (enter
-      {set
-         [chosen_vignette]
-         ''}
-      {if
-         {meta_performer is_set_complete}
-         {meta_performer upload_debug_stats}
-         {set
-            [chosen_vignette]
-            {interstitial_mgr pick_interstitial_between_screens meta_loading_outro song_select_screen}}
-         #ifndef _SHIP
-         {if
-            {ui get_vignettes_showing}
-            {print
-               "Loading outro vignette: "
-               [chosen_vignette]
-               "\n"}
-            {if
-               {!=
-                  [chosen_vignette]
-                  ''}
-               {[chosen_vignette]
-                  load}}}
-         #else
-         {if
-            {!=
-               [chosen_vignette]
-               ''}
-            {[chosen_vignette]
-               load}}
-         #endif})
-   (exit
-      {if
-         {!=
-            [chosen_vignette]
-            ''}
-         {[chosen_vignette]
-            unload}})}
-{new
    BandScreen
    maybe_outro_to_meta_loading_continue_screen
    (TRANSITION_COMPLETE_MSG
@@ -621,13 +579,15 @@
    (goto_practice_mode FALSE)
    (goto_campaign_mode FALSE)
    (next_screen
-      {if_else
-         {gamemode in_mode tour}
-         tour_quest_outro_screen
+      {if_else $dx_playing_a_show
+         {gamemode get main_screen}
          {if_else
-            {gamemode in_mode campaign}
-            accomplishment_screen
-            song_select_screen}})}
+            {gamemode in_mode tour}
+            tour_quest_outro_screen
+            {if_else
+               {gamemode in_mode campaign}
+               accomplishment_screen
+               song_select_screen}}})}
 {new
    BandScreen
    meta_loading_main_screen
@@ -742,7 +702,6 @@
    (goto_practice_mode FALSE)
    (goto_campaign_mode FALSE)
    (next_screen cal_welcome_screen)}
-#ifdef HX_WII
 {new
    BandScreen
    meta_loading_wiispeak_options_screen
@@ -750,6 +709,7 @@
    (goto_practice_mode FALSE)
    (goto_campaign_mode FALSE)
    (next_screen wiispeak_options_screen)}
+#ifdef HX_WII
 {new
    BandScreen
    meta_loading_wiiprofile_screen

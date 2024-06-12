@@ -27,13 +27,16 @@
       {$seq stop})
    (play_postset_loop
       ($play)
-      {if_else
-         $play
-         {unless
-            [playing_post_set]}}
+   ;idk wtf harmonix was smoking but this doesnt pass linting
+   ;   {if_else
+   ;      $play
+   ;      {unless
+   ;         [playing_post_set]}}
       {set
          [playing_post_set]
-         $play})}
+         $play}
+   )
+}
 {new
    UIPanel
    postsong_sfx_panel
@@ -51,8 +54,7 @@
          [active]
          FALSE})}
 #define COMMON_DIALOG_PANEL_HANDLERS
-(#ifdef HX_WII
-   (set_custom_1btn
+((set_custom_1btn
       ($msg $opt1)
       {dialog_title.lbl set_showing FALSE}
       {msg.lbl set_token_fmt $msg}
@@ -68,7 +70,6 @@
       {no.btn set_showing FALSE}
       {ok.btn set_showing FALSE}
       {$this set_focus opt1.btn})
-   #endif
 (set_custom
       ($msg $opt1 $opt2 $focus)
       {dialog_title.lbl set_showing FALSE}
@@ -135,7 +136,6 @@
       {no.btn set_showing TRUE}
       {ok.btn set_showing FALSE}
       {$this set_focus $focus})
-#ifdef HX_WII
    (set_okcancel
       ($msg $focus)
       {dialog_title.lbl set_showing FALSE}
@@ -150,7 +150,6 @@
       {no.btn set_token_fmt cancel}
       {yes.btn set_token_fmt ok}
       {$this set_focus $focus})
-#endif
    (set_ok
       ($msg)
       {dialog_title.lbl set_showing FALSE}
@@ -382,7 +381,8 @@
             {careergoal_state.grp set_showing FALSE}
             {careermultigoal_state.grp set_showing TRUE}}}
       {$this post_setup})
-   (clear_pics
+      #ifdef HX_WII
+      (clear_pics
       {with
          [message_dir]
          {icon.pic set tex_file ''}
@@ -391,7 +391,8 @@
          {careermultigoal_current.pic set tex_file ''}
          {careermultigoal_next.pic set tex_file ''}
          {careergoal.pic set tex_file ''}
-         {careerstep.pic set tex_file ''}}))
+         {careerstep.pic set tex_file ''}})
+      #endif)
 {new
    PassiveMessagesPanel
    passive_messages_panel
@@ -399,7 +400,7 @@
       "global/passive_messages.milo")
    PASSIVE_MESSAGE_SETUP_HANDLERS
    (message_dir passive_messages_panel)
-   (msg_duration 6000)
+   (msg_duration 4000)
    (meter_anim_delay 500)
    (enter)
    (exit)}
@@ -474,8 +475,10 @@
             TRUE}})
    (wiping_out
       [is_wiping_out])
+   #ifdef HX_WII
    (wipe_pp
-      {$this find abstract_transition.pp})}
+      {$this find abstract_transition.pp})
+   #endif}
 #define MOVIE_PANEL_STUFF
 ((file
       "movie_pause.milo")

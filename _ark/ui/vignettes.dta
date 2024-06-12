@@ -6,11 +6,9 @@
    (start_loading_anim
       {loading.trg trigger}
       {set_loader_period 26.67})
-   #ifndef HX_WII
    (start_loading_quick_anim
       {loading_quick.trg trigger}
       {set_loader_period 26.67})
-   #endif
    (exit_complete
       {set_loader_period 10})}
 {func
@@ -43,7 +41,9 @@
          (panels meta $panel_name transition_fallback_panel)
          (focus $panel_name)
          (enter
-            #ifdef HX_WII {platform_mgr set_home_menu_enabled FALSE} #endif
+            #ifdef HX_WII
+            {platform_mgr set_home_menu_enabled FALSE}
+            #endif
             {{$this focus_panel}
                set_showing
                TRUE}
@@ -52,7 +52,9 @@
                set_showing
                FALSE})
          (transition_camshot_done
-            #ifdef HX_WII {platform_mgr set_home_menu_enabled TRUE} #endif
+            #ifdef HX_WII
+            {platform_mgr set_home_menu_enabled TRUE}
+            #endif
             {{$this focus_panel}
                set_showing
                FALSE}
@@ -252,6 +254,23 @@
       {$this get_intro_transition})
    (get_intro_transition
       "../world/vignette/reward/rv1_a.milo")}
+{new
+   InterstitialPanel
+   dx_tran_tv_panel
+   (file
+      {$this get_intro_transition})
+   (get_intro_transition
+      {sprint "../world/vignette/" $dx_transition_cat "/" $dx_transition_milo ".milo"})}
+{new
+   BandScreen
+   dx_tran_screen
+   (dest_screen '')
+   (panels meta dx_tran_tv_panel)
+   (focus dx_tran_tv_panel)
+   (TRANSITION_COMPLETE_MSG
+      {ui
+         goto_screen
+         [dest_screen]})}
 {new
    BandScreen
    tran_gig_intro_screen

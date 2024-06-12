@@ -1,6 +1,14 @@
 (callbacks
    (sixteenth_note
-      DX_BOT_OVERDRIVE_HANDLER
+      {dx_show_user_overdrive}
+      {dx_calc_overdrive bass}
+      {dx_calc_overdrive real_guitar}
+      {dx_calc_overdrive real_bass}
+      {dx_calc_overdrive keys}
+      {dx_calc_overdrive real_keys}
+      {dx_calc_overdrive guitar}
+      {dx_calc_overdrive drum}
+      {dx_calc_overdrive real_drum}
       #ifdef HX_WII
       {unless
          $stagekit
@@ -20,9 +28,16 @@
          {stagekit_left_right kStageSweepLeft_medium kStageSweepRight_medium}}
       #endif)
    (beat
-      DX_SET_SPEEDS
-      DX_MTV_BPM_HANDLER
-      DX_BOT_OVERDRIVE_DEPLETION_HANDLER
+      {if {modifier_mgr is_modifier_active mod_auto_play}
+         {beatmatch foreach_active_player $player
+            {if {== {$player instrument} vocals}
+               {{{{{get_track_panel} find vocals} find vocals_mics} find arrow_1.mesh} set_showing FALSE}
+               {{{{{get_track_panel} find vocals} find vocals_mics} find arrow_2.mesh} set_showing FALSE}
+               {{{{{get_track_panel} find vocals} find vocals_mics} find arrow_3.mesh} set_showing FALSE}
+               {{{{{get_track_panel} find vocals} find vocals_mics} find label.lbl} set_showing FALSE}
+            }
+         }
+      }
       #ifdef HX_WII
       {unless
          $stagekit
@@ -36,8 +51,6 @@
             (game beat)}}
       #endif)
    (downbeat
-      DX_SET_SPEEDS
-      DX_DRUM_OD_DEPLOY_HANDLER
       {unless
          $stagekit
          {handle
@@ -45,15 +58,15 @@
    (reset))
 (watcher
    (slop
-      {if_else {modifier_mgr is_modifier_active mod_calibration}
+      {if_else {modifier_mgr is_modifier_active mod_precision}
+         50 ;precision mode, gh3/ch style
+         {if_else {modifier_mgr is_modifier_active mod_calibration}
          15 ;really strict window, great for calibrating
-         {if_else {modifier_mgr is_modifier_active mod_chmode}
+            {if_else {modifier_mgr is_modifier_active mod_chmode}
             750 ;whale pussy mode
-            {if_else {<= $speedmod 1.0}
-               100 ;if 100% or less, use stock 100ms window (which is proportional)
-               {if_else {modifier_mgr is_modifier_active mod_precision}
-                  100 ;if precision modifier on and speedup, use stock 100ms window (which is proportional)
-                  {* 100 $speedmod} ;if precision modifier off and speedup, compensate for song speed in the note window
+               {if_else {<= $speedmod 1.0}
+                  100 ;if 100% or less, use stock 100ms window (which is proportional)
+                  {* 100 $speedmod} ;if speedup, compensate for song speed in the note window
                }
             }
          }
@@ -78,7 +91,7 @@
    )
    (pitch_bend_range 1)
    (ms_to_full_pitch_bend 1000)
-   (cymbal_autoplay_ms 0) ; dx - fixes "glitch" where cymbals would automatically hit near cymbals. thanks hmx
+   (cymbal_autoplay_ms 0)
    (trill_interval_ms
       (DX_ROLL_INTERVAL_COMMON))
    (keyboard_miss_window_ms 200)
@@ -132,7 +145,7 @@
    (player_slot 9))
 (audio
    (default_style unmute)
-   (mute_volume -96.0) ; dx - fully mutes a stem when not played. vanilla -16.0
+   (mute_volume -96.0)
    (mute_volume_vocals -12.0)
    (multiplayer_scale 0.33)
    (multiplayer_attenuation 3.0)
@@ -148,7 +161,7 @@
    #ifndef HX_WII
    (drum_sample_attenuation 3.0)
    #endif
-   (whammy_enabled {! {modifier_mgr is_modifier_active mod_whammyfx}}) ;whammy fx modifier
+   (whammy_enabled $dx_whammy_fx)
    (auto_miss_sound_timeout_seconds 5.0)
    (auto_miss_sound_timeout_gems 5)
    (auto_miss_sound_timeout_gems_remote 10)

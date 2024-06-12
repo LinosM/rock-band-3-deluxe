@@ -1,21 +1,21 @@
-#include ../dx/track/dx_track_handlers.dta
-#include ../dx/track/dx_track_callback.dta
+#include ../dx/track/dx_track_panel_handles.dta
+#include ../dx/track/dx_track_texture_handles.dta
+#include ../dx/track/callbacks/dx_track_callback_macros.dta
+#include ../dx/track/callbacks/dx_track_callbacks.dta
 #define TRACK_END_FRAME
 (1920)
 #define TRACK_PANEL_HANDLERS
 (#ifdef HX_WII (unload_async TRUE) #endif
-   (enter
+(enter
+      {$this set dx_is_nohud {modifier_mgr is_modifier_active mod_nohud}}
       {game add_sink $this}
-      DX_ADD_SINKS
-      DX_NO_BRE_HANDLER
-      #ifndef HX_WII {unless $dx_texloadonce DX_TEXTURE_RESET_HANDLER} #endif ;reset rb3 textures if no textures have been loaded yet
-      #ifndef HX_WII DX_TRACK_TEXTURE_HANDLER #endif ;here is where we setup the custom track
+      {$this dx_track_panel_enter}
       {$this
          set_showing
          {!
             {gamemode in_mode practice}}})
    (exit
-      DX_ANIMATED_TASK_KILLER
+      {$this dx_track_panel_exit}
       {game remove_sink $this})
    (unison_hit)
    (set_track_out)
@@ -43,17 +43,7 @@
          {$m on_new_track}})
    (on_extend
       {$this play_intro}
-      {if
-         {&& {exists gamemode}
-            {||
-               {gamemode in_mode defaults} {gamemode in_mode qp_party_shuffle}
-               {gamemode in_mode qp_coop} {gamemode in_mode campaign}
-               {gamemode in_mode party_shuffle} {gamemode in_mode tour}
-            }
-         }
-         {{coop_track_panel find crowd_meter} set_showing {! {modifier_mgr is_modifier_active mod_no_crowd_meter}}}
-         {{coop_track_panel find scoreboard} set_showing {! {modifier_mgr is_modifier_active mod_no_scoreboard}}}
-      }
+      {$this dx_track_panel_on_extend}
       {if
          {&&
             {exists gamemode}
@@ -62,6 +52,8 @@
 {new
    TrackPanel
    coop_track_panel
+   DX_TRACK_TEXTURE_HANDLES
+   DX_TRACK_PANEL_HANDLES
    (file
       "track/trackpanel.milo")
    TRACK_PANEL_HANDLERS}

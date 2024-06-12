@@ -12,12 +12,12 @@
       {==
          {gamemode get max_players}
          1})
-   (allow_overdrive_phrases {! {&& {session_mgr is_local} {modifier_mgr is_modifier_active mod_dx_no_overdrive}}}) ; dx. vanilla TRUE
+   (allow_overdrive_phrases {! {&& {session_mgr is_local} {modifier_mgr is_modifier_active mod_dx_no_overdrive}}})
    (allow_drum_fills TRUE)
    (can_lose TRUE)
    (disable_guitar_fx FALSE)
    (disable_keys_fx FALSE)
-   (enable_overdrive {! {&& {session_mgr is_local} {modifier_mgr is_modifier_active mod_dx_no_overdrive}}}) ; dx. vanilla TRUE
+   (enable_overdrive {! {&& {session_mgr is_local} {modifier_mgr is_modifier_active mod_dx_no_overdrive}}})
    (enable_streak TRUE)
    (max_players 4)
    (min_players 1)
@@ -53,7 +53,7 @@
    (can_resume_songs FALSE)
    (loop_setlist FALSE)
    (show_pause_practice_new FALSE)
-   #ifdef HX_WII (show_pause_trainer FALSE) #endif
+   (show_pause_trainer FALSE)
    (show_pause_multiplayer TRUE)
    (show_pause_restart TRUE)
    (show_change_difficulty TRUE)
@@ -64,7 +64,7 @@
    (insta_rank FALSE)
    (online_play_required FALSE)
    (ranked FALSE)
-   (update_leaderboards {if_else {|| {modifier_mgr is_modifier_active mod_auto_play} {modifier_mgr is_modifier_active mod_auto_kick}} FALSE TRUE}) ; dx. vanilla TRUE
+   (update_leaderboards {if_else {|| {modifier_mgr is_modifier_active mod_auto_play} {modifier_mgr is_modifier_active mod_auto_kick}} FALSE TRUE})
    (joining_allowed FALSE)
    (joining_allowed_in_transition FALSE)
    (lose_screen lose_screen)
@@ -88,7 +88,7 @@
    (enable_whammy TRUE)
    (enable_capstrip TRUE)
    (can_solo TRUE)
-   (enable_coda {! {modifier_mgr is_modifier_active mod_nobre}}) ; dx. vanilla TRUE
+   (enable_coda {! {modifier_mgr is_modifier_active mod_nobre}})
    (skip_choose_diff_prompt FALSE)
    (skip_quit_prompt FALSE)
    (skip_restart_prompt FALSE)
@@ -240,7 +240,9 @@
    (allow_coreguitars_with_real FALSE)
    (enable_capstrip FALSE)
    (remove_user_on_disconnect_in_song TRUE)
-   #ifdef HX_WII (show_pause_trainer TRUE) #endif)
+   #ifdef HX_WII
+   (show_pause_trainer TRUE)
+   #endif)
 (trainer_drums
    (parent_mode trainer)
    (game_screen drum_trainer_screen)
@@ -255,13 +257,17 @@
    (metronome_default_on TRUE)
    (force_use_cymbals FALSE)
    (force_dont_use_cymbals TRUE)
-   #ifdef HX_WII (show_pause_trainer TRUE) #endif)
+   #ifdef HX_WII
+   (show_pause_trainer TRUE)
+   #endif)
 (trainer_pro_drums
    (parent_mode trainer_drums)
    (force_use_cymbals TRUE)
    (force_dont_use_cymbals FALSE)
    (trainer_section_postfix pro)
-   #ifdef HX_WII (show_pause_trainer TRUE) #endif)
+   #ifdef HX_WII
+   (show_pause_trainer TRUE)
+   #endif)
 (trainer_real_guitar
    (parent_mode trainer)
    (game_screen rg_trainer_screen)
@@ -274,7 +280,9 @@
    (start_early pg_early)
    (start_norm pg_norm)
    (midi_parser trainer_events_pro_guitar)
-   #ifdef HX_WII (show_pause_trainer TRUE) #endif)
+   #ifdef HX_WII
+   (show_pause_trainer TRUE)
+   #endif)
 (trainer_pro_keyboard
    (parent_mode trainer)
    (game_screen rk_trainer_screen)
@@ -286,11 +294,13 @@
    (start_early pk_early)
    (start_norm pk_norm)
    (midi_parser trainer_events_pro_keys)
-   #ifdef HX_WII (show_pause_trainer TRUE) #endif)
+   #ifdef HX_WII
+   (show_pause_trainer TRUE)
+   #endif)
 (practice
-   (allow_overdrive_phrases {modifier_mgr is_modifier_active mod_practiceoverdrive}) ; dx. vanilla FALSE
+   (allow_overdrive_phrases {modifier_mgr is_modifier_active mod_practiceoverdrive})
    (can_lose FALSE)
-   (enable_overdrive {modifier_mgr is_modifier_active mod_practiceoverdrive}) ; dx. vanilla FALSE
+   (enable_overdrive {modifier_mgr is_modifier_active mod_practiceoverdrive})
    (max_players 1)
    (play_star_sfx FALSE)
    (play_streak_sfx FALSE)
@@ -315,7 +325,7 @@
    (show_pause_multiplayer FALSE)
    (show_pause_practice_new TRUE)
    (trainer_cam_shot practice_space.shot)
-   (letterbox TRUE)
+   (letterbox FALSE)
    (allow_auto_vocals FALSE)
    (pause_menu_quit_token
       {if_else
@@ -361,6 +371,7 @@
    (show_song_in_header TRUE)
    (start_early pg_early)
    (start_norm pg_norm)
+   (show_song_key TRUE)
    (midi_parser trainer_events_pro_guitar)
    (section_token_fmt trainer_progtr_songlesson)
    (allow_overdrive_phrases FALSE))
@@ -377,6 +388,7 @@
    (show_song_in_header TRUE)
    (start_early pb_early)
    (start_norm pb_norm)
+   (show_song_key TRUE)
    (midi_parser trainer_events_pro_bass)
    (section_token_fmt trainer_progtr_basslesson)
    (allow_overdrive_phrases FALSE))

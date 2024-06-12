@@ -10,7 +10,6 @@
             set_joining_user
             {user_mgr get_user_from_pad_num $pad_num}}
          #endif
-         {ui_event_mgr trigger_event invite_accepted}
          #ifdef HX_WII
          {unless
             {ui_event_mgr has_transition_event go_to_wiiprofilecreator}

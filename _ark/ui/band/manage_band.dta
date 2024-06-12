@@ -1,3 +1,4 @@
+#include ../../dx/ui/band/dx_manage_band_handles.dta
 {new
    ManageBandPanel
    manage_band_panel
@@ -38,6 +39,7 @@
          {$this get_history_provider}}
       {$this check_for_kickout_condition})
    (enter
+      {$this iterate UIList $l {$l set scroll_time 0}}
       {net_sync set_ui_state kNetUI_CustomizeBand})
    (TRANSITION_COMPLETE_MSG
       DX_AUTOSAVE)

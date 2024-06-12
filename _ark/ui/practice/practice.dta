@@ -1,3 +1,4 @@
+#include ../../dx/ui/practice/dx_practice_handles.dta
 {new
    UIPanel
    practice_mode_panel
@@ -225,22 +226,35 @@
    sel_speed_panel
    (file sel_speed.milo)
    (enter
+      {set $list_selected TRUE}
       {speeds.lst set scroll_time 0} ; dx - makes the scrolling for the speeds list faster
       {speeds.lst
          set_data
         (practice_speed_0 practice_speed_1 practice_speed_2 practice_speed_3 practice_speed_4 practice_speed_5 practice_speed_6 practice_speed_7 practice_speed_8 practice_speed_9 practice_speed_10 practice_speed_11 practice_speed_12 practice_speed_13 practice_speed_14 practice_speed_15 practice_speed_16 practice_speed_17 practice_speed_18)}) ; dx - add additional practice speeds
    (focus speeds.lst)
    (SELECT_MSG
-      {switch
-         $component
-         (speeds.lst
-            {gamecfg
-               set
-               practice_speed
-               {speeds.lst selected_pos}})}
+      {if $list_selected
+         {switch
+            $component
+            (speeds.lst
+               {gamecfg
+                  set
+                  practice_speed
+                  {speeds.lst selected_pos}}
+               {set $list_selected FALSE})}
+      }
+      {speeds.lst set_showing FALSE}
       {session_mgr set_active_roster TRUE}
       {training_mgr unparticipate_users}
-      {ui goto_screen preloading_screen})}
+      {script_task ;delay going to practice to let the game catch up
+         kTaskUISeconds
+         (delay #ifdef HX_PS3 2 #else 0 #endif)
+         (script
+            {ui goto_screen preloading_screen}
+         )
+      }
+   )
+}
 {new
    BandScreen
    practice_sel_speed_screen
@@ -383,7 +397,9 @@
    PracticePanel
    practice_panel
    (file practice_panel.milo)
-   (enter DX_PRESENCE_MANGER
+   DX_PRACTICE_HANDLES
+   (enter
+      {dx_practice_enter}
       {if
          {&&
             {>
@@ -694,6 +710,7 @@
          set_playing_intro
          1000}
       {$this track_in}
+      {dx_practice_on_extend}
       {if
          {==
             {{beatmatch active_player 0}
@@ -714,6 +731,7 @@
          set_best_percent
          {percentage_callback get percent}}
       {coop_track_panel set_showing FALSE}
+      {dx_practice_loop_reset}
       {$this jump_to_start}
       {$this
          fade_song_in
@@ -774,11 +792,7 @@
                {!
                   {game is_game_over}}
                {session is_in_game}}
-            {unless $practiceoverdrive ; dx - restart the current section as long as overdrive isnt enabled
-               {if {== $action kAction_ViewModify}
-                  {session end_game kRestart}
-               }
-            }
+            {dx_practice_select_restart_action}
             {if
                {&&
                   {== $action kAction_Start}
@@ -790,11 +804,7 @@
             {if
                {&&
                   {practice_panel in_vocal_mode}
-                  #ifdef HX_WII
-                  {== $action kAction_Option}
-                  #else
-                  {== $action kAction_PageUp}
-                  #endif}
+                  {== $action kAction_PageUp}}
                {if_else
                   {&&
                      {practice_panel get uses_harmony}
@@ -808,11 +818,7 @@
                {&&
                   {practice_panel in_vocal_mode}
                   {practice_panel get uses_harmony}
-                  #ifdef HX_WII
-                  {== $raw_button kPad_Tri}
-                  #else
-                  {== $raw_button kPad_L2}
-                  #endif}
+                  {== $raw_button kPad_L2}}
                {practice_panel inc_score_part}
                {do
                   ($start_ms 0.0)
