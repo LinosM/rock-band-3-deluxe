@@ -585,6 +585,7 @@
       }
       #endif
       #endif
+      {push_back $options os_overshell_slots}
       ;-----func----------state name------message
       {dx_state_setup dxState_FunctionalOptions TRUE}
    }
@@ -597,6 +598,7 @@
    (enter
       DX_OS_OPEN_MSG
       DX_MENU_DESC
+      {set $dx_track_slot_changed FALSE}
    )
    (SCROLL_MSG
       DX_MENU_SCROLL_DESC ;updates description with currently selected modifier
@@ -719,6 +721,9 @@
             DX_FUNCTIONAL_OPTIONS_DATA
             {set $previous_state dxState_FunctionalOptions}
          )
+         (os_overshell_slots
+            {$this show_state dxState_OvershellSlots}
+         )
       }
       {set $in_state FALSE}
       DX_FUNCTIONAL_OPTIONS_DATA
@@ -730,6 +735,219 @@
    )
    (on_cancel
       {$this show_state dxState_Advanced}
+   )
+)
+
+(dxState_OvershellSlotsConfirm
+   (view confirm_action)
+   (enter
+      {handle
+         ($this set_confirm_message os_confirm_slot_change)
+      }
+   )
+   (SELECT_MSG
+      {$this show_state dxState_FunctionalOptions}
+   )
+)
+
+#define OVERSHELL_SLOTS_DATA
+(
+   {do
+      ($options
+         {array 0})
+      {push_back $options os_reset_slots}
+      {push_back $options {if_else $dx_auto_vocals_on_boot os_auto_vocals_on_boot_on os_auto_vocals_on_boot_off}}
+      
+      {foreach_int $i 0 4
+         {set $text ""}
+         {if {find_elem {elem $dx_auto_vocals_slot $i} guitar} {set $text {sprint $text "G "}}}
+         {if {find_elem {elem $dx_auto_vocals_slot $i} real_guitar} {set $text {sprint $text "PG "}}}
+         {if {find_elem {elem $dx_auto_vocals_slot $i} keys} {set $text {sprint $text "K "}}}
+         {if {find_elem {elem $dx_auto_vocals_slot $i} drum} {set $text {sprint $text "D "}}}
+         {if {find_elem {elem $dx_auto_vocals_slot $i} vocals} {set $text {sprint $text "V"}}}
+         {push_back $options {sprintf {localize {sprint os_edit_slot $i}} $text}}
+      }
+      {dx_state_setup dxState_OvershellSlots FALSE}
+   }
+)
+
+(dxState_OvershellSlots
+   (view
+      OVERSHELL_SLOTS_DATA
+      {overshell_view_chooser}
+   )
+   (enter
+      {switch {$component selected_pos}
+         ((0 1) {do DX_OS_OPEN_MSG DX_MENU_SCROLL_DESC})
+         DX_OS_CLOSE_MSG
+      }
+   )
+   (SCROLL_MSG
+      {switch {$component selected_pos}
+         ((0 1) {do DX_OS_OPEN_MSG DX_MENU_SCROLL_DESC})
+         DX_OS_CLOSE_MSG
+      }
+   )
+   (SELECT_MSG
+      {switch {$component selected_pos}
+         (0
+            {set $dx_auto_vocals_slot
+               (
+                  (guitar real_guitar keys drum vocals)
+                  (guitar real_guitar keys drum vocals)
+                  (guitar real_guitar keys drum vocals)
+                  (guitar real_guitar keys drum vocals)
+               )
+            }
+            {set $dx_track_slot_changed TRUE}
+            {set $dx_tracked_changed os_reset_slots}
+            {dx_state_pos_tracker}
+            OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_OvershellSlots}
+         )
+         (1
+            {set $dx_auto_vocals_on_boot {! $dx_auto_vocals_on_boot}}
+            {if_else $dx_auto_vocals_on_boot
+               {set $dx_tracked_changed os_auto_vocals_on_boot_on}
+               {set $dx_tracked_changed os_auto_vocals_on_boot_off}
+            }
+            {dx_state_pos_tracker}
+            OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_OvershellSlots}
+         )
+         ((2 3 4 5)
+            {set $dx_current_slot_index {- {$component selected_pos} 2}}
+            {$this show_state dxState_EditOvershellSlots}
+         )
+      }
+      {set $in_state FALSE}
+      OVERSHELL_SLOTS_DATA
+      {set $previous_state dxState_OvershellSlots}
+   )
+   (exit 
+      {dx_state_pos_tracker}
+      DX_OS_CLOSE_MSG
+   )
+   (on_cancel
+      {if_else $dx_track_slot_changed
+         {$this show_state dxState_OvershellSlotsConfirm}
+         {$this show_state dxState_FunctionalOptions}
+      }
+   )
+)
+
+#define EDIT_OVERSHELL_SLOTS_DATA
+(
+   {do
+      ($options
+         {array 0})
+      {push_back $options {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} guitar} os_guitar_slot_on os_guitar_slot_off}}
+      {push_back $options {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} real_guitar} os_real_guitar_slot_on os_real_guitar_slot_off}}
+      {push_back $options {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} keys} os_keys_slot_on os_keys_slot_off}}
+      {push_back $options {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} drum} os_drum_slot_on os_drum_slot_off}}
+      {push_back $options {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} vocals} os_vocals_slot_on os_vocals_slot_off}}
+      {dx_state_setup dxState_EditOvershellSlots FALSE}
+   }
+)
+
+(dxState_EditOvershellSlots
+   (view
+      EDIT_OVERSHELL_SLOTS_DATA
+      {overshell_view_chooser}
+   )
+   (enter
+      DX_OS_CLOSE_MSG
+   )
+   (SELECT_MSG
+      {switch {$component selected_sym}
+         ((os_guitar_slot_on os_guitar_slot_off)
+            {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} guitar}
+               {do 
+                  {remove_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} guitar}
+                  {set $dx_tracked_changed os_guitar_slot_off}
+               }
+               {do
+                  {push_back {elem $dx_auto_vocals_slot $dx_current_slot_index} guitar}
+                  {set $dx_tracked_changed os_guitar_slot_on}
+               }
+            }
+            {dx_state_pos_tracker}
+            EDIT_OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_EditOvershellSlots}
+         )
+         ((os_real_guitar_slot_on os_real_guitar_slot_off)
+            {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} real_guitar}
+               {do 
+                  {remove_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} real_guitar}
+                  {set $dx_tracked_changed os_real_guitar_slot_off}
+               }
+               {do
+                  {push_back {elem $dx_auto_vocals_slot $dx_current_slot_index} real_guitar}
+                  {set $dx_tracked_changed os_real_guitar_slot_on}
+               }
+            }
+            {dx_state_pos_tracker}
+            EDIT_OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_EditOvershellSlots}
+         )
+         ((os_keys_slot_on os_keys_slot_off)
+            {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} keys}
+               {do 
+                  {remove_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} keys}
+                  {set $dx_tracked_changed os_keys_slot_off}
+               }
+               {do
+                  {push_back {elem $dx_auto_vocals_slot $dx_current_slot_index} keys}
+                  {set $dx_tracked_changed os_keys_slot_on}
+               }
+            }
+            {dx_state_pos_tracker}
+            EDIT_OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_EditOvershellSlots}
+         )
+         ((os_drum_slot_on os_drum_slot_off)
+            {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} drum}
+               {do 
+                  {remove_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} drum}
+                  {set $dx_tracked_changed os_drum_slot_off}
+               }
+               {do
+                  {push_back {elem $dx_auto_vocals_slot $dx_current_slot_index} drum}
+                  {set $dx_tracked_changed os_drum_slot_on}
+               }
+            }
+            {dx_state_pos_tracker}
+            EDIT_OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_EditOvershellSlots}
+         )
+         ((os_vocals_slot_on os_vocals_slot_off)
+            {if_else {find_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} vocals}
+               {do 
+                  {remove_elem {elem $dx_auto_vocals_slot $dx_current_slot_index} vocals}
+                  {set $dx_tracked_changed os_vocals_slot_off}
+               }
+               {do
+                  {push_back {elem $dx_auto_vocals_slot $dx_current_slot_index} vocals}
+                  {set $dx_tracked_changed os_vocals_slot_on}
+               }
+            }
+            {dx_state_pos_tracker}
+            EDIT_OVERSHELL_SLOTS_DATA
+            {set $previous_state dxState_EditOvershellSlots}
+         )
+         kDataUnhandled
+      }
+      {set $dx_track_slot_changed TRUE}
+      {set $in_state FALSE}
+      EDIT_OVERSHELL_SLOTS_DATA
+      {set $previous_state dxState_EditOvershellSlots}
+   )
+   (exit
+      {dx_state_pos_tracker}
+      DX_OS_CLOSE_MSG
+   )
+   (on_cancel
+      {$this show_state dxState_OvershellSlots}
    )
 )
 

@@ -627,6 +627,16 @@
          {elem {elem {find $entry dx_chat_preset} 1} 7}
       }
    }
+   {if {== {elem $entry 0} {basename dx_auto_vocals_slot}}
+      {set $dx_auto_vocals_slot
+         {elem {find $entry dx_auto_vocals_slot} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename dx_auto_vocals_on_boot}}
+      {set $dx_auto_vocals_on_boot
+         {elem {find $entry dx_auto_vocals_on_boot} 1}
+      }
+   }
 )
 #define LOADING_TRACK_THEME_OPTIONS
 (

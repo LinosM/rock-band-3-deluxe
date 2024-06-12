@@ -16,6 +16,7 @@
 #define DX_MENU_SCROLL_DESC ;used to show a description for each item on a list
 (
    {if {! {session is_in_game}}
+      {set $dx_no_message_sound TRUE}
       {$this setup_message_text
          {sprint {$component selected_sym} "_desc"} FALSE}} ;appends _desc to selected item for locale descriptions
 )

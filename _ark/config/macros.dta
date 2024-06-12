@@ -789,6 +789,9 @@
 #define kState_ConfirmPlayaShowExit (69103)
 #define dxState_RebootThemeWarn (69104)
 #define kState_ReadyToPlayaShowWait (69105)
+#define dxState_OvershellSlots (69106)
+#define dxState_EditOvershellSlots (69107)
+#define dxState_OvershellSlotsConfirm (69108)
 #define kOverrideFlow_None
 (0)
 #define kOverrideFlow_SongSettings

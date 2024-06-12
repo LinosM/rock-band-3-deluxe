@@ -12,10 +12,10 @@
                (vocals)
                (guitar real_guitar keys))
             (auto_vocals
-               (guitar real_guitar keys drum vocals) ; dx - any instrument anywhere
-               (guitar real_guitar keys drum vocals)
-               (guitar real_guitar keys drum vocals)
-               (guitar real_guitar keys drum vocals)))
+               {elem $dx_auto_vocals_slot 0} ; dx - any instrument anywhere
+               {elem $dx_auto_vocals_slot 1}
+               {elem $dx_auto_vocals_slot 2}
+               {elem $dx_auto_vocals_slot 3}))
          (joining_priority 0 3 2 1))
       (type
          (state_handlers

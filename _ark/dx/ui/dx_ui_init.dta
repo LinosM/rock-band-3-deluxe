@@ -533,6 +533,17 @@ DX_CURRENT_SONG_CLEAR
 {set $dx_overdrive_drum_shading FALSE}
 {set $dx_overdrive_keys_shading FALSE}
 
+; overshell slot config
+{set $dx_auto_vocals_slot
+   (
+      (guitar real_guitar keys drum vocals)
+      (guitar real_guitar keys drum vocals)
+      (guitar real_guitar keys drum vocals)
+      (guitar real_guitar keys drum vocals)
+   )
+}
+{set $dx_auto_vocals_on_boot FALSE}
+
 ; Mic deploy sensitivity
 {set $dx_mic_deploy_sens 0.3}
 #ifdef _SHIP
@@ -650,6 +661,8 @@ DX_CURRENT_SONG_CLEAR
    (off {set $dx_fc_ring FALSE} {set $dx_fc_glow FALSE})
 }
 
+{if $dx_auto_vocals_on_boot {modifier_mgr toggle_modifier_enabled mod_auto_vocals}}
+
 ;quick chat settings
 {set $dx_chat_preset_0 "Hello!"}
 {set $dx_chat_preset_1 "Restart the song"}
@@ -682,6 +695,7 @@ DX_CURRENT_SONG_CLEAR
 {set $dx_menu_message ""}
 {set $dx_is_in_chat FALSE}
 {set $dx_selected_chat_index 0}
+;{set $dx_current_slot_index 0}
 
 {unless {== $dx_joypad_type_guitar kControllerGuitar} {do DX_SWAP_INSTRUMENT_TYPE_GUITAR}}
 
