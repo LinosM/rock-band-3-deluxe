@@ -51,6 +51,15 @@
             (game beat)}}
       #endif)
    (downbeat
+      {beatmatch foreach_active_player $player
+         {{$player get_user} set_difficulty
+            {cond
+               ({>= {{beatmatch active_player 0} crowd_rating} 0.66} kDifficultyExpert)
+               ({&& {>= {{beatmatch active_player 0} crowd_rating} 0.33} {< {{beatmatch active_player 0} crowd_rating} 0.66}} kDifficultyHard)
+               ({&& {>= {{beatmatch active_player 0} crowd_rating} 0} {< {{beatmatch active_player 0} crowd_rating} 0.33}} kDifficultyMedium)
+            }
+         }
+      }
       {unless
          $stagekit
          {handle
