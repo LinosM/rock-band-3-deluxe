@@ -90,6 +90,80 @@
    ;}
    $dupe_allowed ; returns dupe TRUE/FALSE check back to slot_states
 }
+#define DX_HANDLE_PART_SELECT_GET_OS_TRACK
+(
+   (kTrackGuitar overshell_guitar)
+   (kTrackBass overshell_bass)
+   (kTrackDrum overshell_drums)
+   (kTrackKeys overshell_keys)
+   (kTrackRealGuitar overshell_real_guitar)
+   (kTrackRealBass overshell_real_bass)
+   (kTrackRealKeys overshell_real_keys)
+)
+{func
+   dx_handle_part_select
+   ($state $user)
+   {switch $state
+      ((entering_diff exiting_diff)
+         {set $os_part
+            {switch {$user get_track_type}
+               DX_HANDLE_PART_SELECT_GET_OS_TRACK
+            }
+         }
+         {foreach_int $i 0 4
+            {if {user_mgr get_user_from_slot $i}
+               {if_else {== $state entering_diff}
+                  {do 
+                     {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} disable_data $os_part}
+                     {if {== $$os_part overshell_drums} {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} disable_data overshell_drums_pro}}
+                  }
+                  {do 
+                     {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} enable_data $os_part}
+                     {if {== $$os_part overshell_drums} {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} enable_data overshell_drums_pro}}
+                  }
+               }
+            }
+         }
+      )
+      (entering_choosepart
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_guitar}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_bass}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_drums}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_keys}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_real_guitar}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_real_bass}
+         {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} enable_data overshell_real_keys}
+         {user_mgr foreach_user $other_users
+            {if {$other_users get_track_type}
+               {set $os_part
+                  {switch {$other_users get_track_type}
+                     DX_HANDLE_PART_SELECT_GET_OS_TRACK
+                  }
+               }
+               {foreach_int $i 0 4
+                  {if {user_mgr get_user_from_slot $i}
+                     {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} disable_data $os_part}
+                     {if {== $$os_part overshell_drums} {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} disable_data overshell_drums_pro}}
+                  }
+               }
+            }
+            {if {$user get_track_type}
+               {set $os_part
+                  {switch {$other_users get_track_type}
+                     DX_HANDLE_PART_SELECT_GET_OS_TRACK
+                  }
+               }
+               {foreach_int $i 0 4
+                  {if {user_mgr get_user_from_slot $i}
+                     {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" $i}} find choose_part.lst} enable_data $os_part}
+                     {if {== $$os_part overshell_drums} {{{{{find_obj overshell} find overshell_dir} find {sprint "slot" {$user get_slot_num}}} find choose_part.lst} disable_data overshell_drums_pro}}
+                  }
+               }
+            }
+         }
+      )
+   }
+}
 {func
    dx_state_setup
    ($current_overshell_state $message)

@@ -2326,6 +2326,7 @@
          {choose_part.lst refresh}
       }
       DX_UPDATE_ICON
+      {dx_handle_part_select entering_choosepart {$this get_user}}
    )
    (poll
       DX_UPDATE_ICON
@@ -2890,6 +2891,11 @@
       }
       ; dx - sends what texture(s) the current user is using to remote players
       {if {{$this get_user} is_local} {dx_sync_remote_textures {{$this get_user} get_track_type}}}
+      {dx_handle_part_select entering_diff {$this get_user}}
+   )
+   (on_cancel
+      {dx_handle_part_select exiting_diff {$this get_user}}
+      {$this show_state kState_ChoosePart}
    )
    (exit
       {if {! {modifier_mgr is_modifier_active mod_auto_play}} ;only write default instruments if autoplay is off
