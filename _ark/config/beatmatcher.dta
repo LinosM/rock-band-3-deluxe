@@ -55,7 +55,7 @@
             {if_else {modifier_mgr is_modifier_active mod_chmode}
             750 ;whale pussy mode
                {if_else {<= $speedmod 1.0}
-                  100 ;if 100% or less, use stock 100ms window (which is proportional)
+                  200 ;if 100% or less, use stock 100ms window (which is proportional)
                   {* 100 $speedmod} ;if speedup, compensate for song speed in the note window
                }
             }

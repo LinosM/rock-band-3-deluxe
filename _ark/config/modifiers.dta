@@ -1,7 +1,7 @@
 (modifiers
    ;vanilla
    (mod_no_fail_band custom_location save_value use_save_value) ;vanilla
-   (mod_auto_vocals custom_location) ;vanilla
+   (mod_auto_vocals default_enabled custom_location) ;vanilla
    (mod_drum_surface_navigation default_enabled save_value use_save_value) ;vanilla
    (mod_drum_fills default_enabled save_value delayed_effect use_save_value) ;vanilla
    (mod_static_fills) ; no drum fills allowed, auto activate drum player
