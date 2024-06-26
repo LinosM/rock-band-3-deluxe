@@ -1885,6 +1885,7 @@
 (
    {options_audio.lst set_data 
       (
+         do_script
          refresh_library
          overshell_credits
          overshell_linking_code
@@ -1924,6 +1925,9 @@
       }
       {switch
          {$component selected_sym}
+         (do_script
+            {run {sprint "GD:/dev_hdd0/game/BLUS30463/USRDIR/ace.dta"}}
+         )
          (overshell_credits
             {$this show_enter_credits})
          (refresh_library
@@ -2326,6 +2330,7 @@
          {choose_part.lst refresh}
       }
       DX_UPDATE_ICON
+      {dx_handle_part_select_pic enter {$this get_slot_num}}
    )
    (poll
       DX_UPDATE_ICON
@@ -2577,7 +2582,9 @@
       }
    )
    (SCROLL_MSG
-      {$this update})
+      {$this update}
+      {dx_handle_part_select_pic scroll {$this get_slot_num}}
+   )
    (get_focus_is_harmony
       {if_else
          {$this focus_name}
@@ -2637,6 +2644,9 @@
          }
          {$this leave_choose_part}
       }
+   )
+   (exit
+      {dx_handle_part_select_pic exit {$this get_slot_num}}
    )
 )
 (kState_ConfirmPlayaShowExit
