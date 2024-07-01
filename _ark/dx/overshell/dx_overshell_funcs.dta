@@ -470,40 +470,29 @@
                {if {! {exists {sprint "slot" $slot "_info.tex"}}}
                   {new Tex {sprint "slot" $slot "_info.tex"}}
                }
-               {if_else {== {{$this get_user} get_controller_type} kControllerDrum}
-                  {do
-                     {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
-                     ;set initial image based on what the drum controller's last part was
-                     {if_else
-                        {==
-                           {switch $slot
-                              (0 $default_slot0)
-                              (1 $default_slot1)
-                              (2 $default_slot2)
-                              (3 $default_slot3)
-                           }
-                           overshell_drums
-                        }
-                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
-                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
-                     }
+               {set $last_instrument
+                  {switch $slot
+                     (0 $default_slot0)
+                     (1 $default_slot1)
+                     (2 $default_slot2)
+                     (3 $default_slot3)
                   }
-                  {do
-                     {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
-                     ;set initial image based on what the keys controller's last part was
-                     {set $last_instrument
-                        {switch $slot
-                           (0 $default_slot0)
-                           (1 $default_slot1)
-                           (2 $default_slot2)
-                           (3 $default_slot3)
-                        }
-                     }
-                     {switch $last_instrument
-                        (overshell_real_keys {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"})
-                        (overshell_drums {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"})
-                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
-                     }
+               }
+               {if {== {{$this get_user} get_controller_type} kControllerDrum}
+                  {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
+                  ;set initial image based on what the drum controller's last part was
+                  {if_else {== $last_instrument overshell_drums}
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
+                  }
+               }
+               {if {== {{$this get_user} get_controller_type} kControllerKeys}
+                  {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
+                  ;set initial image based on what the keys controller's last part was
+                  {switch $last_instrument
+                     (overshell_real_keys {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"})
+                     (overshell_drums {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"})
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
                   }
                }
             )
@@ -524,10 +513,10 @@
                         {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
                      )
                      (overshell_real_keys
-                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"}
-                     )
-                     (overshell_real_keys
                         {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"}
+                     )
+                     (overshell_drums
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"}
                      )
                   }
                }
