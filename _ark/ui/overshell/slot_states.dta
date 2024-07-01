@@ -1885,7 +1885,6 @@
 (
    {options_audio.lst set_data 
       (
-         do_script
          refresh_library
          overshell_credits
          overshell_linking_code
@@ -1925,9 +1924,6 @@
       }
       {switch
          {$component selected_sym}
-         (do_script
-            {run {sprint "GD:/dev_hdd0/game/BLUS30463/USRDIR/ace.dta"}}
-         )
          (overshell_credits
             {$this show_enter_credits})
          (refresh_library
