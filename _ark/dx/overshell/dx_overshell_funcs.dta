@@ -451,21 +451,28 @@
    dx_handle_part_select_pic
    ($state $slot)
    {if
-      {||
-         {== {{$this get_user} get_controller_type} kControllerDrum}
-         {== {{$this get_user} get_controller_type} kControllerKeys}
+      {&& 
+         {! {session is_in_game}}
+         {session_mgr is_local}
+         {||
+            {== {{$this get_user} get_controller_type} kControllerDrum}
+            {== {{$this get_user} get_controller_type} kControllerKeys}
+         }
       }
       {do
          {switch $state
             (enter ;triggers when entering kState_ChoosePart
-               {if {&& {! {session is_in_game}} {session_mgr is_local}}
-                  {{{overshell find {sprint "slot" $slot}} find game_options.grp} add_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
-                  ;{store_choose_char_size_pos}
-                  {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_pos_index 2 240}
-                  {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 0 0.4} ;X
-                  {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 2 0.4} ;Y
-                  {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {{overshell find {sprint "slot" $slot}} find choose_character.tex}}
-                  {if_else {== {{$this get_user} get_controller_type} kControllerDrum}
+               {{{overshell find {sprint "slot" $slot}} find game_options.grp} add_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
+               {store_choose_char_size_pos}
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_pos_index 2 240}
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 0 0.4} ;X
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 2 0.4} ;Y
+               {if {! {exists {sprint "slot" $slot "_info.tex"}}}
+                  {new Tex {sprint "slot" $slot "_info.tex"}}
+               }
+               {if_else {== {{$this get_user} get_controller_type} kControllerDrum}
+                  {do
+                     {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
                      ;set initial image based on what the drum controller's last part was
                      {if_else
                         {==
@@ -477,22 +484,25 @@
                            }
                            overshell_drums
                         }
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
                      }
+                  }
+                  {do
+                     {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
                      ;set initial image based on what the keys controller's last part was
-                     {if_else
-                        {==
-                           {switch $slot
-                              (0 $default_slot0)
-                              (1 $default_slot1)
-                              (2 $default_slot2)
-                              (3 $default_slot3)
-                           }
-                           overshell_real_keys
+                     {set $last_instrument
+                        {switch $slot
+                           (0 $default_slot0)
+                           (1 $default_slot1)
+                           (2 $default_slot2)
+                           (3 $default_slot3)
                         }
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"}
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
+                     }
+                     {switch $last_instrument
+                        (overshell_real_keys {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"})
+                        (overshell_drums {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"})
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
                      }
                   }
                }
@@ -501,29 +511,33 @@
                {if {== {{$this get_user} get_controller_type} kControllerDrum}
                   {switch {$component selected_sym}
                      (overshell_drums
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
                      )
                      (overshell_drums_pro
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
                      )
                   }
                }
                {if {== {{$this get_user} get_controller_type} kControllerKeys}
                   {switch {$component selected_sym}
                      ((overshell_guitar overshell_bass overshell_keys)
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
                      )
                      (overshell_real_keys
-                        {{{overshell find {sprint "slot" $slot}} find choose_character.tex} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"}
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"}
+                     )
+                     (overshell_real_keys
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"}
                      )
                   }
                }
             )
             (exit ;triggers when exiting kState_ChoosePart
-               {if {&& {! {session is_in_game}} {session_mgr is_local}}
-                  ;{restore_choose_char_size_pos}
-                  ;removes choose_character object from current slot
-                  {{{overshell find {sprint "slot" $slot}} find game_options.grp} remove_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
+               {restore_choose_char_size_pos}
+               ;removes choose_character object from current slot
+               {{{overshell find {sprint "slot" $slot}} find game_options.grp} remove_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
+               {if {exists {sprint "slot" $slot "_info.tex"}}
+                  {delete {sprint "slot" $slot "_info.tex"}}
                }
             )
          }
