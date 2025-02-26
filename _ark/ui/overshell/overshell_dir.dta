@@ -237,104 +237,64 @@
          (setup_options_list
             ($online_enabled)
             {do
-               ($options
-                  {array 0})
-               #ifdef HX_WII
-               {if
-                  {wii_invitations_provider is_invitation_pending}
-                  {push_back $options wii_friends_view_invite}}
-               #endif
-               {push_back $options overshell_return}
-               #ifdef HX_WII
-               {if_else
-                  {overshell in_wiifriend_invite}
-                  {do
-                     {options.lst set_data $options}}
-                  {do
-                     #endif
-                     #ifdef HX_WII
-                     {if
-                        {&&
-                           {!
-                              {platform_mgr is_online_restricted}}
-                           {!
-                              {meta_performer are_credits_pending}}}
-                        {if $gotcha
-                           {if_else $online_enabled
-                              {switch $dx_connected_server
-                                 (none {push_back $options overshell_online_options})
-                                 (gocentral {push_back $options go_overshell_online_options})
-                                 (ashcentral {push_back $options ash_overshell_online_options})
-                                 (live {push_back $options live_overshell_online_options})
-                                 (liveless {push_back $options liveless_overshell_online_options})
-                              }
-                              {switch $dx_connected_server
-                                 (none {push_back $options overshell_register_online})
-                                 (gocentral {push_back $options go_overshell_register_online})
-                                 (ashcentral {push_back $options ash_overshell_register_online})
-                                 (live {push_back $options live_overshell_register_online})
-                                 (liveless {push_back $options liveless_overshell_register_online})
-                              }
-                           }
-                        }
-                        {if {modifier_mgr is_modifier_active mod_auto_play}
-                           {push_back $options overshell_dx_bot_settings} ; dx - show autoplay settings when active
-                        }
-                     }
-                     #else
-                     {if_else $online_enabled
-                        {switch $dx_connected_server
-                           (none {push_back $options overshell_online_options})
-                           (gocentral {push_back $options go_overshell_online_options})
-                           (ashcentral {push_back $options ash_overshell_online_options})
-                           (live {push_back $options live_overshell_online_options})
-                           (liveless {push_back $options liveless_overshell_online_options})
-                        }
-                        {switch $dx_connected_server
-                           (none {push_back $options overshell_register_online})
-                           (gocentral {push_back $options go_overshell_register_online})
-                           (ashcentral {push_back $options ash_overshell_register_online})
-                           (live {push_back $options live_overshell_register_online})
-                           (liveless {push_back $options liveless_overshell_register_online})
-                        }
-                     }
-                     #endif
-                     #ifdef HX_WII
-                     {if
-                        {&&
-                           {!
-                              {memcardmgr is_disable_writing}}
-                           {!
-                              {join_invite_panel join_in_progress}}}
-                        {push_back $options overshell_wiiprofile_options}}
-                     #endif
+               ($options {array 0})
+               ; dx - local funcs to untangle gnarly unbalanced conditional
+               ($set_common_options
+                  {func setup_options_list_common_options
+                     ($options)
                      {push_back $options overshell_change_character}
                      {push_back $options overshell_game_options}
                      {push_back $options overshell_leave}
-                     {options.lst set_data $options}
-                     #ifdef HX_WII}}
-               #else
-               {if $gotcha
-                  {if_else $online_enabled
-                     {switch $dx_connected_server
-                        (none {push_back $options overshell_online_options})
-                        (gocentral {push_back $options go_overshell_online_options})
-                        (ashcentral {push_back $options ash_overshell_online_options})
-                        (live {push_back $options live_overshell_online_options})
-                        (liveless {push_back $options liveless_overshell_online_options})
-                     }
-                     {switch $dx_connected_server
-                        (none {push_back $options overshell_register_online})
-                        (gocentral {push_back $options go_overshell_register_online})
-                        (ashcentral {push_back $options ash_overshell_register_online})
-                        (live {push_back $options live_overshell_register_online})
-                        (liveless {push_back $options liveless_overshell_register_online})
+                     {if {modifier_mgr is_modifier_active mod_auto_play}
+                        {push_back $options overshell_dx_bot_settings} ; dx - show autoplay settings when active
                      }
                   }
+               )
+               ($set_online_options
+                  {func setup_options_list_server_options
+                     ($options $online_enabled)
+                     {if $gotcha
+                        {if_else $online_enabled
+                           {switch $dx_connected_server
+                              (none {push_back $options overshell_online_options})
+                              (gocentral {push_back $options go_overshell_online_options})
+                              (live {push_back $options live_overshell_online_options})
+                              (liveless {push_back $options liveless_overshell_online_options})
+                           }
+                           {switch $dx_connected_server
+                              (none {push_back $options overshell_register_online})
+                              (gocentral {push_back $options go_overshell_register_online})
+                              (live {push_back $options live_overshell_register_online})
+                              (liveless {push_back $options liveless_overshell_register_online})
+                           }
+                        }
+                     }
+                  }
+               )
+            #ifdef HX_WII
+               {if {wii_invitations_provider is_invitation_pending}
+                  {push_back $options wii_friends_view_invite}
                }
-               {if {modifier_mgr is_modifier_active mod_auto_play}
-                  {push_back $options overshell_dx_bot_settings} ; dx - show autoplay settings when active
+            #endif
+               {push_back $options overshell_return}
+            #ifdef HX_WII
+               {unless {overshell in_wiifriend_invite}
+                  {if {&&
+                        {! {platform_mgr is_online_restricted}}
+                        {! {meta_performer are_credits_pending}}
+                     }
+                     {$set_online_options $options $online_enabled}
+                  }
+                  {if {&&
+                        {! {memcardmgr is_disable_writing}}
+                        {! {join_invite_panel join_in_progress}}
+                     }
+                     {push_back $options overshell_wiiprofile_options}
+                  }
+                  {$set_common_options $options}
                }
+            #else
+               {$set_online_options $options $online_enabled}
                {set $dx_users 0}
                {user_mgr foreach_user $user
                   {set $dx_users {+ $dx_users 1}}
@@ -342,11 +302,14 @@
                {if {&& {! {session_mgr is_local}} {> $dx_users 1}}
                   {push_back $options overshell_dx_quick_chat} ; dx - show quick chat menu when online
                }
-               {push_back $options overshell_change_character}
-               {push_back $options overshell_game_options}
-               {push_back $options overshell_leave}
+               {if {&& $dx_event_mode $dx_event_service}
+                  {push_back $options os_event_options}
+               }
+               {$set_common_options $options}
+            #endif
                {options.lst set_data $options}
-               #endif})
+            }
+         )
          (setup_sign_in_to_register_list
             ($show_continue)
             {do
@@ -383,7 +346,6 @@
                      {switch $dx_connected_server
                         (none {push_back $options overshell_online_options})
                         (gocentral {push_back $options go_overshell_online_options})
-                        (ashcentral {push_back $options ash_overshell_online_options})
                         (live {push_back $options live_overshell_online_options})
                         (liveless {push_back $options liveless_overshell_online_options})
                      }}
@@ -810,14 +772,16 @@
                   {push_back $options wii_friends_view_invite}}
                #endif
                {push_back $options overshell_return}
-               ;Shows the pause button only if session is local and nopause is enabled
-               {if
-                  {&&
-                     {modifier_mgr is_modifier_active mod_nopause}
-                     {session_mgr is_local}
-                     $restart
+               {unless $dx_event_mode
+                  ;Shows the pause button only if session is local and nopause is enabled
+                  {if
+                     {&&
+                        {modifier_mgr is_modifier_active mod_nopause}
+                        {session_mgr is_local}
+                        $restart
+                     }
+                     {push_back $options os_pause}
                   }
-                  {push_back $options os_pause}
                }
                {if
                   $restart
@@ -847,16 +811,23 @@
                {if {== {ui current_screen} coop_endgame_screen}
                   {push_back $options overshell_choose_part}
                }
-               {push_back $options overshell_game_options}
-               {if_else $can_skip
-                  {do
-                     ($quit_options {array 0})
-                     {push_back $quit_options overshell_skip_song}
-                     {push_back $quit_options $quit_token}
-                     {options_end_game.lst set_data $quit_options}
-                     {push_back $options overshell_end_game}
+               {if_else $dx_event_mode
+                  {if $dx_event_service
+                     {push_back $options overshell_game_options}
                   }
-                  {push_back $options $quit_token}
+                  {push_back $options overshell_game_options}
+               }
+               {unless $dx_event_mode
+                  {if_else $can_skip
+                     {do
+                        ($quit_options {array 0})
+                        {push_back $quit_options overshell_skip_song}
+                        {push_back $quit_options $quit_token}
+                        {options_end_game.lst set_data $quit_options}
+                        {push_back $options overshell_end_game}
+                     }
+                     {push_back $options $quit_token}
+                  }
                }
                {unless
                   $practice
@@ -990,7 +961,6 @@
                {switch $dx_connected_server ; dx - changes the message when linking account based on the connected server
                   (none {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
                   (gocentral {linking_code_success.lbl set_token_fmt go_linking_code_success {$profile get_name}})
-                  (ashcentral {linking_code_success.lbl set_token_fmt ash_linking_code_success {$profile get_name}})
                   (live {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
                   (liveless {linking_code_success.lbl set_token_fmt linking_code_success {$profile get_name}})
                }
@@ -1039,7 +1009,7 @@
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
                         (dx_bot_skill $dx_bot_skill)
-                        (dx_rgbcolormenu {int {* $dx_overdrive_r 100}})
+                        (dx_rgbcolormenu {int {* $dx_set_ui_rgb_r 100}})
                         (dx_trackangle {int {/ {- $dx_multiangle 1} {/ 3 15}}})
                         (dx_speedmenu {int {- $emulatefps 1}})
                         kDataUnhandled
@@ -1049,7 +1019,7 @@
                   {$component
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
-                        (dx_rgbcolormenu {int {* $dx_overdrive_g 100}})
+                        (dx_rgbcolormenu {int {* $dx_set_ui_rgb_g 100}})
                         (dx_fastermode {int {+ 0.5 {/ {- $speedmod_cap 1} 0.05}}})
                         (dx_speedmenu {int {+ 0.5 {/ {+ {- $trackspeed 1} 0.5} 0.05}}})
                         kDataUnhandled
@@ -1059,7 +1029,7 @@
                   {$component
                      set_current
                      {if_else $dx_slider {switch $dx_slider_id
-                        (dx_rgbcolormenu {int {* $dx_overdrive_b 100}})
+                        (dx_rgbcolormenu {int {* $dx_set_ui_rgb_b 100}})
                         (dx_speedmenu {int {+ 0.5 {/ {- $speedmod 1} 0.05}}})
                         kDataUnhandled
                      }
@@ -1115,7 +1085,7 @@
                         {set $component current}
                         {switch $dx_slider_id
                            (dx_bot_skill {set $dx_bot_skill {$this current}})
-                           (dx_rgbcolormenu {set $dx_overdrive_r {* 0.01 {$this current}}})
+                           (dx_rgbcolormenu {set $dx_set_ui_rgb_r {* 0.01 {$this current}}})
                            (dx_trackangle {set $dx_multiangle {+ {* {/ {$this current} 15} 3} 1}})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
@@ -1132,7 +1102,7 @@
                      {do 
                         {set $component current}
                         {switch $dx_slider_id
-                           (dx_rgbcolormenu {set $dx_overdrive_g {* 0.01 {$this current}}})
+                           (dx_rgbcolormenu {set $dx_set_ui_rgb_g {* 0.01 {$this current}}})
                            (dx_fastermode {$this set_speeds})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
@@ -1148,7 +1118,7 @@
                      {do
                         {set $component current}
                         {switch $dx_slider_id
-                           (dx_rgbcolormenu {set $dx_overdrive_b {* 0.01 {$this current}}})
+                           (dx_rgbcolormenu {set $dx_set_ui_rgb_b {* 0.01 {$this current}}})
                            (dx_speedmenu {$this set_speeds})
                            kDataUnhandled
                         }

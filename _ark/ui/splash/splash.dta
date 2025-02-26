@@ -77,13 +77,23 @@
    (should_leave_count 0)
    DX_SPLASH_HANDLES
    (enter
+      {rnd set_sync 1}
       {if_else {== $dx_current_intro_movie off}
          #ifdef HX_WII
          {$this leave}
          #else
          {$this dx_splash_screen_enter}
          #endif
-         {profile_mgr set_overscan TRUE}})
+         {do
+            #ifdef HX_PS3
+            ; load stuff early, these cause issues on 360 so ps3 only
+            ;{saveload_mgr activate}
+            {content_mgr start_refresh}
+            #endif
+            {profile_mgr set_overscan TRUE}
+         }
+      }
+   )
    (movie_done
       #ifdef HX_WII
       {$this leave}
@@ -102,6 +112,7 @@
       kDataUnhandled)
    #endif
    (exit
+      {rnd set_sync $dx_vsync}
       #ifdef HX_PS3
       {if
          {elem
