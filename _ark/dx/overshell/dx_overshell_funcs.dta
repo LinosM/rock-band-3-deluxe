@@ -560,6 +560,8 @@
             )
          }
       }
+   }
+}
 {func dx_modify_tracklength ($item_id $mod)
 
    {set $clamp_min 0.25}
