@@ -476,6 +476,92 @@
       {rnd set_aspect $dx_aspectratio}
    }
 }
+{func
+   dx_handle_part_select_pic
+   ($state $slot)
+   {if
+      {&& 
+         {! {session is_in_game}}
+         {session_mgr is_local}
+         {||
+            {== {{$this get_user} get_controller_type} kControllerDrum}
+            {== {{$this get_user} get_controller_type} kControllerKeys}
+         }
+      }
+      {do
+         {switch $state
+            (enter ;triggers when entering kState_ChoosePart
+               {{{overshell find {sprint "slot" $slot}} find game_options.grp} add_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
+               {store_choose_char_size_pos}
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_pos_index 2 240}
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 0 0.4} ;X
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 2 0.4} ;Y
+               {if {! {exists {sprint "slot" $slot "_info.tex"}}}
+                  {new Tex {sprint "slot" $slot "_info.tex"}}
+               }
+               {set $last_instrument
+                  {switch $slot
+                     (0 $default_slot0)
+                     (1 $default_slot1)
+                     (2 $default_slot2)
+                     (3 $default_slot3)
+                  }
+               }
+               {if {== {{$this get_user} get_controller_type} kControllerDrum}
+                  {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
+                  ;set initial image based on what the drum controller's last part was
+                  {if_else {== $last_instrument overshell_drums}
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
+                  }
+               }
+               {if {== {{$this get_user} get_controller_type} kControllerKeys}
+                  {{{overshell find {sprint "slot" $slot}} find choose_character.mat} set diffuse_tex {sprint "slot" $slot "_info.tex"}}
+                  ;set initial image based on what the keys controller's last part was
+                  {switch $last_instrument
+                     (overshell_real_keys {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"})
+                     (overshell_drums {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"})
+                     {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
+                  }
+               }
+            )
+            (scroll ;triggers when scrolling in kState_ChoosePart
+               {if {== {{$this get_user} get_controller_type} kControllerDrum}
+                  {switch {$component selected_sym}
+                     (overshell_drums
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_standard.png"}
+                     )
+                     (overshell_drums_pro
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_drums_pro.png"}
+                     )
+                  }
+               }
+               {if {== {{$this get_user} get_controller_type} kControllerKeys}
+                  {switch {$component selected_sym}
+                     ((overshell_guitar overshell_bass overshell_keys)
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_standard.png"}
+                     )
+                     (overshell_real_keys
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_pro.png"}
+                     )
+                     (overshell_drums
+                        {{sprint "slot" $slot "_info.tex"} set_bitmap "dx/custom_textures/_additional_textures/infograph_keys_drums.png"}
+                     )
+                  }
+               }
+            )
+            (exit ;triggers when exiting kState_ChoosePart
+               {restore_choose_char_size_pos}
+               ;removes choose_character object from current slot
+               {{{overshell find {sprint "slot" $slot}} find game_options.grp} remove_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
+               {if {exists {sprint "slot" $slot "_info.tex"}}
+                  {delete {sprint "slot" $slot "_info.tex"}}
+               }
+            )
+         }
+      }
+   }
+}
 {func dx_modify_tracklength ($item_id $mod)
 
    {set $clamp_min 0.25}
