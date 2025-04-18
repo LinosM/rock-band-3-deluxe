@@ -14,10 +14,7 @@
 {func
    dx_sanitize_player_name
    ($name)
-   {foreach_int $i 0 9 ;for every number
-      {search_replace $name {sprint " (" $i ")"} "" $name} ;remove the ps3 user text
-   }
-   {search_replace $name "*" "" $name} ;this indicates a system problem but who cares? we dont!
+   {set $name {sprint "Player " {+ $name 1}}}
    $name ;return name
 }
 ;constructs track icon to support difficulty rings
@@ -55,7 +52,7 @@
    ($enabled $player)
    {do
       ($label "player_name.lbl")
-      ($name {dx_sanitize_player_name {{$player get_user} get_user_name}}) ;construct name
+      ($name {dx_sanitize_player_name {{$player get_user} get_slot_num}}) ;construct name
       {cond
          ({&& $enabled {! $dx_path_failed}} ;bool is for diff rings
             {dx_setup_player_icon $player $name} ;adapt label and apply diff rings
@@ -73,7 +70,7 @@
    ($enabled $player)
    {do
       ($label {sprint "dx_track_label_username" {{$player get_user} get_slot_num} ".lbl"}) ;construct label name
-      ($name {dx_sanitize_player_name {{$player get_user} get_user_name}}) ;get username
+      ($name {dx_sanitize_player_name {{$player get_user} get_slot_num}}) ;get username
       ($icon {sprint "inst_icon_" {$player instrument}}) ;localized icon letter
       {set_this {find_obj DX_GEMTRACKDIR}}
       {cond

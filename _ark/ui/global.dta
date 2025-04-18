@@ -291,7 +291,7 @@
    ($player)
    {if_else
       $player
-      {dx_sanitize_player_name {{$player get_user} get_user_name}}
+      {dx_sanitize_player_name {{$player get_user} get_slot_num}}
       ""}}
 {func
    get_player_name_from_slot
@@ -301,7 +301,7 @@
          {user_mgr get_user_from_slot $slot})
       {if_else
          $user
-         {dx_sanitize_player_name {$user get_user_name}}
+         {dx_sanitize_player_name {$user get_slot_num}}
          ""}}}
 #else
 {func
