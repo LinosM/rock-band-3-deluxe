@@ -5,13 +5,13 @@
    ;{dx_log_writer info {sprint "func: dx_overshell_msg" " - Args: " $message}}
    ;{dx_log_writer info
    ;   {sprintf "Executed dx_overshell_msg - time: %.4fms"
-         {time
+         ;{time
             {if {! {session is_in_game}}
                {$this show_message}
                {set $dx_no_message_sound TRUE} ;prevents message sound from playing in menus
                {$this setup_message_text $message FALSE}
             }
-         }
+         ;}
    ;   }
    ;}
 }
@@ -102,7 +102,7 @@
                   DX_OS_CLOSE_MSG
                   {set $in_state TRUE} ;gate it off REMEMBER, turn this to false when running this code in a reset handle
                   {set $dx_menu_message FALSE}
-                  {overshell_list_creation}
+                  {overshell_list_creation $current_overshell_state}
                   {overshell_list_chooser}
                   {if_else {== $current_list users.lst}
                      {gamercard_users.lbl set_showing FALSE}
@@ -135,6 +135,16 @@
                   {$current_list refresh}
                   {if {== $message FALSE}
                      DX_OS_CLOSE_MSG
+                  }
+                  {if_else {> {size $options} 6}
+                     {do
+                        {modifier_scroll.sbd set_showing TRUE}
+                        {modifier_scroll.sbd set scrollbar_list $current_list}
+                     }
+                     {do
+                        {modifier_scroll.sbd set_showing FALSE}
+                        {modifier_scroll.sbd set scrollbar_list modifiers.lst}
+                     }
                   }
                }
             }
@@ -260,7 +270,7 @@
             {$current_list set max_display $current_slots}
             {$current_list set scroll_past_max_display FALSE}
             {$current_list set scroll_time 0}
-            {$current_list set_data $options_list_data}
+            ;{$current_list set_data $options_list_data}
    ;      }
    ;   }
    ;}
@@ -284,16 +294,19 @@
                   {modifier_mgr is_modifier_active mod_no_fail_band})
                {handle
                   ($this update_no_fail_enabled $no_fail_enabled)}}
-            {switch $current_slots
-               (1 options_end_game)
-               (2 options_end_game)
-               (3 options_extras)
-               (4 gamercard_users)
-               (5 options)
-               (6 options_audio)
-               (7 game_options)
-               game_options
+            {set $dx_picked_view
+               {switch $current_slots
+                  (1 options_end_game)
+                  (2 options_end_game)
+                  (3 options_extras)
+                  (4 gamercard_users)
+                  (5 options)
+                  (6 options_audio)
+                  (7 game_options)
+                  game_options
+               }
             }
+            $dx_picked_view
    ;      }
    ;   }
    ;}
@@ -304,12 +317,13 @@
    ;{dx_log_writer insane
    ;   {sprintf "Executed overshell_list_creation - time: %.4fms"
    ;      {time
+            ($current_overshell_state)
             {$this iterate CheckboxDisplay $c {$c set checked FALSE}}
             {set $num_of_slots 0}
             {foreach $entry $options
                {set $num_of_slots {+ $num_of_slots 1}}
             }
-            {if_else {>= $num_of_slots 9}
+            {if_else {>= $num_of_slots 12}
                {set $options_circular TRUE}
                {set $options_circular FALSE}
             }
@@ -318,14 +332,29 @@
             }
             {set $current_slots $num_of_slots}
             ;{unless {$this in_game} ;in game overshell does not need to account for same slot size animation transitions
-               {if {== $current_slots $previous_num_slot}
-                  {if_else {<= $current_slots 6}
-                     {set $num_of_slots {+ $num_of_slots 1}}
-                     {set $num_of_slots {- $num_of_slots 1}}
+               {if {&& {!= $current_overshell_state $current_state} {== $current_slots $previous_num_slot}}
+                  ;lmao
+                  ;fake animation between dx states that use the same list
+                  {set $list_temp ()}
+                  {resize $list_temp 0}
+                  {foreach_int $i 0 $previous_num_slot
+                     {push_back $list_temp os_blnk}
+                  }
+                  {$current_list set_data $list_temp}
+                  {$current_list refresh}
+                  {$current_list set conceal_scale 150}
+                  {$current_list conceal}
+                  {script_task kTaskSeconds
+                     (delay 0.075)
+                     (script
+                        {$current_list reveal}
+                        {$current_list set conceal_scale 5}
+                        {$current_list set_data {array $options}}
+                        {$current_list refresh}
+                     )
                   }
                }
                {set $previous_num_slot $num_of_slots}
-               {set $current_slots $num_of_slots}
             ;}
             ;$options
             {set $options_list_data {array $options}}
@@ -531,5 +560,52 @@
             )
          }
       }
+{func dx_modify_tracklength ($item_id $mod)
+
+   {set $clamp_min 0.25}
+   {set $clamp_max 4.0}
+   {dx_log_writer insane {sprint "os modify track len " $item_id " " $mod " " $clamp_min " " $clamp_max}}
+   {switch $item_id
+      (0
+         {dx_modify_tracklength 1 $mod}
+         {set $tracklength_bass        $tracklength_guitar}
+         {set $tracklength_drum        $tracklength_guitar}
+         {set $tracklength_keys        $tracklength_guitar}
+         {set $tracklength_real_keys   $tracklength_guitar}
+         {set $tracklength_real_guitar $tracklength_guitar}
+         {set $tracklength_real_bass   $tracklength_guitar}
+      )
+      (1
+         {+= $tracklength_guitar $mod}
+         {set $tracklength_guitar {clamp $tracklength_guitar $clamp_min $clamp_max}}
+      )
+      (2
+         {+= $tracklength_bass $mod}
+         {set $tracklength_bass {clamp $tracklength_bass $clamp_min $clamp_max}}
+      )
+      (3
+         {+= $tracklength_drum $mod}
+         {set $tracklength_drum {clamp $tracklength_drum $clamp_min $clamp_max}}
+      )
+      (4
+         {+= $tracklength_keys $mod}
+         {set $tracklength_keys {clamp $tracklength_keys $clamp_min $clamp_max}}
+      )
+      (5
+         {+= $tracklength_real_guitar $mod}
+         {set $tracklength_real_guitar {clamp $tracklength_real_guitar $clamp_min $clamp_max}}
+      )
+      (6
+         {+= $tracklength_real_bass $mod}
+         {set $tracklength_real_bass {clamp $tracklength_real_bass $clamp_min $clamp_max}}
+      )
+      (7
+         {+= $tracklength_real_keys $mod}
+         {set $tracklength_real_keys {clamp $tracklength_real_keys $clamp_min $clamp_max}}
+      )
+   }
+   {set $dx_list_pos $item_id}
+   {if {session is_in_game}
+      {dx_track_update_lengths}
    }
 }

@@ -29,7 +29,7 @@
          {push_back $options os_lanes}
          {push_back $options os_score_box}
          {push_back $options os_stars}
-         {push_back $options os_font}
+         {push_back $options os_font_title}
          {push_back $options os_solo_box}
          {push_back $options os_bre}
          {push_back $options os_crowdmeter}

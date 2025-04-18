@@ -2,7 +2,7 @@
 (
    ;opens player message panel on current player
    {if {! {session is_in_game}}
-      {if {$this is_message_hiding} {$this show_message}}
+      {if {$this is_message_hiding} {$this show_message}}                  
       {set $dx_no_message_sound TRUE}} ;prevents message sound from playing in menus
 )
 #define DX_OS_CLOSE_MSG
@@ -202,8 +202,8 @@
       {overshell update_all}
    )
    (mod_nolanes
-      {if {modifier_mgr is_modifier_active mod_rb4lanes}
-         {modifier_mgr toggle_modifier_enabled mod_rb4lanes}
+      {if {modifier_mgr is_modifier_active mod_rb4_lanes}
+         {modifier_mgr toggle_modifier_enabled mod_rb4_lanes}
       }
       {modifier_mgr toggle_modifier_enabled mod_nolanes}
       {set $nolanes {! $nolanes}}
@@ -224,11 +224,11 @@
          }
       }
    )
-   (mod_rb4lanes
+   (mod_rb4_lanes
       {if {modifier_mgr is_modifier_active mod_nolanes}
          {modifier_mgr toggle_modifier_enabled mod_nolanes}
       }
-      {modifier_mgr toggle_modifier_enabled mod_rb4lanes}
+      {modifier_mgr toggle_modifier_enabled mod_rb4_lanes}
       {overshell update_all}
    )
    (mod_practiceoverdrive

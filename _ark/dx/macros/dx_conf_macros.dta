@@ -198,32 +198,6 @@
 (29fingers sayitaintso inbloom ithinkimparanoid timewehad missqueen hereitgoesagain creep blooddoll waveofmutilation shouldistay maps gimmeshelter brainpower sabotage blitzkriegbop celebrityskin imsosick whenyouwereyoung blackholesun wanteddeadoralive learntofly seven orangecrush mainoffender thehandthatfeeds daylatedollarshort epic suffragettecity ballroomblitz deadonarrival pleasure trainkeptarollin areyougonnabemygirl paranoid timmy welcomehome gowiththeflow danicalifornia nightmare dontfearthereaper reptilia electricversion vasoline detroitrockcity cantletgo nexttoyou cherubrock tomsawyer entersandman greengrass outside highwaystar foreplaylongtime flirtinwithdisaster igetby runtothehills wontgetfooled)
 #define DX_SET_RB2
 (eyeofthetiger myownworstenemy iwaswrong sowhatchawant epro hungrylikethewolf pretendweredead rebelgirl nineintheafternoon floaton drainyou pda maninthebox coolforcats hellothere today thatswhatyouget spiritinthesky wegotthebeat newkidinschool feelthepain pumpitup onestepcloser welcometothe whitewedding psychokiller lump conventionallover deluxe shootingstar giveitaway themiddle americanwoman livinonaprayer onewayoranother ajaggedgorgeouswinter goyourownway kidsinamerica girlsnotgrey lazyeye comeoutandplay mountainsong wheredyougo alexchilton rocknme tangledupinblue alive roundandround yououghtaknow alabamagetaway testify supremegirl pinballwizard ourtruth uncontrollableurge badreputation nightlies anywayyouwantit teenageriot shacklersrevenge letthereberock thetrees aqualung downwiththesickness chopsuey everlong masterexploder giveitall carryonwaywardson robtheprezodent spoonman aceofspades almosteasy ramblinman getclean peacesells colonyofbirchmen soulsofblack bodhisattva shouldertotheplow battery visions panicattack painkiller)
-
-#define DX_ROLL_INTERVAL_COMMON
-(
-   {if_else {modifier_mgr is_modifier_active mod_nolanes}
-      -100
-      0
-   }
-   {if_else {modifier_mgr is_modifier_active mod_nolanes}
-      -100
-      0
-   }
-   {if_else {modifier_mgr is_modifier_active mod_nolanes}
-      -100
-      {if_else {modifier_mgr is_modifier_active mod_rb4lanes}
-         190
-         165
-      }
-   }
-   {if_else {modifier_mgr is_modifier_active mod_nolanes}
-      -100
-      {if_else {modifier_mgr is_modifier_active mod_rb4lanes}
-         190
-         165
-      }
-   }
-)
 #define DX_QUICK_CHAT_PHRASES
 (
    "Hello!" "Welcome!" "Nice to meet you" "Let's rock!"
@@ -247,12 +221,12 @@
 )
 #define DX_INS_DIFF_MAP
 (
-   (0 "<alt>B</alt>")
-   (1 "<alt>G</alt>")
-   (2 "<alt>D</alt>")
-   (3 "<alt>V</alt>")
-   (4 "<alt>K</alt>")
-   (5 "<alt>2</alt>")
-   (6 "<alt>3</alt>")
-   (7 "<alt>k</alt>")
+   (0 dx_diff_0)
+   (1 dx_diff_1)
+   (2 dx_diff_2)
+   (3 dx_diff_3)
+   (4 dx_diff_4)
+   (5 dx_diff_5)
+   (6 dx_diff_6)
+   (7 dx_diff_7)
 )

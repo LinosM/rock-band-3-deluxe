@@ -78,11 +78,19 @@
       {switch
          $component
          (continue.btn
-            {ui goto_screen meta_loading_continue_screen})})}
+            #ifndef HX_WII
+            {ui goto_screen meta_loading_continue_screen}
+            #else
+            {ui goto_screen maybe_outro_to_meta_loading_continue_screen}
+            #endif
+         )
+      }
+   )
+}
 {new
    BandScreen
    complete_screen
-   (panels GAME_SCREEN_PANELS coop_endgame_panel complete_panel outro_vignette_loader)
+   (panels #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif coop_endgame_panel complete_panel #ifndef HX_WII outro_vignette_loader #endif)
    (focus complete_panel)}
 {new
    UIPanel
@@ -142,7 +150,12 @@
             {game_restart}
             {net_sync set_ui_state kNetUI_InGame})
          (continue.btn
-            {ui goto_screen meta_loading_continue_screen})
+            #ifndef HX_WII
+            {ui goto_screen meta_loading_continue_screen}
+            #else
+            {ui goto_screen maybe_outro_to_meta_loading_continue_screen}
+            #endif
+         )
          (delete.btn
             {ui push_screen demo_confirm_delete_screen})
          (purchase.btn
@@ -162,7 +175,7 @@
 {new
    BandScreen
    demo_complete_screen
-   (panels GAME_SCREEN_PANELS demo_complete_panel outro_vignette_loader)
+   (panels #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif demo_complete_panel #ifndef HX_WII outro_vignette_loader #endif)
    (focus demo_complete_panel)}
 {new
    UGCPurchasePanel

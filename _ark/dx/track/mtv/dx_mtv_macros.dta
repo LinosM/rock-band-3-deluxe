@@ -372,7 +372,7 @@
                      {!= $real_keysplayeractive true}
                      {!= $keysplayeractive true}
                   }
-                  {THIS_MTV_LBL set_token_fmt {sprint {localize author} ": " $authorvar ", " {localize strings_author} ": " $stringsauthorvar}}
+                  {THIS_MTV_LBL set_token_fmt {sprint {localize dx_author} ": " $authorvar ", " {localize strings_author} ": " $stringsauthorvar}}
                )
                ;if keys are active but not protar
                (
@@ -382,7 +382,7 @@
                      $keysauthorvar
                      {|| {== $real_keysplayeractive true} {== $keysplayeractive true}}
                   }
-                  {THIS_MTV_LBL set_token_fmt {sprint {localize author} ": " $authorvar ", " {localize keys_author} ": " $keysauthorvar}}
+                  {THIS_MTV_LBL set_token_fmt {sprint {localize dx_author} ": " $authorvar ", " {localize keys_author} ": " $keysauthorvar}}
                )
                ;if both keys and protar is active
                (
@@ -393,7 +393,7 @@
                      {|| {== $real_keysplayeractive true} {== $keysplayeractive true}}
                   }
                   ;set the first line with the normal author
-                  {THIS_MTV_LBL set_token_fmt {sprint {localize author} ": " $authorvar}}
+                  {THIS_MTV_LBL set_token_fmt {sprint {localize dx_author} ": " $authorvar}}
                   ;make a new line and populate with protar + keys authors
                   {++ $this_total_lines}
                   CREATE_MTV_LINE
@@ -401,7 +401,7 @@
                )
                ;cond fallback
                ;if we only have one author, only print it
-               {THIS_MTV_LBL set_token_fmt {sprint {localize author} ": " $authorvar}}
+               {THIS_MTV_LBL set_token_fmt {sprint {localize dx_author} ": " $authorvar}}
             }
             {++ $this_total_lines}
          }
@@ -449,8 +449,10 @@
                }
                {if {exists artist.lbl}
                   #ifndef HX_XBOX
+                  #ifndef HX_WII
                   DX_CURRENT_SONG_TXT_WRITER
                   DX_CURRENT_SONG_JSON_WRITER
+                  #endif
                   #endif
                   {$this mtv_formatter}
                }

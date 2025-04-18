@@ -333,6 +333,7 @@
       options_audio
    )
    (enter
+      
       {unpack_color {$findme get color} $mycoolcolor_r $mycoolcolor_g $mycoolcolor_b}
       {$findme set color {pack_color $mycoolcolor_r $mycoolcolor_g $mycoolcolor_b}}
       {set $mycoolalpha {$findme get alpha}}

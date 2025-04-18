@@ -12,16 +12,17 @@
                (vocals)
                (guitar real_guitar keys))
             (auto_vocals
-               (guitar real_guitar keys drum vocals) ; dx - any instrument anywhere
-               (guitar real_guitar keys drum vocals)
-               (guitar real_guitar keys drum vocals)
-               (guitar real_guitar keys drum vocals)))
+               (keys) ; dx - any instrument anywhere
+               (drum)
+               (guitar)
+               (guitar)))
          (joining_priority 0 3 2 1))
       (type
          (state_handlers
             #include slot_states.dta
             #include ../../dx/overshell/dx_main_states.dta
             #include ../../dx/overshell/dx_speed_states.dta
+            #include ../../dx/overshell/dx_length_states.dta
             #include ../../dx/overshell/dx_venue_states.dta
             #include ../../dx/overshell/dx_track_theme_states.dta
             #include ../../dx/overshell/dx_texture_states.dta

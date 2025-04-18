@@ -283,6 +283,7 @@
       options
    )
    (enter
+      
       ;setup/reset the list tracking info
       {set $dx_list_item_selected FALSE}
       {set $dx_list_pos 0}
@@ -649,6 +650,14 @@
                   (0.1 0.9)
                   0.9
                }
+            }
+            {switch $dx_mic_deploy_sens
+               (0.9 {set $dx_tracked_changed os_dx_mic_od_1})
+               (0.7 {set $dx_tracked_changed os_dx_mic_od_2})
+               (0.5 {set $dx_tracked_changed os_dx_mic_od_3})
+               (0.3 {set $dx_tracked_changed os_dx_mic_od_4})
+               (0.1 {set $dx_tracked_changed os_dx_mic_od_5})
+               {set $dx_tracked_changed os_dx_mic_od_unknown}
             }
             {dx_state_pos_tracker}
             DX_FUNCTIONAL_OPTIONS_DATA
@@ -1084,6 +1093,9 @@
 (dxState_BotSettings
    (view options_audio)
    (enter
+      
+      {modifier_scroll.sbd set_showing TRUE}
+      {modifier_scroll.sbd set scrollbar_list options_audio.lst}
       {set $dx_slider TRUE}
       {set $dx_slider_id dx_bot_skill}
       {instruments.sld set_num_steps 12}
@@ -1173,6 +1185,8 @@
    (exit 
       {set $dx_slider FALSE}
       {options_audio.lst set scroll_time 0.25}
+      {modifier_scroll.sbd set_showing FALSE}
+      {modifier_scroll.sbd set scrollbar_list modifiers.lst}
    )
 	(on_cancel {$this show_options})
 )
@@ -1215,9 +1229,9 @@
          {set $dx_set_ui_pos_2 $scoreboardpos_2}
       )
       (star_display
-         {set $dx_set_ui_pos_0 $star_displaypos_0}
-         {set $dx_set_ui_pos_1 $star_displaypos_1}
-         {set $dx_set_ui_pos_2 $star_displaypos_2}
+         {set $dx_set_ui_pos_0 $dx_score_base_0}
+         {set $dx_set_ui_pos_1 $dx_score_base_1}
+         {set $dx_set_ui_pos_2 $dx_score_base_2}
       )
       (solo_box
          {set $dx_set_ui_pos_0 $solo_boxpos_0}
@@ -1369,9 +1383,9 @@
          }
       )
       (star_display
-         {set $star_displaypos_0 $dx_set_ui_pos_0}
-         {set $star_displaypos_1 $dx_set_ui_pos_1}
-         {set $star_displaypos_2 $dx_set_ui_pos_2}
+         {set $dx_score_base_0 $dx_set_ui_pos_0}
+         {set $dx_score_base_1 $dx_set_ui_pos_1}
+         {set $dx_score_base_2 $dx_set_ui_pos_2}
          {if
             {&&
                {! {gamemode in_mode practice}}
@@ -1379,6 +1393,8 @@
                {exists beatmatch}
             }
             {dx_set_star_display_pos}
+            {dx_set_scoreboard_pos}
+            {dx_fix_new_song_progress_pos}
          }
       )
       (solo_box
@@ -1450,6 +1466,7 @@
       options_audio
    )
    (enter
+      
       {set $dx_pos_interval_list (0.01 0.1 0.5 1 5 10 50 100)}
       {set $dx_pos_remapper_array_number 3}
       {set $dx_pos_current_interval {elem $dx_pos_interval_list $dx_pos_remapper_array_number}} ;1 unit
@@ -1459,10 +1476,10 @@
          {options_audio.lst set_type overshell_menu_ingame}
          {options_audio.lst set_type overshell_menu}
       }
-      {options_audio.lst restart_highlight_matanim}
-      {options_audio.lst refresh}
       DX_TRANSLATE_POS_VARIABLES_TO_LOCAL
       DX_POSITION_REMAP_DATA
+      {options_audio.lst restart_highlight_matanim}
+      {options_audio.lst refresh}
    )
    ;(SCROLL_MSG
    ;   DX_MENU_SCROLL_DESC ;updates description with currently selected modifier
@@ -1609,8 +1626,8 @@
             (score dxState_ScreenElements_Practice)
             (section dxState_ScreenElements_Practice)
             ;(crowd_meter dxState_CrowdMeterElements)
-            (scoreboard dxState_ScoreElements)
-            (star_display dxState_ScoreElements)
+            (scoreboard dxState_InGameHUD)
+            (star_display dxState_InGameHUD)
             (solo_box dxState_InGameHUD)
             (highway_username_text dxState_TrackHighwayUsername)
             (highway_overdrive_text dxState_TrackHighwayOverdrive)

@@ -58,14 +58,6 @@
    (gender female)
    (type torso)
    (boutique boutique_sheathed))
-(a/../../female/female_premium_spinaltap_metallogo
-   (gender male)
-   (type torso)
-   (boutique boutique_sheathed))
-(a/../../female/female_premium_marley_flagface
-   (gender male)
-   (type torso)
-   (boutique boutique_sheathed))
 (a/../../female/hoodedsweatshirt_plain
    (gender male)
    (type torso)
@@ -530,10 +522,6 @@
    (gender male)
    (type feet)
    (boutique boutique_scrapper))
-(a/../../female/femaleeightholedocs_var3
-   (gender male)
-   (type feet)
-   (boutique boutique_scrapper))
 (a/../../female/saggydocs_var1
    (gender male)
    (type feet)
@@ -587,10 +575,6 @@
    (type feet)
    (boutique boutique_showman))
 (a/../../female/chucktaylor_folded
-   (gender male)
-   (type feet)
-   (boutique boutique_thatstore))
-(a/../../female/femalelowchucks_skullsprint
    (gender male)
    (type feet)
    (boutique boutique_thatstore))
@@ -672,10 +656,6 @@
    (boutique boutique_warrior))
 (a/../../male/summonershoes_burlap
    (gender female)
-   (type feet)
-   (boutique boutique_warrior))
-(a/../../female/demonboots_stone
-   (gender male)
    (type feet)
    (boutique boutique_warrior))
 (a/../../female/female_bandana_cotton

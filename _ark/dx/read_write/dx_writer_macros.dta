@@ -13,6 +13,7 @@
    {dx_setting_saver dx_settings practice_score_pos ($scorepos_0 $scorepos_1 $scorepos_2)}
    {dx_setting_saver dx_settings practice_speed_control_pos ($speed_controlpos_0 $speed_controlpos_1 $speed_controlpos_2)}
    {dx_setting_saver dx_settings dx_mtv_position ($dx_mtv_pos_x $dx_mtv_pos_z $dx_mtv_pos_y)}
+   {dx_setting_saver dx_settings dx_score_base ($dx_score_base_0 $dx_score_base_1 $dx_score_base_2)}
    ;{dx_setting_saver dx_settings dx_mtv_color_rgb ($dx_mtv_color_r $dx_mtv_color_g $dx_mtv_color_b)}
    {dx_setting_saver dx_settings dx_mtv_text_font $dx_mtv_text_font}
    {dx_setting_saver dx_settings dx_mtv_text_alignment $dx_mtv_text_alignment}
@@ -23,7 +24,9 @@
    {dx_setting_saver dx_settings dx_forced_main_menu_bg $dx_forced_main_menu_bg}
    {dx_setting_saver dx_settings dx_forced_song_select_bg $dx_forced_song_select_bg}
    {dx_setting_saver dx_settings dx_sv8_dx_vers $dx_sv8_dx_vers}
-   ;{dx_setting_saver dx_settings dx_forced_outro_vignette $dx_forced_outro_vignette}
+   {dx_setting_saver dx_settings dx_forced_outro_vignette $dx_forced_outro_vignette}
+   {dx_setting_saver dx_settings black_song_transition $black_song_transition}
+   {dx_setting_saver dx_settings default_transitions $default_transitions}
    {dx_setting_saver dx_settings emulate_fps $emulatefps}
    {dx_setting_saver dx_settings dx_vsync $dx_vsync}
    {dx_setting_saver dx_settings track_speed $trackspeed}
@@ -34,6 +37,13 @@
    {dx_setting_saver dx_settings trackspeed_real_keys $trackspeed_real_keys}
    {dx_setting_saver dx_settings trackspeed_real_guitar $trackspeed_real_guitar}
    {dx_setting_saver dx_settings trackspeed_real_bass $trackspeed_real_bass}
+   {dx_setting_saver dx_settings tracklength_guitar $tracklength_guitar}
+   {dx_setting_saver dx_settings tracklength_bass $tracklength_bass}
+   {dx_setting_saver dx_settings tracklength_drum $tracklength_drum}
+   {dx_setting_saver dx_settings tracklength_keys $tracklength_keys}
+   {dx_setting_saver dx_settings tracklength_real_keys $tracklength_real_keys}
+   {dx_setting_saver dx_settings tracklength_real_guitar $tracklength_real_guitar}
+   {dx_setting_saver dx_settings tracklength_real_bass $tracklength_real_bass}
    {dx_setting_saver dx_settings dx_multiangle $dx_multiangle}
    {dx_setting_saver dx_settings dx_allow_lower_angle $dx_allow_lower_angle}
    {dx_setting_saver dx_settings dx_fullcombo_sound $dx_fullcombo_sound}
@@ -277,8 +287,9 @@
       {dx_setting_saver dx_modifiers mod_remote_texture_sync TRUE}
    }
    {dx_setting_saver dx_modifiers mod_practiceoverdrive {modifier_mgr is_modifier_active mod_practiceoverdrive}}
+   {dx_setting_saver dx_modifiers mod_kick_bounce {modifier_mgr is_modifier_active mod_kick_bounce}}
    {dx_setting_saver dx_modifiers mod_nolanes {modifier_mgr is_modifier_active mod_nolanes}}
-   {dx_setting_saver dx_modifiers mod_rb4lanes {modifier_mgr is_modifier_active mod_rb4lanes}}
+   {dx_setting_saver dx_modifiers mod_rb4_lanes {modifier_mgr is_modifier_active mod_rb4_lanes}}
    {dx_setting_saver dx_modifiers mod_synced_track_speeds {modifier_mgr is_modifier_active mod_synced_track_speeds}}
    {dx_setting_saver dx_modifiers mod_nopause {modifier_mgr is_modifier_active mod_nopause}}
    {dx_setting_saver dx_modifiers mod_dx_no_overdrive {modifier_mgr is_modifier_active mod_dx_no_overdrive}}

@@ -130,8 +130,9 @@
          #else
          {$this dx_splash_screen_enter}
          #endif})
+   #ifdef HX_WII
+   #ifdef _SHIP
    (poll
-      #ifdef HX_WII
       {if
          {==
             [should_leave_count]
@@ -152,9 +153,12 @@
             {'+'
                [should_leave_count]
                1}}}
-      #endif)
+   )
+   #endif
+   #endif
       (leave
       #ifdef HX_WII
+      #ifdef _SHIP
       {if
          {!
             [should_leave]}
@@ -162,6 +166,15 @@
       {set
          [should_leave]
          TRUE}
+      #else
+      {if_else {content_mgr is_sdcard_inserted}
+         {do
+            {startup_sdmode_screen set final_screen splash_screen}
+            {ui goto_screen startup_sdmode_screen}
+         }
+         {ui goto_screen splash_screen}
+      }
+      #endif
       #else
       {ui goto_screen splash_screen}
       #endif)}
@@ -441,7 +454,7 @@
 {new
    BandScreen
    splash_screen
-   (panels meta #ifndef HX_WII sv8_panel #endif splash_panel)
+   (panels meta sv8_panel splash_panel)
    (focus splash_panel)
    (gather_uistats FALSE)}
 #ifdef HX_PS3

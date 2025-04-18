@@ -69,6 +69,10 @@
          {push_back $options #ifdef HX_XBOX overshell_gamercard #else overshell_mute #endif}
          {push_back $options overshell_disconnect}
          {online_options.lst set_data $options}
+         {handle ($this init)}
+         {modifier_scroll.sbd set_showing FALSE}
+         {modifier_scroll.sbd set scrollbar_list modifiers.lst}
+         ;{handle ($this setup_providers)}
       }
       {if_else $dx_prompt_save
          {$this show_state dxState_SaveWarn}
@@ -279,7 +283,9 @@
    {do
       ($options
          {array 0})
+      #ifndef HX_WII
       {push_back $options os_fcaudio}
+      #endif
       {push_back $options {if_else $dx_song_select_noise os_audio_ambience_on os_audio_ambience_off}}
       {push_back $options {if_else $dx_scroll_sound os_scroll_sound_on os_scroll_sound_off}}
       {push_back $options {if_else $dx_whammy_fx os_whammy_fx_on os_whammy_fx_off}}
@@ -457,6 +463,7 @@
 (dxState_AngleMenu
    (view options_extras)
    (enter
+      
       {set $dx_slider TRUE}
       {set $dx_slider_id dx_trackangle}
       {instruments.sld set_num_steps 16} ;number of steps for track angle slider
@@ -464,7 +471,7 @@
       {options_extras.lst set_data (DX_ANGLE_DATA)}
       {options_extras.lst set scroll_time 0}
       {options_extras.lst set circular 0}
-      {options_extras set_selected 0}
+      {options_extras.lst set_selected 0}
    )
    (update_view
       {handle
@@ -527,6 +534,7 @@
 (dxState_TrackAngleSliderMsg
    (view confirm_action)
    (enter
+      
       {handle
          ($this set_confirm_message
             {switch $dx_multiangle 
@@ -558,6 +566,7 @@
 (dxState_CalibrationInGame
    (view options_audio)
    (enter
+      
       DX_CALIBRATION_INGAME_MENU
       {$this iterate Mesh $m {$m set_showing FALSE}}
       {$this iterate UIList $l
@@ -609,6 +618,7 @@
 (dxState_CalibrationInGameSetting
    (view options_audio)
    (enter
+      
       DX_CALIBRATION_INGAME_MENU_SETTING
       {$this iterate Mesh $m {$m set_showing FALSE}}
       {$this iterate UIList $l

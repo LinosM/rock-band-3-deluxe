@@ -546,26 +546,10 @@
    "Zoom Rugby")
 (a/../../male/wornlongsleeveshirt_striped_desc
    "Long sleeves and rugby stripes make this shirt the one to wear when you want to get out of the van and play some music!")
-(a/../../female/femalemask_plaguedoctor_resource
-   "Plague Doctor")
-(a/../../female/femalemask_plaguedoctor_resource_desc
-   "This mask was worn by doctors in Italy in the 14th century during the Bubonic Plague. Ain't history grand?")
-(a/../../female/femalecowboyboots_sunburst
-   "Ghost Ranchers")
-(a/../../female/femalecowboyboots_sunburst_desc
-   "Corral those haunts in these handsome boots.")
-(a/../../female/satinadmiral_ornate
-   "Dance Commander")
-(a/../../female/satinadmiral_ornate_desc
-   "Give out the order for fun in this dandy jacket.")
 (a/../../female/bigstraps_rubber
    "Back in Straps")
 (a/../../female/bigstraps_rubber_desc
    "You hit the maps! Touring the world or your favorite dungeon, this top will serve you well.")
-(a/../../male/beltedtee_fishnetsleeves
-   "Beau Filet")
-(a/../../male/beltedtee_fishnetsleeves_desc
-   "Give someone a fish and they'll eat for a day. Give them this top and they'll have to fight the fish off.")
 (a/../../female/corsetblouse_silk
    "Take a Bow")
 (a/../../female/corsetblouse_silk_desc
@@ -614,10 +598,6 @@
    "Bondage Scout Uniform")
 (a/../../male/strappedshirt_pvcstraps_desc
    "Hey, Scout! You certainly know how to earn your merits!")
-(a/../../female/raincoat_rubber
-   "Restrain-coat")
-(a/../../female/raincoat_rubber_desc
-   "This edgy, modern raincoat is so hot, it will be tough for your fans to restrain themselves... which is why you should always be nice to the bouncers.")
 (a/../../male/furvest_fur
    "\qFaux Certain\q Vest")
 (a/../../male/furvest_fur_desc
@@ -670,10 +650,6 @@
    "Bob Marley Legacy Tee")
 (a/../../female/female_premium_marley_flagface_desc
    "In 1976, two days after being injured in an assault by armed men, Bob Marley performed at the free \qSmile Jamaica\q concert. Help to honor his legacy in this tee.")
-(a/../../female/satinadmiral_ornate
-   "Dance Commander")
-(a/../../female/satinadmiral_ornate_desc
-   "Give out the order for fun in this dandy jacket.")
 (a/../../male/gatorfutureshirt_leather
    "Metal Demon Shirt")
 (a/../../male/gatorfutureshirt_leather_desc
@@ -798,18 +774,6 @@
    "Bare Your Skull")
 (a/../../female/shortskirt_skullbarelegs_desc
    "This soul baring mini is perfect when you really want to open up.")
-(a/../../female/female_piercings_combo01
-   "Airport Security Disaster")
-(a/../../female/female_piercings_combo01_desc
-   "Beep. Beep. Beeeeeeep. BEEEEEEEP.")
-(a/../../female/female_bandana_glam
-   "Glamma Bandana")
-(a/../../female/female_bandana_glam_desc
-   "You are beautiful no matter what they say!")
-(a/../../female/femalemask_cat_tiger_resource
-   "Face of the Tiger")
-(a/../../female/femalemask_cat_tiger_resource_desc
-   "Rise up to the challenge of your rival in this fearful get-up.")
 (a/../../female/fempunkbriefs_tape
    "Punks Not Threads Briefs")
 (a/../../female/fempunkbriefs_tape_desc
@@ -878,10 +842,6 @@
    "Leather Jacket Weather")
 (a/../../male/hoodieandjacket_leather_desc
    "This hoodie and leather jacket combo will keep you warm and stylin'.")
-(a/../../female/hoodedsweatshirt_skullflower
-   "Skull Flowers")
-(a/../../female/hoodedsweatshirt_skullflower_desc
-   "Make a statement about death and rebirth in this silk-screened gem of a hoodie.")
 (a/../../male/hoodiejacket_studs
    "Strummer Studs")
 (a/../../male/hoodiejacket_studs_desc
@@ -1470,10 +1430,6 @@
    "Bob Marley Exodus Tee")
 (a/../../male/male_premium_marley_exodus_desc
    "Celebrate Bob Marley & The Wailers' \qExodus,\q the album that a major magazine declared to be the greatest album of the 20th century.")
-(a/../../female/female_premium_marley_flagface
-   "Bob Marley Legacy Tee")
-(a/../../female/female_premium_marley_flagface_desc
-   "In 1976, two days after being injured in an assault by armed men, Bob Marley performed at the free \qSmile Jamaica\q concert. Help to honor his legacy in this tee.")
 (a/../../male/male_premium_marley_flagface
    "Bob Marley Legacy Tee")
 (a/../../male/male_premium_marley_flagface_desc
@@ -1526,10 +1482,6 @@
    "Spinal Tap Intravenus de Milo Tee")
 (a/../../male/male_premium_spinaltap_intravenus_desc
    "This elegant tee celebrates Spinal Tap's avant-garde \qIntravenus de Milo\q album from 1974, featuring the epic track \qSaliva of the Fittest.\q")
-(a/../../female/female_premium_spinaltap_metallogo
-   "Spinal Tap Classic Logo Tee")
-(a/../../female/female_premium_spinaltap_metallogo_desc
-   "How much more awesome could this classic Spinal Tap tee be? The answer is none. None more awesome.")
 (a/../../male/male_premium_spinaltap_metallogo
    "Spinal Tap Classic Logo Tee")
 (a/../../male/male_premium_spinaltap_metallogo_desc
@@ -1714,10 +1666,6 @@
    "Stevie Knickers")
 (a/../../female/miniskirtandleggings_worn_desc
    "You'll look prettier than a white winged dove in this mini skirt and lace-edged leggings combo.")
-(a/../../female/femalerings_coffin
-   "Casketcase")
-(a/../../female/femalerings_coffin_desc
-   "Don't fear the Reaper. Wear his rings instead.")
 (a/../../female/aztecboots_hide
    "Toci's Feet")
 (a/../../female/aztecboots_hide_desc
@@ -1786,10 +1734,6 @@
    "Twice Shy Pants")
 (a/../../male/loosegothtrousers_whitepiping_desc
    "Double your fashion pleasure with these two-tone pants.")
-(a/../../female/shortskirt_skullbarelegs
-   "Bare Your Skull")
-(a/../../female/shortskirt_skullbarelegs_desc
-   "This soul baring mini is perfect when you really want to open up.")
 (a/../../male/malegothknickers_silk
    "Kill'em Shakespeare Knickers")
 (a/../../male/malegothknickers_silk_desc
@@ -1818,10 +1762,6 @@
    "Ura-Hara Camos")
 (a/../../male/harajukubelt_camo_desc
    "These cut-off camos are ideal for hanging on the streets of Tokyo, moshing in NYC, or anything else that comes your way.")
-(a/../../female/layeredlacedpants_leather
-   "Your Mama Don't Pants")
-(a/../../female/layeredlacedpants_leather_desc
-   "...And your daddy don't tuck and roll.")
 (a/../../male/raggedyjeans_splattered
    "Neoplastic Sarcastic Jeans")
 (a/../../male/raggedyjeans_splattered_desc
@@ -2130,22 +2070,10 @@
    "Nose Ring")
 (a/../../female/female_piercings_combo05_desc
    "Perfect for art students and creepy vampire fans alike, the nose ring is the ideal starter piercing for a budding puncture addict.")
-(a/../../female/femaleglasses_monocle_resource
-   "Sterling Reputation")
-(a/../../female/femaleglasses_monocle_resource_desc
-   "Prove that you're a lady of class and distinction, and that you possess the awareness that \qpenultimate\q does not mean \qthe ultimate.\q")
 (a/../../female/female_eyebrows_04_resource
    "Browbeater")
 (a/../../female/female_eyebrows_04_resource_desc
    "They can call you a jerk as much as they want to; you're the only one tough enough to convince your bandmates that practice isn't \qfor wimps.\q")
-(a/../../female/female_bandana_flag_moscow
-   "Russian Bandana")
-(a/../../female/female_bandana_flag_moscow_desc
-   "Everybody will be \qRussian\q to see your band play when you show up in this proud bandana. Na zdorovye!")
-(a/../../female/femalerings_jem
-   "Rock Candy")
-(a/../../female/femalerings_jem_desc
-   "These planet-sized gemstone rings are the ultimate \qsuccessory.\q")
 (a/../../female/skinnyjeans_denim
    "Skinny Jeans")
 (a/../../female/skinnyjeans_denim_desc
@@ -2170,10 +2098,6 @@
    "Classic Cut-offs")
 (a/../../male/cutoffs_jeans_desc
    "Musicians hate GETTING cut-off, but they like wearing 'em.")
-(a/../../female/beltskirt_denim
-   "Jean Genie")
-(a/../../female/beltskirt_denim_desc
-   "Work the DIY look in this restructured mini.")
 (a/../../male/cutoffsflannel_jeans
    "Roadie Shorts")
 (a/../../male/cutoffsflannel_jeans_desc
@@ -2194,10 +2118,6 @@
    "Floral Boardies")
 (a/../../male/jams_floral_desc
    "Totally ideal for crowd surfing, dude.")
-(a/../../female/cargopants_camo
-   "Camo Cargos")
-(a/../../female/cargopants_camo_desc
-   "These roomy cargos feature large, useful pockets for stashing your setlist, gum, and whatever else you might need...")
 (a/../../male/jams_hands
    "Bitchin' Boardies")
 (a/../../male/jams_hands_desc
@@ -2298,10 +2218,6 @@
    "Dystopia Pants")
 (a/../../male/leatherslacks_roadwarrior_desc
    "The metal exoskeleton provides formidable support, while the thick leather protects you from road burn.")
-(a/../../female/armorleggings_nylon
-   "Poleyn Leggings")
-(a/../../female/armorleggings_nylon_desc
-   "Protect yourself from the slings and arrows of outrageous fandom in these plate metal pants.")
 (a/../../male/furshorts_fur
    "Furbidden Love Briefs")
 (a/../../male/furshorts_fur_desc
@@ -2346,10 +2262,6 @@
    "Beast of Burden Pants")
 (a/../../male/malemetalpants_leather_desc
    "All the other metal dudes will be like, \qHey bro, where'd you get that sweet spiked codpiece?\q and you'll be all , \qOh, hey Olaf. Nice, right?\q")
-(a/../../female/oilspillleggings_latex
-   "Citlalicue's Legs")
-(a/../../female/oilspillleggings_latex_desc
-   "Citlalicue's name means \qher skirt is stars.\q Well, skirt... leggings... whichever, it's still meaningful.")
 (a/../../male/spikedarmorleggings_spandex
    "Oni Kneestabbers")
 (a/../../male/spikedarmorleggings_spandex_desc
@@ -2386,10 +2298,6 @@
    "Embroidered Western Boots")
 (a/../../male/cowboyboots_embroidered_desc
    "Your feet won't get cold in the winter time when you wear these intricately embroidered boots.")
-(a/../../female/femalecowboyboots_sunburst
-   "Ghost Ranchers")
-(a/../../female/femalecowboyboots_sunburst_desc
-   "Corral those haunts in these handsome boots.")
 (a/../../male/cowboyboots_sunburst
    "Ghost Ranchers")
 (a/../../male/cowboyboots_sunburst_desc
@@ -2514,10 +2422,6 @@
    "Feelin' Low Hightops")
 (a/../../male/gothtops_darkleather_desc
    "These shoes will give you all the support your stepfather never gave you.")
-(a/../../female/midcalfspikes_leather
-   "Treacherous Spikes")
-(a/../../female/midcalfspikes_leather_desc
-   "The spikes may be treacherous, but your footing won't be in these supportive mid-calf height boots.")
 (a/../../male/perferatedshoes_metallic
    "Tin Men")
 (a/../../male/perferatedshoes_metallic_desc
@@ -2538,10 +2442,6 @@
    "Jack Spats")
 (a/../../male/spats_twotone_desc
    "Betwixt these two shoes you'll wipe the stage clean.")
-(a/../../female/tiedtallboots_suede
-   "Warrior Princess")
-(a/../../female/tiedtallboots_suede_desc
-   "Don these boots and show 'em your sword!")
 (a/../../male/studdedcowboyboots_leather
    "Nightmare Cowboy")
 (a/../../male/studdedcowboyboots_leather_desc
@@ -2662,10 +2562,6 @@
    "Checkered Past Boots")
 (a/../../male/eightholedocs_checkered_desc
    "The past is the past but these boots are your future.")
-(a/../../female/femaleeightholedocs_var3
-   "Smoothies")
-(a/../../female/femaleeightholedocs_var3_desc
-   "Creamy smooth, get these boots in every color!")
 (a/../../male/eightholedocs_var1
    "Lace Pacers")
 (a/../../male/eightholedocs_var1_desc
@@ -2742,10 +2638,6 @@
    "Hobo Hightops")
 (a/../../male/tatteredshoe_homeless_desc
    "These tattered trainers go really well with ramen noodles, fingerless gloves, and apartments that smell like nail polish remover.")
-(a/../../female/demonboots_stone
-   "Stone Demons")
-(a/../../female/demonboots_stone_desc
-   "In demon boots, it's cold inside, but don't worry... they come with warm socks.")
 (a/../../female/femaleearrings_ankh
    "Ankhlettes")
 (a/../../female/femaleearrings_ankh_desc
@@ -2870,10 +2762,6 @@
    "Custom Kicks")
 (a/../../male/basketballsneaks_custom_desc
    "Your sneakers say a lot about you. These ones say \qYeah!\q")
-(a/../../female/femalelowchucks_skullsprint
-   "Skully Dornholes")
-(a/../../female/femalelowchucks_skullsprint_desc
-   "Get these limited edition skull print Dornholes before they're gone!")
 (a/../../male/fatlaceskatersneakers_solid
    "Puff Streets")
 (a/../../male/fatlaceskatersneakers_solid_desc
@@ -3050,18 +2938,10 @@
    "Roadstar Boots")
 (a/../../male/malegearheadboots_leather_desc
    "These boots are guaranteed to run for hours, they're the perfect size. Talkin' 'bout boots.")
-(a/../../female/aztecboots_hide
-   "Toci's Feet")
-(a/../../female/aztecboots_hide_desc
-   "To really know what it's like to rule the world, walk a mile in these boots.")
 (a/../../male/namboots_jungle
    "Concrete Jungle Kickers")
 (a/../../male/namboots_jungle_desc
    "It's a jungle out there, so don't get caught without your boots on.")
-(a/../../female/femalerinoboots_leather
-   "Tricerabottoms")
-(a/../../female/femalerinoboots_leather_desc
-   "Three giant spikes endow these boots with monster maiming powers.")
 (a/../../male/sportbikeboots_leather
    "Hanzo Boots")
 (a/../../male/sportbikeboots_leather_desc
@@ -3114,10 +2994,6 @@
    "Thunder Dome Power Stompers")
 (a/../../male/roadwarriorboots_leather_desc
    "They may not need another hero, but they'll want one when they get a look at you in these boots.")
-(a/../../female/spinyboots_iron
-   "Chills Up Your Spine Boots")
-(a/../../female/spinyboots_iron_desc
-   "Once glance at these spiny kicks and the door guy will think twice about limiting your guest list slots.")
 (a/../../male/spikedarmorboots_leather
    "Knights of the Metal Republic")
 (a/../../male/spikedarmorboots_leather_desc
@@ -3226,10 +3102,6 @@
    "Brazilian Bandana")
 (a/../../male/male_bandana_flag_rio_desc
    "Carnaval is generally agreed to be the greatest party in the world, no matter how great your last rager in the green room was.")
-(a/../../female/female_bandana_flag_rome
-   "Italian Bandana")
-(a/../../female/female_bandana_flag_rome_desc
-   "Touring in Italy: If you were in a relationship when you got here, you aren't anymore!")
 (a/../../male/male_bandana_flag_rome
    "Italian Bandana")
 (a/../../male/male_bandana_flag_rome_desc
@@ -3266,10 +3138,6 @@
    "Ragin' Contagion")
 (a/../../male/male_bandana_medical_desc
    "Everybody knows that the music ain't the only thing about your band that's contagious. Protect yourself with this stylish surgical mask.")
-(a/../../female/femaleearrings_ankh
-   "Ankhlettes")
-(a/../../female/femaleearrings_ankh_desc
-   "Little ankhs for your ears.")
 (a/../../male/maleearrings_ankh
    "Ankhlettes")
 (a/../../male/maleearrings_ankh_desc
@@ -3290,10 +3158,6 @@
    "Dangles")
 (a/../../male/maleearrings_dangles_desc
    "Three architectural strips of metal dangle provocatively from a round post.")
-(a/../../female/femaleearrings_hoops
-   "Hoopdies")
-(a/../../female/femaleearrings_hoops_desc
-   "Before you start trouble, remember to have one of your bandmates hold your hoops.")
 (a/../../male/maleearrings_hoops
    "Hoopdies")
 (a/../../male/maleearrings_hoops_desc
@@ -3386,10 +3250,6 @@
    "Stainless Steel Spikes")
 (a/../../male/maleearrings_spikeloop_desc
    "The spikes are internally threaded to make these circulars easy to put on.")
-(a/../../female/femaleearrings_star
-   "Lucky Stars")
-(a/../../female/femaleearrings_star_desc
-   "Thank your lucky stars that you can look this heavenly.")
 (a/../../male/maleearrings_star
    "Lucky Stars")
 (a/../../male/maleearrings_star_desc
@@ -3426,10 +3286,6 @@
    "Debonair")
 (a/../../male/male_eyebrows_03_resource_desc
    "A refined choice for a suave and urbane performer, such as yourself, these eyebrows represent the utmost in luxury.")
-(a/../../female/female_eyebrows_04_resource
-   "Browbeater")
-(a/../../female/female_eyebrows_04_resource_desc
-   "They can call you a jerk as much as they want to; you're the only one tough enough to convince your bandmates that practice isn't \qfor wimps.\q")
 (a/../../male/male_eyebrows_04_resource
    "Browbeater")
 (a/../../male/male_eyebrows_04_resource_desc
@@ -3482,10 +3338,6 @@
    "Surprise, Surprise")
 (a/../../male/male_eyebrows_10_resource_desc
    "When you're rocking permanently raised brows, it's a lot easier to feign surprise at the news that \qsomeone\q raided the practice space fridge again.")
-(a/../../female/female_eyebrows_11_resource
-   "Arch Villain")
-(a/../../female/female_eyebrows_11_resource_desc
-   "Nothing like an artfully arched brow to tell the world that despite your refined charm, you're secretly plotting global destruction.")
 (a/../../male/male_eyebrows_11_resource
    "Arch Villain")
 (a/../../male/male_eyebrows_11_resource_desc
@@ -3514,10 +3366,6 @@
    "Wooly Bear")
 (a/../../male/male_eyebrows_14_resource_desc
    "Hopefully no one will confuse your adorably fuzzy brows with the larva of a Pyrrharctia isabella!")
-(a/../../female/female_eyebrows_15_resource
-   "Unimpressed")
-(a/../../female/female_eyebrows_15_resource_desc
-   "The ideal brow shape for silently communicating to your bandmates that their \qimprovements\q to the lyrics you wrote are not working for you.")
 (a/../../male/male_eyebrows_15_resource
    "Unimpressed")
 (a/../../male/male_eyebrows_15_resource_desc
@@ -3538,10 +3386,6 @@
    "Sparse")
 (a/../../male/male_eyebrows_17_resource_desc
    "Unless you're a real whiz with an eyebrow pencil, this look is best achieved naturally.")
-(a/../../female/female_piercings_combo02
-   "Lip Ring")
-(a/../../female/female_piercings_combo02_desc
-   "Possibly the most hilarious piercing to watch people recover from.")
 (a/../../female/triceratopsvest_worndenim
    "TriceraTops Vest")
 (a/../../female/triceratopsvest_worndenim_desc
@@ -3558,18 +3402,10 @@
    "Checkers or Chess")
 (a/../../female/tightpants_checkered_desc
    "Be queen of the board without having to pawn your stuff! These checked trousers will deliver a checkmate after the gig!")
-(a/../../female/femalerings_wings
-   "Wing Bling")
-(a/../../female/femalerings_wings_desc
-   "Silver wings encompass two cabochons like little angels.")
 (a/../../female/femaleglasses_rectangle_resource
    "Wrecktangles")
 (a/../../female/femaleglasses_rectangle_resource_desc
    "The ideal choice for an early morning interview when you're feeling like a train wreck from the night before... a train wreck covered in bee stings... that fell into a vat of acid.")
-(a/../../female/female_hat_duckbill_femover_resource
-   "Raspberry Cap")
-(a/../../female/female_hat_duckbill_femover_resource_desc
-   "This cap is the kind you find at a secondhand store. But the hair is all new.")
 (a/../../female/femalewrist_gauntlet
    "Buckled Gauntlets")
 (a/../../female/femalewrist_gauntlet_desc
@@ -3586,14 +3422,6 @@
    "Angel of the Mourning")
 (a/../../female/female_hat_gothviel_bunhead_resource_desc
    "Just touch your cheek before they grieve you, baby.")
-(a/../../female/turtleneckmodern_cotton
-   "Hickey Hider")
-(a/../../female/turtleneckmodern_cotton_desc
-   "Though somewhat warm for stage-wear, this turtleneck is your best bet if you're trying to hide your secret relationship with the buck-toothed makeup artist you met in Bayonne.")
-(a/../../female/female_piercings_combo10
-   "Brow Barbell")
-(a/../../female/female_piercings_combo10_desc
-   "Interestingly, this piercing hurts the least and yet bleeds the most when it gets ripped out in a fight about whose turn it is to drive the van.")
 (a/../../female/female_hair_buzzcut_resource
    "Buzz Cut")
 (a/../../female/female_hair_buzzcut_resource_desc
@@ -3610,10 +3438,6 @@
    "Kid Gloves")
 (a/../../female/female_hands_kidgloves_leather_desc
    "Wearing these gloves will not automatically make you more tactful; calling your bandmates \qloathsome snot buckets\q will be received poorly regardless of your attire.")
-(a/../../female/femalemask_hockey_resource
-   "Hockey Mask")
-(a/../../female/femalemask_hockey_resource_desc
-   "Ch-ch-ch, ah-ah-ah. Ch-ch-ch, ah-ah-ah.")
 (a/../../female/female_hair_test
    "Waves of Mutilation")
 (a/../../female/female_hair_test_desc
@@ -3626,10 +3450,6 @@
    "Wire Frame Glasses")
 (a/../../male/maleglasses_wireframe_resource_desc
    "There's nothing like a classy pair of eyeglasses to give your fans the impression that you've read more than just hair gel labels.")
-(a/../../female/femaleglasses_rectangle_resource
-   "Wrecktangles")
-(a/../../female/femaleglasses_rectangle_resource_desc
-   "The ideal choice for an early morning interview when you're feeling like a train wreck from the night before... a train wreck covered in bee stings... that fell into a vat of acid.")
 (a/../../male/maleglasses_rectangle_resource
    "Wrecktangles")
 (a/../../male/maleglasses_rectangle_resource_desc
@@ -3850,10 +3670,6 @@
    "Horse with No Name")
 (a/../../male/malemask_horse_domestic_resource_desc
    "In the desert you can remember your name... as opposed to when you're not in the desert and you have no idea what it could be.")
-(a/../../female/femalemask_horse_zebra_resource
-   "The Zebra")
-(a/../../female/femalemask_horse_zebra_resource_desc
-   "This mask is based on an imaginary, mythological creature known as \qthe zebra\q which folklorists say is a type of striped unicorn.")
 (a/../../male/malemask_horse_zebra_resource
    "The Zebra")
 (a/../../male/malemask_horse_zebra_resource_desc
@@ -3962,10 +3778,6 @@
    "Skelly Gloves")
 (a/../../male/male_hands_skeletongloves_skeleton_desc
    "Play your fingers to the bone in these uncanny gloves.")
-(a/../../female/female_hands_kidgloves_leather
-   "Kid Gloves")
-(a/../../female/female_hands_kidgloves_leather_desc
-   "Wearing these gloves will not automatically make you more tactful; calling your bandmates \qloathsome snot buckets\q will be received poorly regardless of your attire.")
 (a/../../male/male_hands_bandage_wrap
    "Mummy Hand Wraps")
 (a/../../male/male_hands_bandage_wrap_desc
@@ -3978,10 +3790,6 @@
    "Whole Lotta Gloves")
 (a/../../male/male_hands_leathergloves_leather_desc
    "While you're coolin', the fans will be droolin' in this full leather look.")
-(a/../../female/female_hair_test
-   "Waves of Mutilation")
-(a/../../female/female_hair_test_desc
-   "This simple, wavy style will cripple your stylist's ability to make disappointed clucking noises while aggressively brushing your hair.")
 (a/../../male/male_hair_generic_resource
    "Totally Generic")
 (a/../../male/male_hair_generic_resource_desc
@@ -4026,10 +3834,6 @@
    "...And You Will Know Us By the Tail of Dreads")
 (a/../../male/male_hair_dreadpony_resource_desc
    "This look will definitely set you apart from the crowd. But unless you enjoy smelling like a gym bag full of old bananas, be very fastidious about washing your dreads.")
-(a/../../female/female_hair_buzzcut_resource
-   "Buzz Cut")
-(a/../../female/female_hair_buzzcut_resource_desc
-   "Sure, it's a look more common among military types than among rockstars... but who doesn't like getting buzzed from time to time?")
 (a/../../male/male_hair_egyptian_resource
    "Sleek Mop")
 (a/../../male/male_hair_egyptian_resource_desc
@@ -4410,10 +4214,6 @@
    "Urban Cowboy")
 (a/../../male/male_hat_cowboy_ziggymullet_resource_desc
    "This hat has more kick than a mechanical bull, and so does the hair underneath it!")
-(a/../../female/female_hat_duckbill_ladylayered_resource
-   "Fancy Newsboy")
-(a/../../female/female_hat_duckbill_ladylayered_resource_desc
-   "You won't have to make up a headline when they see you in this cap and layered hairstyle combo.")
 (a/../../male/male_hat_dockcap_shaggy_resource
    "Knit Cap")
 (a/../../male/male_hat_dockcap_shaggy_resource_desc
@@ -4466,10 +4266,6 @@
    "Bryn Bonnet")
 (a/../../male/male_hat_militarycap_featheredshort_resource_desc
    "You'll get a lot of pleasure (pleasure) out of this trendy look.")
-(a/../../female/female_hat_militarycap_shortspikes_resource
-   "G.I. Jane")
-(a/../../female/female_hat_militarycap_shortspikes_resource_desc
-   "One-handed push-ups? Not a problem, in this modern military cap.")
 (a/../../male/male_hat_paperboy_fauxhawk_resource
    "Newsie")
 (a/../../male/male_hat_paperboy_fauxhawk_resource_desc
@@ -4522,10 +4318,6 @@
    "Dread Wrangler")
 (a/../../male/male_hat_tam_maleladyfro_resource_desc
    "Keep your locks under locks with this fabulously functional billed dread tam.")
-(a/../../female/female_hat_rockhelmet_stripes_resource
-   "Stripe Tease Helmet")
-(a/../../female/female_hat_rockhelmet_stripes_resource_desc
-   "This striped helmet will protect your head and your reputation.")
 (a/../../male/male_hat_tophat_long_resource
    "Top Hat")
 (a/../../male/male_hat_tophat_long_resource_desc
@@ -4534,10 +4326,6 @@
    "Worn in the USA Helmet")
 (a/../../female/female_hat_rockhelmet_wings_resource_desc
    "Whoa, Mercury, you'll be shooting through every degree in this patriotic helmet!")
-(a/../../male/male_hat_viking_long_resource
-   "Norseman")
-(a/../../male/male_hat_viking_long_resource_desc
-   "Let the world know that you were \qbjorn on the fjords\q with this Norse style.")
 (a/../../female/female_hat_spikehelm_shortspikes_resource
    "Pickelhaube")
 (a/../../female/female_hat_spikehelm_shortspikes_resource_desc
@@ -4610,10 +4398,6 @@
    "The Bad Guy")
 (a/../../male/male_hat_outlaw_resource_desc
    "Gotten the brush-off from a crush who thinks you're \qsweet\q? This outlaw look is guaranteed to turn \qsweet\q into (the oddly more attractive) \qpotentially dangerous.\q")
-(a/../../female/female_hat_gothviel_bunhead_resource
-   "Angel of the Mourning")
-(a/../../female/female_hat_gothviel_bunhead_resource_desc
-   "Just touch your cheek before they grieve you, baby.")
 (a/../../male/male_hat_outlaw_fauxhawk_resource
    "The Bad Guy w/ Short Hair")
 (a/../../male/male_hat_outlaw_fauxhawk_resource_desc
@@ -4630,10 +4414,6 @@
    "Wall Flowered")
 (a/../../female/wornpleatedskirt_flower_desc
    "Hey, it's not like you even WANTED to dance anyway.")
-(a/../../female/femalerings_wings
-   "Wing Bling")
-(a/../../female/femalerings_wings_desc
-   "Silver wings encompass two cabochons like little angels.")
 (a/../../female/furcoat_faux
    "Friend or Faux")
 (a/../../female/furcoat_faux_desc
@@ -4646,10 +4426,6 @@
    "Your Pleatin' Heart")
 (a/../../female/wornpleatedskirt_plain_desc
    "Conservative AND fabulous, like a Log Cabin Republican.")
-(a/../../female/female_piercings_combo05
-   "Nose Ring")
-(a/../../female/female_piercings_combo05_desc
-   "Perfect for art students and creepy vampire fans alike, the nose ring is the ideal starter piercing for a budding puncture addict.")
 (a/../../male/male_piercings_combo05
    "Nose Ring")
 (a/../../male/male_piercings_combo05_desc
@@ -4662,10 +4438,6 @@
    "Septum Ring")
 (a/../../male/male_piercings_combo06_desc
    "All but guaranteed to result in deranged old people on the street wanting to talk to you about your piercing.")
-(a/../../female/female_piercings_combo08
-   "Anne Marie")
-(a/../../female/female_piercings_combo08_desc
-   "Bring a little classic movie star glamour to your face with this permanent beauty mark.")
 (a/../../male/male_piercings_combo08
    "Beauty Mark")
 (a/../../male/male_piercings_combo08_desc
@@ -4886,10 +4658,6 @@
    "Wing Bling")
 (a/../../male/malerings_wings_desc
    "Silver wings encompass two cabochons like little angels.")
-(a/../../female/femalewrist_sweatband_right
-   "Perspicacity (Single)")
-(a/../../female/femalewrist_sweatband_right_desc
-   "Being a musician is sweaty work. Mop it up with this sweatband.")
 (a/../../male/malewrist_sweatband_right
    "Perspicacity (Single)")
 (a/../../male/malewrist_sweatband_right_desc
@@ -4942,10 +4710,6 @@
    "Sweat & Spikes")
 (a/../../male/malewrist_sweatbandstuddedcombo_desc
    "Wipe your face with the sweatband, not the spikes!")
-(a/../../female/femalewrist_checkerpyramids_right
-   "Checked Off Cuff (Single)")
-(a/../../female/femalewrist_checkerpyramids_right_desc
-   "Your list of impressive accomplishments just keeps getting longer. Get this cuff as a reminder of what lies destroyed in your wake.")
 (a/../../male/malewrist_avrilsock
    "Stripy Wristwarmer")
 (a/../../male/malewrist_avrilsock_desc
@@ -5046,10 +4810,6 @@
    "Studded Gauntlets")
 (a/../../male/malewrist_studdedgauntlet_desc
    "They look good on stage or at your next barbarian battle.")
-(a/../../female/femalewrist_sweatbandcharmscombo
-   "Sweet & Tart")
-(a/../../female/femalewrist_sweatbandcharmscombo_desc
-   "How sweet it is to be worn by you.")
 (a/../../male/malewrist_watchleatherstrap
    "Time to Party Watch")
 (a/../../male/malewrist_watchleatherstrap_desc
@@ -5086,10 +4846,6 @@
    "Yard Dog Cuff (Single)")
 (a/../../male/malewrist_longspikes_right_desc
    "These long spikes aren't just for collars anymore.")
-(a/../../female/femalewrist_studdedwatchcombo
-   "Good Times")
-(a/../../female/femalewrist_studdedwatchcombo_desc
-   "Be on time to all your gigs and look cool doing so with this punctual accessory combo.")
 (a/../../male/malewrist_longspikes
    "Yard Dog Cuffs")
 (a/../../male/malewrist_longspikes_desc
@@ -5118,17 +4874,9 @@
    "Buckled Gauntlets")
 (a/../../male/malewrist_gauntlet_desc
    "These sweet leather accessories are also valuable for their wrist supporting action.")
-(a/../../female/femalewrist_gauntlet
-   "Buckled Gauntlets")
-(a/../../female/femalewrist_gauntlet_desc
-   "These sweet leather accessories are also valuable for their wrist supporting action.")
 (a/../../male/malewrist_gauntlet2
    "Spiked Gauntlet")
 (a/../../male/malewrist_gauntlet2_desc
-   "You can't have too many spiked gauntlets... really.")
-(a/../../female/femalewrist_gauntlet2
-   "Spiked Gauntlet")
-(a/../../female/femalewrist_gauntlet2_desc
    "You can't have too many spiked gauntlets... really.")
 (a/../../male/cast_graffiti
    "Cast-anova")
@@ -5138,10 +4886,6 @@
    "Norseman")
 (a/../../male/male_hat_viking_long_resource_desc
    "Let the world know that you were \qbjorn on the fjords\q with this Norse style.")
-(a/../../male/strappedshirt_pvcstraps
-   "Bondage Scout Uniform")
-(a/../../male/strappedshirt_pvcstraps_desc
-   "Hey, Scout! You certainly know how to earn your merits!")
 (a/../../male/tshirtdeath_rbdrums
    "Drums Tee")
 (a/../../male/tshirtdeath_rbdrums_desc
@@ -5150,102 +4894,10 @@
    "Mighty Mercury's")
 (a/../../male/whiteflaircumber_cotton_desc
    "In these pants... you are the champion.")
-(a/../../male/blazershirtless_blazer
-   "Chest for Success")
-(a/../../male/blazershirtless_blazer_desc
-   "If this is what you're wearing to day job interviews, it's no wonder you're still living in your aunt's basement.")
-(a/../../male/maleslipons2_checkerboard
-   "Skandalous Slip-ons")
-(a/../../male/maleslipons2_checkerboard_desc
-   "These comfortable slip-ons will caravan your feet to exotic locations.")
-(a/../../male/male_premium_doors_band
-   "The Doors Band Tee")
-(a/../../male/male_premium_doors_band_desc
-   "Formed in Los Angeles in 1965, The Doors became one of the most iconic rock bands in history. Wear this tee to prove you're a true fan.")
-(a/../../male/worntshirt_vintage
-   "Vintage Rock Tee")
-(a/../../male/worntshirt_vintage_desc
-   "Perfectly broken-in, this vintage tee will show everyone what brilliant taste you have.")
-(a/../../male/male_premium_hendrix_woodstock
-   "Jimi Hendrix Woodstock Tee")
-(a/../../male/male_premium_hendrix_woodstock_desc
-   "Jimi Hendrix's performance of \qThe Star-Spangled Banner\q at Woodstock in 1969 is among the most highly-regarded renditions in history. Show your love in this tee.")
-(a/../../male/blankhoodie_solid
-   "Good Hoodie")
-(a/../../male/blankhoodie_solid_desc
-   "You can feel good about hoodies.")
-(a/../../male/jams_hands
-   "Bitchin' Boardies")
-(a/../../male/jams_hands_desc
-   "These cheerful board shorts speak for themselves. And what they say is, \qI AM IRONIC.\q")
-(a/../../male/male_hat_militarycap_featheredshort_resource
-   "Bryn Bonnet")
-(a/../../male/male_hat_militarycap_featheredshort_resource_desc
-   "You'll get a lot of pleasure (pleasure) out of this trendy look.")
-(a/../../male/malemask_skull_resource
-   "Numb Skull")
-(a/../../male/malemask_skull_resource_desc
-   "Have the demands of fame and fortune made you feel numb? Wear this mask to symbolize your fragile inner humanity.")
-(a/../../male/malerings_wings
-   "Wing Bling")
-(a/../../male/malerings_wings_desc
-   "Silver wings encompass two cabochons like little angels.")
-(a/../../male/kilt_plaid
-   "Kilty as Charged")
-(a/../../male/kilt_plaid_desc
-   "Wear this antique kilt with the same honor that the clan Kiltington forefathers did during the epic Battle of Kiltingtonshire!")
-(a/../../male/maleslipons2_checkerboard
-   "Skandalous Slip-ons")
-(a/../../male/maleslipons2_checkerboard_desc
-   "These comfortable slip-ons will caravan your feet to exotic locations.")
-(a/../../male/male_hat_fedora_youngozzie_resource
-   "Jazz Man")
-(a/../../male/male_hat_fedora_youngozzie_resource_desc
-   "Skeedly bop n' scoo-bop POW a'deedly deedly doo-wow, this look is the cat's meow.")
-(a/../../male/male_hair_longlayered_resource
-   "Long and Layered")
-(a/../../male/male_hair_longlayered_resource_desc
-   "They'll all want to be lovin', touchin', and squeezin' your hair.")
-(a/../../male/male_bandana_camo
-   "Super Trooper")
-(a/../../male/male_bandana_camo_desc
-   "You're primed for battle and ready for an all-night patrol with this vintage army/navy design.")
-(a/../../male/male_premium_who_fist
-   "The Who Triumph Tee")
-(a/../../male/male_premium_who_fist_desc
-   "Show your love for The Who, with their legendary and charismatic frontman Roger Daltrey, in this stylish tee.")
-(a/../../male/male_piercings_combo11
-   "Acting Out")
-(a/../../male/male_piercings_combo11_desc
-   "As long as this is the only acting you do - no one likes a theater major!")
-(a/../../male/male_premium_who_fist
-   "The Who Triumph Tee")
-(a/../../male/male_premium_who_fist_desc
-   "Show your love for The Who, with their legendary and charismatic frontman Roger Daltrey, in this stylish tee.")
-(a/../../male/male_hat_rockhat_long_resource
-   "Rhinestone Cowboy Hat")
-(a/../../male/male_hat_rockhat_long_resource_desc
-   "Rope 'em in with this classic American look. Yee-haw.")
-(a/../../male/male_premium_marley_flagface
-   "Bob Marley Legacy Tee")
-(a/../../male/male_premium_marley_flagface_desc
-   "In 1976, two days after being injured in an assault by armed men, Bob Marley performed at the free \qSmile Jamaica\q concert. Help to honor his legacy in this tee.")
-(a/../../male/maleglasses_smashed_resource
-   "Four Eyes")
-(a/../../male/maleglasses_smashed_resource_desc
-   "It doesn't matter what they used to call you because now you're a star. Wear your outsider status proudly.")
-(a/../../male/graverpants_blackwhiteredtrims
-   "Graver Specials")
-(a/../../male/graverpants_blackwhiteredtrims_desc
-   "With a multitude of pockets for your face-paint and glow sticks, these pants are practical and dashing!")
 (a/../../male/alexjacket_leather
    "The CEO My Goodness Jacket")
 (a/../../male/alexjacket_leather_desc
    "Everyone will swoon at your fashion sense, and your enormous bankroll, in this \qcorporate badboy\q style.")
-(a/../../male/tallboots_solid
-   "Combat Boots")
-(a/../../male/tallboots_solid_desc
-   "You'll never again fear a mosh pit (or a puddle) wearing these classic Combats.")
 (a/../../male/beltedtee_fishnetsleeves
    "Beau Filet")
 (a/../../male/beltedtee_fishnetsleeves_desc
@@ -5254,134 +4906,30 @@
    "Studly Suspenders")
 (a/../../male/suspenders_studded_desc
    "You wouldn't want your trousers to fall down, now would ya?")
-(a/../../male/dappershoes_solidshiny
-   "Italian Half-Heeled Shoes")
-(a/../../male/dappershoes_solidshiny_desc
-   "Show your fans your mysterious international side in these imported leather boots.")
 (a/../../male/bulletproof_kevlar
    "Going Ballistic Vest")
 (a/../../male/bulletproof_kevlar_desc
    "This bulletproof vest sends a clear message to all your psychotically-crazed fans: \qyou're going to need excellent aim.\q")
-(a/../../male/polo_coatofarms
-   "Witticism")
-(a/../../male/polo_coatofarms_desc
-   "Clever and modern, this shirt will make you the king of any backstage conversation.")
-(a/../../male/male_hair_generic_resource
-   "Totally Generic")
-(a/../../male/male_hair_generic_resource_desc
-   "Hey Captain Unconventional, are you trying to blend in? Then you might wanna cover up that awesome \qgiant cupcake fighting a shark\q forearm tattoo.")
-(a/../../male/male_bandana_flag_paris
-   "French Bandana")
-(a/../../male/male_bandana_flag_paris_desc
-   "This bandana will make all your fans want to \qFrench\q you. Ooh la la!")
-(a/../../male/malecombatbootsmetal_armor
-   "Butane Joe")
-(a/../../male/malecombatbootsmetal_armor_desc
-   "Stainless steel plates reinforce these tough leather boots... and your attitude.")
-(a/../../male/malehighheels_snakeskin
-   "I Would Die 4 Shoes")
-(a/../../male/malehighheels_snakeskin_desc
-   "Perfect for the small-statured and abundantly confident, these sexy boots will make them party like it's 1999.")
-(a/../../male/maleearrings_peacock
-   "Peacock Feather Earrings")
-(a/../../male/maleearrings_peacock_desc
-   "Show your fans you're ready to ruffle their feathers with this retro look.")
 (a/../../male/leisurepants_verticalstripes
    "Dolltree Leisure Pants")
 (a/../../male/leisurepants_verticalstripes_desc
    "You won't know what it's like to be the sad man in these vibrant leisure pants.")
-(a/../../male/cowboyboots_sunburst
-   "Ghost Ranchers")
-(a/../../male/cowboyboots_sunburst_desc
-   "Corral those haunts in these handsome boots.")
-(a/../../male/malewrist_wristbandterrycloth
-   "Wristwarmers")
-(a/../../male/malewrist_wristbandterrycloth_desc
-   "Sometimes on their way to the stage, musicians get cold feet. And sometimes they get cold wrists.")
 (a/../../male/malewrestlingboots_twotone
    "Luchador Boots")
 (a/../../male/malewrestlingboots_twotone_desc
    "Not just for wrestlers anymore!")
-(a/../../male/maleearrings_nail
-   "Ten Penny Nails")
-(a/../../male/maleearrings_nail_desc
-   "Hanging pictures or framing your face, these nails hold up!")
-(a/../../male/male_eyebrows_17_resource
-   "Sparse")
-(a/../../male/male_eyebrows_17_resource_desc
-   "Unless you're a real whiz with an eyebrow pencil, this look is best achieved naturally.")
 (a/../../male/glamitardtop_mirrorball
    "Eternal Glamnation Top")
 (a/../../male/glamitardtop_mirrorball_desc
    "Everybody's gonna want a piece of the action when you show up in this glittery, chest-baring top.")
-(a/../../male/tshirtdeath_tiedye
-   "Fit to be Tie-Dyed")
-(a/../../male/tshirtdeath_tiedye_desc
-   "...Because you've just never been able to throw out that tie-dyed tee you made at summer camp. Such craftsmanship!")
 (a/../../male/male_facehair_handlebar
    "Chopper")
 (a/../../male/male_facehair_handlebar_desc
    "Hold on tight to these handlebars when you hit the open road!")
-(a/../../male/malerings_twistedband
-   "Twistsilver")
-(a/../../male/malerings_twistedband_desc
-   "Available in a variety of metals, these rings will quickly become your favorites.")
-(a/../../male/male_hair_lazyhawk_resource
-   "Lazyhawk")
-(a/../../male/male_hair_lazyhawk_resource_desc
-   "Some days you just want to let your hair down.")
-(a/../../male/male_hair_longmop_resource
-   "Boy Toy")
-(a/../../male/male_hair_longmop_resource_desc
-   "With this trendy look, somebody is sure to make you a \qkept man.\q")
-(a/../../male/malemask_cat_tiger_resource
-   "Face of the Tiger")
-(a/../../male/malemask_cat_tiger_resource_desc
-   "Rise up to the challenge of your rival in this fearful get-up.")
-(a/../../male/malewrist_sweatbandstuddedcombo
-   "Sweat & Spikes")
-(a/../../male/malewrist_sweatbandstuddedcombo_desc
-   "Wipe your face with the sweatband, not the spikes!")
 (a/../../male/spikedtrackjacket_thinleather
    "Charles the Bloody")
 (a/../../male/spikedtrackjacket_thinleather_desc
    "Featuring ludicrously large spikes, this thin leather track jacket is a study in intimidation.")
-(a/../../male/male_hat_spikehelm_crazyhawk_resource
-   "Pickelhaube")
-(a/../../male/male_hat_spikehelm_crazyhawk_resource_desc
-   "What was that thing your mother said? \qAlways wear a helmet, regardless of how crazy the hair underneath it.\q")
-(a/../../male/malerings_ebony
-   "Ebony & Irony")
-(a/../../male/malerings_ebony_desc
-   "Go together in forefinger harmony.")
-(a/../../male/latexwarrior_pvc
-   "God of Latex Attire")
-(a/../../male/latexwarrior_pvc_desc
-   "You'll be the invincible triumphator in this terrifying top. Should you get covered in a heretic's blood, just grab a damp paper towel -- clean-up is a snap!")
-(a/../../male/male_piercings_combo02
-   "Lip Ring")
-(a/../../male/male_piercings_combo02_desc
-   "Possibly the most hilarious piercing to watch people recover from.")
-(a/../../male/escapeartist_canvas
-   "Escape Artist")
-(a/../../male/escapeartist_canvas_desc
-   "You might be able to escape from an intricate series of locks while suspended underwater... but even you can't escape from that weirdo fan who talks incessantly about hedgehogs.")
-(a/../../male/male_hair_powermullet_resource
-   "Power Mullet")
-(a/../../male/male_hair_powermullet_resource_desc
-   "This stylized mullet will look as good as the rad, tiki-themed interiors in your refurbished vacation trailer.")
-(a/../../male/male_eyebrows_02_resource
-   "Trustworthy")
-(a/../../male/male_eyebrows_02_resource_desc
-   "These eyebrows tell the world that you're honest, dependable, and unlikely to ever call your bandmates \qnefarious crotch sniffers\q behind their backs.")
-(a/../../male/rolledpants_jeans
-   "St. Monday's")
-(a/../../male/rolledpants_jeans_desc
-   "Wear these American rock classics when you tour around the Bloc.")
-(a/../../male/maleglasses_newwaves_resource
-   "Neo Maxi Zoom Dweebie")
-(a/../../male/maleglasses_newwaves_resource_desc
-   "Wallflower you are not. These single-line shades declare your to-the-maxitude!")
 (a/../../male/male_facehair_scottian
    "Long Goatee")
 (a/../../male/male_facehair_scottian_desc

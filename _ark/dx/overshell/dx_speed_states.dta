@@ -18,6 +18,7 @@
       options_extras
    )
    (enter
+      
       ;setup/reset the list tracking info
       {set $dx_list_item_selected FALSE}
       {set $dx_list_pos 0}
@@ -180,6 +181,9 @@
       options_audio
    )
    (enter
+      
+      {modifier_scroll.sbd set_showing TRUE}
+      {modifier_scroll.sbd set scrollbar_list options_audio.lst}
       {if {! {session is_in_game}}
          {$this show_message}
          {$this setup_message_text dx_track_speed_desc FALSE}
@@ -511,6 +515,8 @@
    )
    (on_cancel
       DX_OS_CLOSE_MSG
+      {modifier_scroll.sbd set_showing FALSE}
+      {modifier_scroll.sbd set scrollbar_list modifiers.lst}
       {if_else $dx_track_speed_from_modifiers
          {do
             {$this show_modifiers}
@@ -542,6 +548,7 @@
       options_end_game
    )
    (enter
+      
       {set $dx_list_item_selected FALSE}
       {set $dx_list_pos 0}
       {set $current_list options_end_game.lst}

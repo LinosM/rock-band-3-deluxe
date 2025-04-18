@@ -5,7 +5,9 @@
    coop_endgame_panel
    (file
       "coop_endgame.milo")
+   #ifdef HX_WII
    (unload_async TRUE)
+   #endif
    (details_showing
       (FALSE FALSE FALSE FALSE))
    (network_mic_setup TRUE)
@@ -19,11 +21,13 @@
       {$this set_results}
       {$this dx_endgame_enter}
       {$this dx_song_label_setter}
+      #ifndef HX_WW
       {$this dx_endgame_play_player_sfx}
+      #endif
       {$this dx_endgame_diff_setter}
       {overshell set_use_extended_mic_arrows TRUE}
       {songs.lbl set fixed_length 1000}
-      {set $dx_restart_allowed TRUE}
+      {set $dx_restart_allowed FALSE}
       DX_ENDGAME_SHOW_NEXT_SONG
       {if
          {&&
@@ -210,7 +214,12 @@
                         {ui sync_screen complete_screen 0})
                      ({meta_performer has_battle}
                         {ui sync_screen complete_screen 0})
-                     {ui sync_screen meta_loading_continue_screen 0}}
+                     #ifdef HX_WII
+                     {ui sync_screen maybe_outro_to_meta_loading_continue_screen 0}
+                     #else
+                     {ui sync_screen meta_loading_continue_screen 0}
+                     #endif
+                  }
                   {ui sync_screen preload_nextsong_screen 0}})
          ({&&
                {== $action kAction_Option}
@@ -239,7 +248,7 @@
 {new
    BandScreen
    coop_endgame_screen
-   (panels GAME_SCREEN_PANELS coop_endgame_panel outro_vignette_loader)
+   (panels #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif coop_endgame_panel #ifndef HX_WII outro_vignette_loader #endif)
    (focus coop_endgame_panel)
    (pending_restart FALSE)
    (TRANSITION_COMPLETE_MSG
@@ -251,7 +260,7 @@
 {new
    BandScreen
    coop_endgame_popups_screen
-   (panels GAME_SCREEN_PANELS outro_vignette_loader)
+   (panels #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif #ifndef HX_WII outro_vignette_loader #endif)
    (enter
       {overshell set_active_status kOvershellInGameShell})
    (poll
@@ -277,12 +286,12 @@
 {new
    BandScreen
    preload_nextsong_screen
-   (panels game_time_panel GAME_SCREEN_PANELS coop_endgame_panel preload_panel #ifdef HX_WII character_hide_hack_panel #endif)
+   (panels game_time_panel #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif coop_endgame_panel preload_panel #ifdef HX_WII character_hide_hack_panel #endif)
    (focus preload_panel)}
 {new
    BandScreen
    preload_failed_nextsong_screen
-   (panels game_time_panel GAME_SCREEN_PANELS coop_endgame_panel)
+   (panels game_time_panel #ifdef HX_WII GAME_SCREEN_PANELS_NO_TRACK #else GAME_SCREEN_PANELS #endif coop_endgame_panel)
    (focus coop_endgame_panel)
    (TRANSITION_COMPLETE_MSG
       {meta_performer skip_song}

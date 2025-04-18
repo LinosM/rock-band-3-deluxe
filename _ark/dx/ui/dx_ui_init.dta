@@ -565,6 +565,15 @@ DX_CURRENT_SONG_CLEAR
 {set $remote_trackspeed_real_guitar FALSE}
 {set $remote_trackspeed_real_bass FALSE}
 
+;same but for track length
+{set $tracklength_guitar 1.0}
+{set $tracklength_bass 1.0}
+{set $tracklength_drum 1.0}
+{set $tracklength_keys 1.0}
+{set $tracklength_real_keys 1.0}
+{set $tracklength_real_guitar 1.0}
+{set $tracklength_real_bass 1.0}
+
 {set $dx_dim_remote_players TRUE}
 
 ;sets default song speed 1.15 is 115%, 1.30 is 130% and so on.
@@ -718,7 +727,8 @@ DX_CURRENT_SONG_CLEAR
 {set $dx_joypad_pad_remap_3 kPad_R2}
 {set $dx_joypad_pad_remap_4 kPad_X}
 {set $dx_joypad_pad_remap_5 kPad_Select}
-
+{set $default_transitions TRUE}
+{set $black_song_transition FALSE}
 ;mtv overlay position for event mode
 ;{if $dx_event_mode
 ;   {set $mtvpos_0 -85}
@@ -728,6 +738,7 @@ DX_CURRENT_SONG_CLEAR
 ;game hud default ui positioning
 {set $scoreboardpos_0 8} {set $scoreboardpos_1 0} {set $scoreboardpos_2 -16}
 {set $star_displaypos_0 0} {set $star_displaypos_1 0} {set $star_displaypos_2 0}
+{set $dx_score_base_0 0} {set $dx_score_base_1 0} {set $dx_score_base_2 0}
 
 ;practice mode default ui positioning
 {set $speed_controlpos_0 46} {set $speed_controlpos_1 0} {set $speed_controlpos_2 -5}
@@ -908,15 +919,15 @@ DX_CURRENT_SONG_CLEAR
 ;{if $dx_ps3hw
 ;   {set $dx_author_finder_is_enabled FALSE}
 ;}
-;{set $dx_forced_outro_vignette ()}
-;{resize $dx_forced_outro_vignette 0}
+{set $dx_forced_outro_vignette ()}
+{resize $dx_forced_outro_vignette 0}
 
-;{if $dx_forced_main_menu_bg
-;   {set_elem {find $syscfg vignettes backdrops sv3} 1 $dx_forced_main_menu_bg}
-;}
-;{if $dx_forced_song_select_bg
-;   {set_elem {find $syscfg vignettes backdrops sv4} 1 $dx_forced_song_select_bg}
-;}
+{if $dx_forced_main_menu_bg
+   {set_elem {find $syscfg vignettes backdrops sv3} 1 {eval $dx_forced_main_menu_bg}}
+}
+{if $dx_forced_song_select_bg
+   {set_elem {find $syscfg vignettes backdrops sv4} 1 {eval $dx_forced_song_select_bg}}
+}
 
 {switch $dx_fctype
    (ring {set $dx_fc_ring TRUE} {set $dx_fc_glow FALSE})

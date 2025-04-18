@@ -180,60 +180,31 @@
    ;   }
    ;}
 }
-#ifdef TEMP_DISABLED
 {func
    dx_restore_online_transitions
    {cond
-      ({&& {session_mgr is_local} {== $dx_forced_outro_vignette none}}
+      ({&& {session_mgr is_local} {&& $black_song_transition {! $default_transitions}}}
          {do
             #ifdef HX_XBOX {set $dx_xbox_show_fallback TRUE} #endif
             {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 1 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 2 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 3 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 4 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 5 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 6 (TRUE ())}
             {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 1 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 2 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 3 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 4 (TRUE ())}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 5 (TRUE ())}
          }
       )
-      ({&& {session_mgr is_local} $dx_forced_outro_vignette {!= $dx_forced_outro_vignette none}}
+      ({&& {session_mgr is_local} {! $default_transitions}}
          {do
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 1 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 2 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 3 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 4 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 5 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 6 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 1 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 2 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 3 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 4 $dx_forced_outro_vignette}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 5 $dx_forced_outro_vignette}
+            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 1 {quote (1 {unquote {eval $dx_forced_outro_vignette}})}}
+            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 1 {quote (1 {unquote {eval $dx_forced_outro_vignette}})}}
          }
       )
-      ({|| {! $dx_forced_outro_vignette} {! {session_mgr is_local}}}
+      ({|| {&& $default_transitions {! $black_song_transition}} {! {session_mgr is_local}}}
          {do
             ;{set $dx_forced_outro_vignette FALSE}
             {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 1 {quote ({'||' {meta_performer festival_reward} {!= {gamemode get game_screen} game_screen}} ())}}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 2 {quote ({== {meta_performer get_venue_class} video} ("tv3_b"))}}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 3 {quote ({== {meta_performer get_venue_class} festival} ("tv3_f"))}}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 4 {quote ({== {meta_performer get_venue_class} arena} ("tv3_e"))}}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 5 {quote ({== {meta_performer get_venue_class} big_club} ("tv3_b" "tv3_d"))}}
-            {set_elem {find $syscfg vignettes interstitials preloading_screen #ifdef HX_WII pregame_screen #else game_screen #endif} 6 {quote ({== {meta_performer get_venue_class} small_club} ("tv3_a" "tv3_b" "tv3_c"))}}
             {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 1 ({== {meta_performer get_venue_class} festival} ("tv4_c"))}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 2 ({campaign has_reached_campaign_level campaignlevel_jet} ("tv4_d" "tv4_e"))}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 3 ({campaign has_reached_campaign_level campaignlevel_bus} ("tv4_c"))}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 4 ({campaign has_reached_campaign_level campaignlevel_van} ("tv4_b"))}
-            {set_elem {find $syscfg vignettes interstitials meta_loading_outro song_select_screen} 5 (TRUE ("tv4_a"))}
          }
       )
    }
 }
-#endif
 {func
    dx_sv_menu_logo_set
    ($panel)

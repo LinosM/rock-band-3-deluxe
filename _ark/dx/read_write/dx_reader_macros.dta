@@ -13,6 +13,17 @@
          {elem {elem {find $entry dx_mtv_position} 1} 2}
       }
    }
+   {if {== {elem $entry 0} {basename dx_score_base}}
+      {set $dx_score_base_0
+         {elem {elem {find $entry dx_score_base} 1} 0}
+      }
+      {set $dx_score_base_0
+         {elem {elem {find $entry dx_score_base} 1} 1}
+      }
+      {set $dx_score_base_0
+         {elem {elem {find $entry dx_score_base} 1} 2}
+      }
+   }
    ;{if {== {elem $entry 0} {basename dx_mtv_color_rgb}}
    ;   {set $dx_mtv_color_r
    ;      {elem {elem {find $entry dx_mtv_color_rgb} 1} 0}
@@ -167,12 +178,21 @@
          {elem {find $entry dx_sv8_dx_vers} 1}
       }
    }
-   ;temp disable
-   ;{if {== {elem $entry 0} {basename dx_forced_outro_vignette}}
-   ;   {set $dx_forced_outro_vignette
-   ;      {elem {find $entry dx_forced_outro_vignette} 1}
-   ;   }
-   ;}
+   {if {== {elem $entry 0} {basename dx_forced_outro_vignette}}
+      {set $dx_forced_outro_vignette
+         {elem {find $entry dx_forced_outro_vignette} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename black_song_transition}}
+      {set $black_song_transition
+         {elem {find $entry black_song_transition} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename default_transitions}}
+      {set $default_transitions
+         {elem {find $entry default_transitions} 1}
+      }
+   }
    {if {== {elem $entry 0} {basename emulate_fps}}
       {set $emulatefps
          {elem {find $entry emulate_fps} 1}
@@ -221,6 +241,41 @@
    {if {== {elem $entry 0} {basename trackspeed_real_bass}}
       {set $trackspeed_real_bass
          {elem {find $entry trackspeed_real_bass} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_guitar}}
+      {set $tracklength_guitar
+         {elem {find $entry tracklength_guitar} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_bass}}
+      {set $tracklength_bass
+         {elem {find $entry tracklength_bass} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_drum}}
+      {set $tracklength_drum
+         {elem {find $entry tracklength_drum} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_keys}}
+      {set $tracklength_keys
+         {elem {find $entry tracklength_keys} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_real_keys}}
+      {set $tracklength_real_keys
+         {elem {find $entry tracklength_real_keys} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_real_guitar}}
+      {set $tracklength_real_guitar
+         {elem {find $entry tracklength_real_guitar} 1}
+      }
+   }
+   {if {== {elem $entry 0} {basename tracklength_real_bass}}
+      {set $tracklength_real_bass
+         {elem {find $entry tracklength_real_bass} 1}
       }
    }
    {if {== {elem $entry 0} {basename dx_multiangle}}

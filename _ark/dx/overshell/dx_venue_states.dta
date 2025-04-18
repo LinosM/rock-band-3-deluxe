@@ -27,21 +27,17 @@
       {switch {$component selected_sym}
          (os_menu_backgrounds
             {dx_state_pos_tracker}
-            DX_VENUE_OPTIONS_DATA
-            {set $previous_state dxState_MenuBG}
-            {set $dx_tracked_changed FALSE}
+            DX_OS_CLOSE_MSG
             {$this show_state dxState_MenuBG})
          (os_venue
             {dx_state_pos_tracker}
-            DX_VENUE_OPTIONS_DATA
-            {set $previous_state dxState_SelectVenue}
-            {set $dx_tracked_changed FALSE}
+            DX_OS_CLOSE_MSG
             {$this show_state dxState_SelectVenue})
          ((os_venue_intro_on os_venue_intro_off)
             {set $dx_venue_intro {! $dx_venue_intro}}
             {if_else $dx_venue_intro
-               {set $dx_tracked_changed dx_venue_intro_on}
-               {set $dx_tracked_changed dx_venue_intro_off}
+               {set $dx_tracked_changed os_venue_intro_on}
+               {set $dx_tracked_changed os_venue_intro_off}
             }
             {dx_state_pos_tracker}
             DX_VENUE_OPTIONS_DATA
@@ -99,7 +95,7 @@
 #define BLACK_SONG_LOAD_BG
 (
    {resize $dx_forced_outro_vignette 0}
-   {set $dx_forced_outro_vignette ("none")}
+   {set $dx_forced_outro_vignette ()}
 )
 #define DX_DEFAULT_MAIN_BG
 (
@@ -172,8 +168,7 @@
       {unless $dx_black_menu
          {push_back $options os_main_menu}
          {push_back $options os_song_select}
-         ;temp disable
-         ;{push_back $options os_load_song}
+         {push_back $options os_load_song}
       }
       {dx_state_setup dxState_MenuBG TRUE}
    }
@@ -193,15 +188,12 @@
             {unless {$this in_game} {ui goto_screen meta_loading_main_screen}}
             {if_else $dx_black_menu
                {do
-                  kDataUnhandled
-                  ;temp disable
-                  ;BLACK_SONG_LOAD_BG
+                  BLACK_SONG_LOAD_BG
                }
                {do
                   DX_DEFAULT_MAIN_BG
                   DX_DEFAULT_SONG_SELECT_BG
-                  ;temp disable
-                  ;DX_DEFAULT_SONG_LOAD_BG
+                  DX_DEFAULT_SONG_LOAD_BG
                }
             }
             {if_else $dx_black_menu
@@ -354,7 +346,7 @@
          {set $dx_sv8_dx_vers FALSE}
       }
       {unless {== {$component selected_sym} default}
-         {set_elem {find $syscfg vignettes backdrops sv4} 1 $dx_forced_song_select_bg}
+         {set_elem {find $syscfg vignettes backdrops sv4} 1 {eval $dx_forced_song_select_bg}}
       }
       {if {== {ui current_screen} song_select_screen}
          {dx_state_pos_tracker}
@@ -459,7 +451,7 @@
          {set $dx_sv8_dx_vers FALSE}
       }
       {unless {== {$component selected_sym} default}
-         {set_elem {find $syscfg vignettes backdrops sv3} 1 $dx_forced_main_menu_bg}
+         {set_elem {find $syscfg vignettes backdrops sv3} 1 {eval $dx_forced_main_menu_bg}}
       }
       {if {== {ui current_screen} main_hub_screen}
          {dx_state_pos_tracker}
@@ -524,6 +516,7 @@
       {switch {$component selected_sym}
          (default
             DX_DEFAULT_SONG_LOAD_BG
+            {set $default_transitions TRUE}
          )
          (shuffle_all
             {set $dx_forced_outro_vignette ("tv1_a" "tv3_a" "tv3_b" "tv3_c" "tv3_d" "tv3_e" "tv3_f" "tv4_a" "tv4_b" "tv4_c" "tv4_d" "tv4_e" "tv5_a" "tv6_a" "tv11_a")}
@@ -581,17 +574,24 @@
          )
          (tv11_a
             {set $dx_forced_outro_vignette ("tv11_a")}
+            {set $default_transitions FALSE}
          )
       }
       {if {== {$component selected_sym} none}
          {set $dx_black_menu FALSE}
+         {set $black_song_transition TRUE}
          BLACK_SONG_LOAD_BG
       }
-      #ifdef HX_XBOX
+      
       {if {!= {$component selected_sym} none}
+         {set $black_song_transition FALSE}
+         #ifdef HX_XBOX
          {set $dx_xbox_show_fallback FALSE}
+         #endif
       }
-      #endif
+      {if {!= {$component selected_sym} default}
+         {set $default_transitions FALSE}
+      }
    )
    (on_cancel
       {dx_state_pos_tracker}

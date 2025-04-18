@@ -1240,22 +1240,6 @@
    (real_guitar_tuning (0 0 0 0 0 0))
    (real_bass_tuning (0 0 0 0))
    (strings_author "RK")
-)(supremegirl
-   (upgrade_version 1)
-   (rank
-      (drum 322)
-      (guitar 300)
-      (bass 274)
-      (vocals 258)
-      (keys 0)
-      (real_keys 0)
-      (band 345)
-      (real_guitar 405)
-      (real_bass 448)
-   )
-   (real_guitar_tuning (0 0 0 0 0 0))
-   (real_bass_tuning (0 0 0 0))
-   (strings_author "RK")
 )(testify
    (upgrade_version 1) 
    (rank
@@ -2276,6 +2260,22 @@
    (real_guitar_tuning (0 0 0 0 0 0))
    (real_bass_tuning (0 0 0 0))
    (strings_author "RK")
+)(sanctified
+   (upgrade_version 1) 
+   (rank
+      (drum 309)
+      (guitar 179)
+      (bass 120)
+      (vocals 191)
+      (keys 160)
+      (real_guitar 227)
+      (real_bass 307)
+      (real_keys 227)
+      (band 205)
+   )
+   (real_guitar_tuning (0 0 0 0 0 0))
+   (real_bass_tuning (0 0 0 0))
+   (strings_author "Carl Mylo, RK")
 )(school
    (upgrade_version 1)
    (rank

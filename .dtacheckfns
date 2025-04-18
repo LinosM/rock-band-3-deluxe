@@ -242,7 +242,7 @@ new_shell_vignette 1 1
 new_transition_vignette 1 1
 next_character_driver 0 0
 overshell_list_chooser 0 0
-overshell_list_creation 0 0
+overshell_list_creation 1 1
 overshell_view_chooser 0 0
 participating_vocalist_exists 0 0
 play_common_seq 1 1
