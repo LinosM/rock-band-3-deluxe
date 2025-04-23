@@ -772,6 +772,30 @@
    (real_bass_tuning (0 0 0 0))
    (strings_author "WarGod")
 )
+(aintitfun
+   (upgrade_version 1) 
+   (song
+      (tracks
+         ((drum
+               (0 1))
+            (bass
+               (2 3))
+            (guitar
+               (4 5))
+            (vocals
+               (6 7))
+            (keys
+               (8 9)))))
+   (rank
+      (vocals 368)
+      (bass 362)
+      (guitar 258)
+      (drum 238)
+      (band 271)
+      (keys 153)
+      (real_keys 153))
+   (keys_author "Linos Melendi")
+   (version 30))
 (allaboutthatbass
    (upgrade_version 1) 
    (song
