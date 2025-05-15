@@ -4,3 +4,4 @@
 ;(overshell_rb3esettings "FART Settings")
 (overshell_keys "5 Keys")
 (overshell_real_keys "25 Pro Keys")
+(overshell_choose_part_denial_no_part "This song does not contain this part.\nSelect a different part or drop out.")
