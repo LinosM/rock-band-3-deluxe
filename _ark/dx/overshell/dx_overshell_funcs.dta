@@ -493,9 +493,9 @@
             (enter ;triggers when entering kState_ChoosePart
                {{{overshell find {sprint "slot" $slot}} find game_options.grp} add_object {{overshell find {sprint "slot" $slot}} find choose_character.mesh}}
                {store_choose_char_size_pos}
-               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_pos_index 2 240}
-               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 0 0.4} ;X
-               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 2 0.4} ;Y
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_pos_index 2 200}
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 0 0.35} ;X
+               {{{overshell find {sprint "slot" $slot}} find choose_character.mesh} set_local_scale_index 2 0.35} ;Y
                {if {! {exists {sprint "slot" $slot "_info.tex"}}}
                   {new Tex {sprint "slot" $slot "_info.tex"}}
                }
