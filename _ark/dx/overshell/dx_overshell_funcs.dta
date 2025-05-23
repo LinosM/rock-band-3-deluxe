@@ -483,6 +483,7 @@
       {&& 
          {! {session is_in_game}}
          {session_mgr is_local}
+         {! {== {ui current_screen} coop_endgame_screen}}
          {||
             {== {{$this get_user} get_controller_type} kControllerDrum}
             {== {{$this get_user} get_controller_type} kControllerKeys}
