@@ -1720,68 +1720,6 @@
                }
             }
          )
-         ({== $action kAction_Cancel}
-            {if_else $dx_prep_show_flow
-               {do
-                  {set $dx_in_show_flow FALSE}
-                  {set $dx_prep_show_flow FALSE}
-                  {set $dx_playing_a_show FALSE}
-                  {overshell end_override_flow kOverrideFlow_SongSettings TRUE}
-                  {ui sync_screen meta_loading_main_screen 0}
-               }
-               {if_else
-                  {&&
-                     {music_library get_making_setlist}
-                     {! {music_library get_forced_setlist}}
-                  }
-                  {do
-                     {music_library clear_setlist}
-                     {music_library set_making_setlist FALSE}
-                  }
-                  {if_else {! {session is_local}}
-                     {if_else {is_leader_local}
-                        {if_else {machine_mgr all_machines_have_same_net_ui_state}
-                           ;dx virtual keyboard
-                           {virtual_keyboard show_keyboard
-                              $user
-                              17
-                              {localize song_search}
-                              {localize song_search_desc}
-                              {if_else {== {{music_library get_highlighted_node} get_node_type} kNodeSong}
-                                 {{music_library get_highlighted_node} title}
-                                 {localize song_search_title}
-                              }
-                              $this
-                           }
-                           ;{ui sync_screen {music_library get_back_screen} 0}
-                           {ui_event_mgr trigger_event remote_not_ready}
-                        }
-                        {ui_event_mgr trigger_event remote_exit}
-                     }
-                     ;dx, fallback to search on hold red lmao
-                     ;{virtual_keyboard show_keyboard
-                     ;   $user
-                     ;   17
-                     ;   {localize song_search}
-                     ;   {localize song_search_desc}
-                     ;   {if_else {== {{music_library get_highlighted_node} get_node_type} kNodeSong}
-                     ;      {{music_library get_highlighted_node} title}
-                     ;      {localize song_search_title}
-                     ;   }
-                     ;   $this
-                     ;}
-                     {do
-                        {set $keyboard_ticket {array ($user)}}
-                        {ui push_screen dx_search_screen}
-                     }
-                     ;{ui
-                     ;   go_back_screen
-                     ;   {music_library get_back_screen}
-                     ;   $user}
-                  }
-               }
-            }
-         )
          ({'||'
                #ifdef HX_WII
                {==
@@ -2592,20 +2530,12 @@
             )
             (TRUE {help.ihp set_config ()})
          }
-         {help.ihp set_action_token kAction_Cancel help_search}
          {if $option
             {help.ihp set_action_token kAction_Option $option}
          }
-         {if_else $platform_has_keyboard
-            {do
-               {help.ihp set (config 1 secondary_token) help_search_keyboard}
-               {help.ihp set spacing 255}
-               {help.ihp set_local_pos_index 0 -395}
-            }
-            {do
-               {help.ihp set spacing 240}
-               {help.ihp set_local_pos_index 0 -380}
-            }
+         {do
+            {help.ihp set spacing 240}
+            {help.ihp set_local_pos_index 0 -380}
          }
          {settings.ihp set_local_pos_index 0 180}
       }
