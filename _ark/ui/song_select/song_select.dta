@@ -20,7 +20,7 @@
       (kAction_PageDown 0.25)
       (kAction_ShellOption 0.25)
       (kAction_Confirm 1.5)
-      (kAction_Cancel 1.5)
+      (kAction_Cancel 999.5)
    )
    (joypad
       (hold_ms 100)
