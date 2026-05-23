@@ -2596,7 +2596,7 @@
          {if $option
             {help.ihp set_action_token kAction_Option $option}
          }
-         {if_else $platform_has_keyboard
+         {if_else FALSE
             {do
                {help.ihp set (config 1 secondary_token) help_search_keyboard}
                {help.ihp set spacing 255}
