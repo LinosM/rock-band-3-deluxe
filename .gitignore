@@ -12,23 +12,6 @@ platform/wii
 obj
 out
 
-#prefabs dir
-_ark/char/custom_prefabs/*
-!_ark/char/custom_prefabs/.gitkeep
-
-#custom char milos
-#clothing items, keep nothing but null milos
-_ark/char/main/*/female/gen/*
-_ark/char/main/*/male/gen/*
-!_ark/char/main/*/female/gen/null*
-!_ark/char/main/*/male/gen/null*
-
-#ignore all custom instrument files
-_ark/char/main/*/gen/*
-#files to keep in char folder
-!_ark/char/main/*/gen/.gitkeep
-!_ark/char/main/shared/gen/*
-!_ark/char/main/prefab/gen/*
 
 #net dta, should remain vanilla unless you specifically want bank8 debug online with rb3e
 #to do so, grab vanilla config/net.dta
